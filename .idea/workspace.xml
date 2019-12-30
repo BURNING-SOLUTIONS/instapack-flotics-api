@@ -65,8 +65,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Entity/FuelType.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
+            <state relative-caret-position="500">
+              <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
               <folding>
                 <element signature="e#30#74#0#PHP" expanded="true" />
               </folding>
@@ -120,6 +120,9 @@
       <dir>C:\xampp\htdocs\api_symfony</dir>
     </dirStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -129,13 +132,13 @@
         <option value="$PROJECT_DIR$/config/packages/api_platform.yaml" />
         <option value="$PROJECT_DIR$/src/Entity/Contact.php" />
         <option value="$PROJECT_DIR$/src/Entity/VehicleType.php" />
-        <option value="$PROJECT_DIR$/src/Entity/FuelType.php" />
         <option value="$PROJECT_DIR$/src/Entity/Vehicle.php" />
         <option value="$PROJECT_DIR$/src/Entity/ConceptsContract.php" />
         <option value="$PROJECT_DIR$/src/Entity/Clauses.php" />
         <option value="$PROJECT_DIR$/src/Entity/Concepts.php" />
         <option value="$PROJECT_DIR$/src/Entity/Accessories.php" />
         <option value="$PROJECT_DIR$/src/Entity/Contract.php" />
+        <option value="$PROJECT_DIR$/src/Entity/FuelType.php" />
       </list>
     </option>
   </component>
@@ -230,6 +233,7 @@
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -301,12 +305,12 @@
       <updated>1576060584912</updated>
       <workItem from="1576060586166" duration="909000" />
       <workItem from="1576061533266" duration="26207000" />
-      <workItem from="1576448243487" duration="28997000" />
+      <workItem from="1576448243487" duration="29006000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56113000" />
+    <option name="totallyTimeSpent" value="56122000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
@@ -546,8 +550,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Entity/FuelType.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
+        <state relative-caret-position="500">
+          <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
           <folding>
             <element signature="e#30#74#0#PHP" expanded="true" />
           </folding>
