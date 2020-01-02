@@ -6,10 +6,18 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
+ * @UniqueEntity("code")
+ * @UniqueEntity("cif")
+ * @ApiFilter(SearchFilter::class, properties={"code": "exact", "cif": "exact", "name": "exact"})
+ *
  */
 class RentalAgency
 {
@@ -21,12 +29,13 @@ class RentalAgency
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
      */
     private $cif;
 
@@ -75,17 +84,23 @@ class RentalAgency
         return $this->id;
     }
 
-    public function getCode(): ?int
+    /**
+     * @return mixed
+     */
+    public function getCode()
     {
         return $this->code;
     }
 
-    public function setCode(int $code): self
+    /**
+     * @param mixed $code
+     */
+    public function setCode($code): void
     {
         $this->code = $code;
-
-        return $this;
     }
+
+
 
     public function getCif(): ?string
     {

@@ -12,7 +12,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
- * @ApiFilter(SearchFilter::class, properties={"email": "exact", "name": "exact", "mobile": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"email": "exact", "name": "exact", "mobile": "exact", "charge":"exact"})
  */
 class Contact
 {
@@ -31,16 +31,17 @@ class Contact
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Regex(
+     *     pattern="/^((\+34)|(34))?[8|9][0-9]{8}$/",
+     *     message="Please provide a correct phone number"
+     * )
      */
     private $mobile;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Regex(
-     *               pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/",
-     *               match=false,
-     *               message="Your phone is invalid"
-     * )
+     *               pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/", message="Your phone is invalid")
      */
     private $phone;
 

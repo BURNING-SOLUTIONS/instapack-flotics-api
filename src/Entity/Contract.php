@@ -6,10 +6,16 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
+ * @UniqueEntity("contractNumber")
+ * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "typeContract": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
  */
 class Contract
 {
@@ -99,10 +105,22 @@ class Contract
      */
     private $rentalAgency;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Bill", mappedBy="contractNumber")
+     */
+    private $bills;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="contracts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $vehicle;
+
 
     public function __construct()
     {
         $this->clauses = new ArrayCollection();
+        $this->bills = new ArrayCollection();
 
     }
 
@@ -315,6 +333,49 @@ class Contract
     public function setInstapackGroup(?InstapackGroup $instapackGroup): self
     {
         $this->instapackGroup = $instapackGroup;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Bill[]
+     */
+    public function getBills(): Collection
+    {
+        return $this->bills;
+    }
+
+    public function addBill(Bill $bill): self
+    {
+        if (!$this->bills->contains($bill)) {
+            $this->bills[] = $bill;
+            $bill->setContractNumber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBill(Bill $bill): self
+    {
+        if ($this->bills->contains($bill)) {
+            $this->bills->removeElement($bill);
+            // set the owning side to null (unless already changed)
+            if ($bill->getContractNumber() === $this) {
+                $bill->setContractNumber(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVehicle(): ?Vehicle
+    {
+        return $this->vehicle;
+    }
+
+    public function setVehicle(?Vehicle $vehicle): self
+    {
+        $this->vehicle = $vehicle;
 
         return $this;
     }

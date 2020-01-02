@@ -3,11 +3,20 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
+ * @UniqueEntity("vehicleRegistration")
+ * @UniqueEntity("vehicleFrame")
+ * @ApiFilter(SearchFilter::class, properties={"vehicleRegistration": "exact", "brand": "exact", "vehicleFrame": "exact","insurance": "exact" })
  */
 class Vehicle
 {
@@ -79,6 +88,16 @@ class Vehicle
      * @ORM\ManyToOne(targetEntity="VehicleType", inversedBy="vehicle")
      */
     private $vehicleType;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="vehicle")
+     */
+    private $contracts;
+
+    public function __construct()
+    {
+        $this->contracts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -225,6 +244,37 @@ class Vehicle
     public function setVehicleType(VehicleType $vehicleType): self
     {
         $this->vehicleType = $vehicleType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Contract[]
+     */
+    public function getContracts(): Collection
+    {
+        return $this->contracts;
+    }
+
+    public function addContract(Contract $contract): self
+    {
+        if (!$this->contracts->contains($contract)) {
+            $this->contracts[] = $contract;
+            $contract->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContract(Contract $contract): self
+    {
+        if ($this->contracts->contains($contract)) {
+            $this->contracts->removeElement($contract);
+            // set the owning side to null (unless already changed)
+            if ($contract->getVehicle() === $this) {
+                $contract->setVehicle(null);
+            }
+        }
 
         return $this;
     }
