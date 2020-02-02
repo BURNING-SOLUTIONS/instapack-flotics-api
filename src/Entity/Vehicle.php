@@ -24,6 +24,7 @@ class Vehicle
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
      */
     private $id;
 
@@ -88,6 +89,11 @@ class Vehicle
      * @ORM\ManyToOne(targetEntity="VehicleType", inversedBy="vehicle")
      */
     private $vehicleType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="vehicles")
+     */
+    private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="vehicle")
@@ -244,6 +250,18 @@ class Vehicle
     public function setVehicleType(VehicleType $vehicleType): self
     {
         $this->vehicleType = $vehicleType;
+
+        return $this;
+    }
+
+    public function getRentalAgency(): ?RentalAgency
+    {
+        return $this->rentalAgency;
+    }
+
+    public function setRentalAgency(?RentalAgency $rentalAgency): self
+    {
+        $this->rentalAgency = $rentalAgency;
 
         return $this;
     }

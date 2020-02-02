@@ -74,9 +74,15 @@ class RentalAgency
      */
     private $contracts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="rentalAgency")
+     */
+    private $vehicles;
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
+        $this->vehicles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -211,6 +217,37 @@ class RentalAgency
             // set the owning side to null (unless already changed)
             if ($contract->getRentalAgency() === $this) {
                 $contract->setRentalAgency(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Vehicle[]
+     */
+    public function getVehicles(): Collection
+    {
+        return $this->vehicles;
+    }
+
+    public function addVehicle(Vehicle $vehicle): self
+    {
+        if (!$this->vehicles->contains($vehicle)) {
+            $this->vehicles[] = $vehicle;
+            $vehicle->setRentalAgency($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicle(Vehicle $vehicle): self
+    {
+        if ($this->vehicles->contains($vehicle)) {
+            $this->vehicles->removeElement($vehicle);
+            // set the owning side to null (unless already changed)
+            if ($vehicle->getRentalAgency() === $this) {
+                $vehicle->setRentalAgency(null);
             }
         }
 
