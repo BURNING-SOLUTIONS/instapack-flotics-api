@@ -5,10 +5,16 @@ on:
     branches: 
       -api_flotics
       
+ jobs:
+  my-job:
+    name: My Job
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print a greeting
+      run:
+       echo Hola Mundo
+      
  
-  #jobs:
-    #open_pull:
-   
 
 #jobs:
 #  build:
