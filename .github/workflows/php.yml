@@ -4,10 +4,11 @@ on:
   push:
     branches: 
       -api_flotics      
-  pull_request_review:
-    my-job:
-      name: My Job
-      runs-on: ubuntu-latest
+       
+jobs:
+  my-job:
+    name: My Job
+    runs-on: ubuntu-latest
     steps:
     - name: Print a greeting
       run:
