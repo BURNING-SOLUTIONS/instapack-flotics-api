@@ -100,6 +100,7 @@ class Vehicle
      */
     private $contracts;
 
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
@@ -267,33 +268,22 @@ class Vehicle
     }
 
     /**
-     * @return Collection|Contract[]
+     * @return ArrayCollection
      */
-    public function getContracts(): Collection
+    public function getContracts(): ArrayCollection
     {
         return $this->contracts;
     }
 
-    public function addContract(Contract $contract): self
+    /**
+     * @param ArrayCollection $contracts
+     */
+    public function setContracts(ArrayCollection $contracts): void
     {
-        if (!$this->contracts->contains($contract)) {
-            $this->contracts[] = $contract;
-            $contract->setVehicle($this);
-        }
-
-        return $this;
+        $this->contracts = $contracts;
     }
 
-    public function removeContract(Contract $contract): self
-    {
-        if ($this->contracts->contains($contract)) {
-            $this->contracts->removeElement($contract);
-            // set the owning side to null (unless already changed)
-            if ($contract->getVehicle() === $this) {
-                $contract->setVehicle(null);
-            }
-        }
 
-        return $this;
-    }
+
+
 }

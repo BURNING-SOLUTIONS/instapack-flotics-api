@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/api_symfony.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/api_symfony.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env.prod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/framework.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/RentalAgency.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RentalAgency.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Vehicle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Vehicle.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,20 +15,6 @@
     <execution>
       <executable />
     </execution>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>unique</find>
-      <find>Concepts</find>
-      <find>AcessoriesRe</find>
-      <find>contract_id</find>
-      <find>accessories</find>
-      <find>cif</find>
-      <find>code</find>
-    </findStrings>
-    <dirStrings>
-      <dir>C:\xampp\htdocs\api_symfony</dir>
-    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -195,6 +178,7 @@
       <workItem from="1578955238125" duration="599000" />
       <workItem from="1578991447003" duration="6000" />
       <workItem from="1580245917774" duration="5727000" />
+      <workItem from="1581497339381" duration="1058000" />
     </task>
     <servers />
   </component>
@@ -202,6 +186,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="2639" y="324" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581498565080">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2639" y="324" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581498565080" />
     <state x="465" y="238" key="com.intellij.ide.util.TipDialog" timestamp="1578906405549">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
