@@ -5,7 +5,7 @@ on:
     branches: 
       -api_flotics
       
- jobs:
+  jobs:
   my-job:
     name: My Job
     runs-on: ubuntu-latest
