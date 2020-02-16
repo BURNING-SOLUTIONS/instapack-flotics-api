@@ -268,9 +268,9 @@ class Vehicle
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection|Contract[]
      */
-    public function getContracts(): ArrayCollection
+    public function getContracts(): Collection
     {
         return $this->contracts;
     }
@@ -282,8 +282,6 @@ class Vehicle
     {
         $this->contracts = $contracts;
     }
-
-
 
 
 }
