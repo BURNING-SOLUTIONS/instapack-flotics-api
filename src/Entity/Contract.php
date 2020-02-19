@@ -19,6 +19,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity("contractNumber")
  * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "type": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
  * @ApiFilter(OrderFilter::class, properties={"contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
+ *
+ *
  */
 class Contract
 {
@@ -26,31 +28,37 @@ class Contract
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", length=255, unique=true)
+     * @Groups({"get_contract"})
      */
     private $contractNumber;
 
     /**
      * @ORM\Column(type="integer")
+     *
      */
     private $type;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $endDate;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     *
      */
     private $annualKM;
 
@@ -91,6 +99,7 @@ class Contract
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract")
+     *
      */
     private $clauses;
 
@@ -99,23 +108,27 @@ class Contract
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $instapackGroup;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Bill", mappedBy="contractNumber")
+     *
      */
     private $bills;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $vehicle;
 

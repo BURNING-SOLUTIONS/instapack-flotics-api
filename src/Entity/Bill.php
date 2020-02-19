@@ -12,7 +12,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_contract"}})
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\BillRepository")
  * @UniqueEntity("number")
  * @ApiFilter(SearchFilter::class, properties={"number": "partial", "date": "partial", "expirationDate": "partial", "startDate":"partial","total":"partial","iva":"partial"})
@@ -24,52 +25,63 @@ class Bill
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract"})
+     *
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", unique=true)
+     * @Groups({"get_contract"})
      */
     private $number;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $date;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $expirationDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $endDate;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract"})
      */
     private $amounts;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract"})
      */
     private $iva;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract"})
      */
     private $total;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Contract", inversedBy="bills")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_contract"})
      */
     private $contractNumber;
 
