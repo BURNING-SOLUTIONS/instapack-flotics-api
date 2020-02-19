@@ -10,12 +10,15 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("contractNumber")
- * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "typeContract": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "type": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
  */
 class Contract
 {
@@ -27,14 +30,14 @@ class Contract
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", length=255, unique=true)
      */
     private $contractNumber;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $typeContract;
+    private $type;
 
     /**
      * @ORM\Column(type="datetime")
@@ -143,17 +146,23 @@ class Contract
         return $this;
     }
 
-    public function getTypeContract(): ?int
+    /**
+     * @return mixed
+     */
+    public function getType()
     {
-        return $this->typeContract;
+        return $this->type;
     }
 
-    public function setTypeContract(int $typeContract): self
+    /**
+     * @param mixed $type
+     */
+    public function setType($type): void
     {
-        $this->typeContract = $typeContract;
-
-        return $this;
+        $this->type = $type;
     }
+
+
 
     public function getStartDate(): ?\DateTimeInterface
     {

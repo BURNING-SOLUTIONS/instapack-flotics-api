@@ -8,11 +8,15 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\BillRepository")
- * @ApiFilter(SearchFilter::class, properties={"billNumber": "exact", "dateBill": "exact", "expirationDate": "exact"})
+ * @UniqueEntity("number")
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial", "date": "partial", "expirationDate": "partial", "startDate":"partial","total":"partial","iva":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"number", "date","expirationDate","startDate","endDate","amounts","iva","total"})
  */
 class Bill
 {
@@ -24,14 +28,14 @@ class Bill
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", unique=true)
      */
-    private $billNumber;
+    private $number;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $dateBill;
+    private $date;
 
     /**
      * @ORM\Column(type="datetime")
@@ -74,29 +78,38 @@ class Bill
         return $this->id;
     }
 
-    public function getBillNumber(): ?int
+    /**
+     * @return mixed
+     */
+    public function getNumber()
     {
-        return $this->billNumber;
+        return $this->number;
     }
 
-    public function setBillNumber(int $billNumber): self
+    /**
+     * @param mixed $number
+     */
+    public function setNumber($number): void
     {
-        $this->billNumber = $billNumber;
-
-        return $this;
+        $this->number = $number;
     }
 
-    public function getDateBill(): ?\DateTimeInterface
+    /**
+     * @return mixed
+     */
+    public function getDate()
     {
-        return $this->dateBill;
+        return $this->date;
     }
 
-    public function setDateBill(\DateTimeInterface $dateBill): self
+    /**
+     * @param mixed $date
+     */
+    public function setDate($date): void
     {
-        $this->dateBill = $dateBill;
-
-        return $this;
+        $this->date = $date;
     }
+
 
     public function getExpirationDate(): ?\DateTimeInterface
     {

@@ -10,13 +10,16 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
- * @ApiFilter(SearchFilter::class, properties={"code": "exact", "cif": "exact", "name": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial", "province":"partial","population":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"code", "cif","name","province","population","contracts","vehicles"})
  *
  */
 class RentalAgency
@@ -29,12 +32,12 @@ class RentalAgency
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255,unique=true)
      */
     private $code;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
      */
     private $cif;

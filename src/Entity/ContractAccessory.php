@@ -4,10 +4,16 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContractAccessoryRepository")
+ * @ApiFilter(OrderFilter::class, properties={"contract", "accessory"})
+ * @ApiFilter(SearchFilter::class, properties={"contract": "partial","accessory":"partial"})
+ *
  */
 class ContractAccessory
 {

@@ -10,13 +10,16 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\InstapackGroupRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
- * @ApiFilter(SearchFilter::class, properties={"code": "exact", "cif": "exact", "name": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial","name":"partial","province":"partial","contacts":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"code", "cif","fiscalAddress","businessAddress","name","province","population","contacts","contracts"})
  */
 class InstapackGroup
 {
@@ -28,12 +31,12 @@ class InstapackGroup
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $code;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
      */
     private $cif;
