@@ -7,9 +7,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup MySQL
@@ -39,8 +37,8 @@ jobs:
 
     - name: Install dependencies
       run: composer install -n --prefer-dist
-    - name: Prueba
-      run: echo probando mi primer Actions
+    #- name: Prueba
+     # run: echo probando mi primer Actions
     - name:  GitHub Pull Request Action
       uses: repo-sync/pull-request@v2.0.1
       with:
