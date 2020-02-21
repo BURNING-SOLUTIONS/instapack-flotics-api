@@ -59,7 +59,7 @@ jobs:
         # Pull request milestone
        # pr_milestone: optional
         # GitHub token secret
-       token: ${{ secrets.GITHUB_TOKEN }}   
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
