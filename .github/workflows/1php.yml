@@ -40,8 +40,11 @@ jobs:
     #- name: Prueba
      # run: echo probando mi primer Actions
     - name:  GitHub Pull Request Action
-      uses: repo-sync/pull-request@v2.0.1
-      with:
+      uses: vsoch/pull-request-action@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     # uses: repo-sync/pull-request@v2.0.1
+     # with:
         # Branch name to pull from, default is triggered branch
         #source_branch: api_flotics # optional
         # Branch name to sync to in this repo, default is master
