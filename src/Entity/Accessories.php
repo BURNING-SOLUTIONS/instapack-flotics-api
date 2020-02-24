@@ -6,11 +6,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\AccessoriesRepository")
  * @ApiFilter(SearchFilter::class, properties={"accessory": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"accessory"})
  */
 class Accessories
 {

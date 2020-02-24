@@ -4,10 +4,14 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ClausesRepository")
+ * @ApiFilter(SearchFilter::class, properties={"value": "partial", "contract": "partial", "concept": "partial"})
  */
 class Clauses
 {

@@ -8,11 +8,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
- * @ApiFilter(SearchFilter::class, properties={"email": "exact", "name": "exact", "mobile": "exact", "charge":"exact"})
+ * @ApiFilter(SearchFilter::class, properties={"email": "partial", "name": "partial", "mobile": "partial", "charge":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"mobile", "phone","email","charge","name"})
  */
 class Contact
 {
@@ -32,7 +35,7 @@ class Contact
     /**
      * @ORM\Column(type="integer")
      * @Assert\Regex(
-     *     pattern="/^((\+34)|(34))?[8|9][0-9]{8}$/",
+     *     pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/",
      *     message="Please provide a correct phone number"
      * )
      */
@@ -41,7 +44,7 @@ class Contact
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Regex(
-     *               pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/", message="Your phone is invalid")
+     *               pattern="/^((\+34)|(34))?[8|9][0-9]{8}$/", message="Your phone is invalid")
      */
     private $phone;
 

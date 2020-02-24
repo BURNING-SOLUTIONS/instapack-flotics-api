@@ -7,12 +7,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  *  @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ConceptsRepository")
- * @ApiFilter(SearchFilter::class, properties={"concepts": "exact"})
+ * @UniqueEntity("concepts")
+ * @ApiFilter(SearchFilter::class, properties={"concepts": "partial"})
  */
 class Concepts
 {
@@ -25,7 +27,7 @@ class Concepts
 
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $concepts;
 

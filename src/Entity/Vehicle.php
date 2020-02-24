@@ -10,93 +10,114 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"vehicle_fuel"}})
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
  * @UniqueEntity("vehicleRegistration")
- * @UniqueEntity("vehicleFrame")
- * @ApiFilter(SearchFilter::class, properties={"vehicleRegistration": "exact", "brand": "exact", "vehicleFrame": "exact","insurance": "exact" })
+ * @UniqueEntity("frame")
+ * @ApiFilter(OrderFilter::class, properties={"vehicleRegistration", "frame","capacity","co2","mom","mma","brand","model","insurance"})
+ * @ApiFilter(SearchFilter::class, properties={"vehicleRegistration": "partial", "brand": "partial", "frame": "partial","insurance": "partial", "vehicleType":"partial" })
  */
 class Vehicle
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     *
+     * @Groups({"vehicle_fuel"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"vehicle_fuel"})
      */
     private $vehicleRegistration;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"vehicle_fuel"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"vehicle_fuel"})
      */
     private $model;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"vehicle_fuel"})
      */
-    private $vehicleFrame;
+    private $frame;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"vehicle_fuel"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel"})
      */
     private $co2;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel"})
      */
     private $mom;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel"})
      */
     private $mma;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel"})
      */
-    private $vehicleCapacity;
+    private $capacity;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"vehicle_fuel"})
      */
     private $insurance;
 
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
+     * @Groups({"vehicle_fuel"})
+     *
      */
     private $fuelvehicle;
 
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="VehicleType", inversedBy="vehicle")
+     * @Groups({"vehicle_fuel"})
+     * @ApiFilter(SearchFilter::class, properties={"vehicleType.type":"partial" })
+     *
      */
     private $vehicleType;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="vehicles")
+     * @Groups({"vehicle_fuel"})
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="vehicle")
+     * @Groups({"vehicle_fuel"})
      */
     private $contracts;
 
@@ -147,17 +168,23 @@ class Vehicle
         return $this;
     }
 
-    public function getVehicleFrame(): ?string
+    /**
+     * @return mixed
+     */
+    public function getFrame()
     {
-        return $this->vehicleFrame;
+        return $this->frame;
     }
 
-    public function setVehicleFrame(string $vehicleFrame): self
+    /**
+     * @param mixed $frame
+     */
+    public function setFrame($frame): void
     {
-        $this->vehicleFrame = $vehicleFrame;
-
-        return $this;
+        $this->frame = $frame;
     }
+
+
 
     public function getColor(): ?string
     {
@@ -207,19 +234,25 @@ class Vehicle
         return $this;
     }
 
-    public function getVehicleCapacity(): ?int
+    /**
+     * @return mixed
+     */
+    public function getCapacity()
     {
-        return $this->vehicleCapacity;
+        return $this->capacity;
     }
 
-    public function setVehicleCapacity(?int $vehicleCapacity): self
+    /**
+     * @param mixed $capacity
+     */
+    public function setCapacity($capacity): void
     {
-        $this->vehicleCapacity = $vehicleCapacity;
-
-        return $this;
+        $this->capacity = $capacity;
     }
 
-    public function getInsurance(): ?string
+
+
+    public function getInsurance()
     {
         return $this->insurance;
     }

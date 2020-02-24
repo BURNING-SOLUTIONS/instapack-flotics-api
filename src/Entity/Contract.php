@@ -10,12 +10,17 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("contractNumber")
- * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "typeContract": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "type": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
+ *
+ *
  */
 class Contract
 {
@@ -23,31 +28,37 @@ class Contract
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
      */
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", length=255, unique=true)
+     * @Groups({"get_contract"})
      */
     private $contractNumber;
 
     /**
      * @ORM\Column(type="integer")
+     *
      */
-    private $typeContract;
+    private $type;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_contract"})
      */
     private $endDate;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     *
      */
     private $annualKM;
 
@@ -88,6 +99,7 @@ class Contract
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract")
+     *
      */
     private $clauses;
 
@@ -96,23 +108,27 @@ class Contract
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $instapackGroup;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Bill", mappedBy="contractNumber")
+     *
      */
     private $bills;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $vehicle;
 
@@ -143,17 +159,23 @@ class Contract
         return $this;
     }
 
-    public function getTypeContract(): ?int
+    /**
+     * @return mixed
+     */
+    public function getType()
     {
-        return $this->typeContract;
+        return $this->type;
     }
 
-    public function setTypeContract(int $typeContract): self
+    /**
+     * @param mixed $type
+     */
+    public function setType($type): void
     {
-        $this->typeContract = $typeContract;
-
-        return $this;
+        $this->type = $type;
     }
+
+
 
     public function getStartDate(): ?\DateTimeInterface
     {
