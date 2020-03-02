@@ -7,9 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_contract" , "get_concepts"}})
  * @ORM\Entity(repositoryClass="App\Repository\ClausesRepository")
  * @ApiFilter(SearchFilter::class, properties={"value": "partial", "contract": "partial", "concept": "partial"})
  */
@@ -19,11 +20,13 @@ class Clauses
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract","get_concepts"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract","get_concepts"})
      */
     private $value;
 
@@ -32,12 +35,14 @@ class Clauses
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Contract", inversedBy="clauses")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_contract"})
      */
     private $contract;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Concepts", inversedBy="clauses")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_contract"})
      */
     private $concept;
 

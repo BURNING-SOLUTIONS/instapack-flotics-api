@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  *  @ApiResource()
@@ -22,17 +23,20 @@ class Concepts
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_concepts"})
      */
     private $id;
 
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"get_concepts"})
      */
-    private $concepts;
+    private $concept;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="concept")
+     *
      */
     private $clauses;
 
@@ -49,17 +53,23 @@ class Concepts
         return $this->id;
     }
 
-    public function getConcepts(): ?string
+    /**
+     * @return mixed
+     */
+    public function getConcept()
     {
-        return $this->concepts;
+        return $this->concept;
     }
 
-    public function setConcepts(string $concepts): self
+    /**
+     * @param mixed $concept
+     */
+    public function setConcept($concept): void
     {
-        $this->concepts = $concepts;
-
-        return $this;
+        $this->concept = $concept;
     }
+
+
 
     /**
      * @return Collection|Clauses[]
