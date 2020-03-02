@@ -14,7 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_contract", "get_vehicule"}}))
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
@@ -28,57 +28,68 @@ class RentalAgency
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
+     * @Groups({"get_contract"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
+     * @Groups({"get_contract"})
      */
     private $cif;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contract"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contract"})
      */
     private $bussinesAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contract"})
      */
     private $fiscalAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contract"})
      */
     private $province;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contract"})
      */
     private $population;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract"})
      */
     private $observations;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="rentalAgency")
+     * @Groups({"get_contract"})
      */
     private $contracts;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="rentalAgency")
+     * @Groups({"get_contract"})
      */
     private $vehicles;
 

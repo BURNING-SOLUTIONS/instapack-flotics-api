@@ -14,7 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_contacts","get_contract"}}))
  * @ORM\Entity(repositoryClass="App\Repository\InstapackGroupRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
@@ -27,57 +27,68 @@ class InstapackGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_contacts"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"get_contacts"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
+     * @Groups({"get_contacts"})
      */
     private $cif;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contacts"})
      */
     private $fiscalAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contacts"})
      */
     private $businessAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contacts"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contacts"})
      */
     private $province;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contacts"})
      */
     private $population;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contacts"})
      */
     private $observations;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contact", mappedBy="instapackGroup")
+     * @Groups({"get_contacts"})
      */
     private $contacts;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="instapackGroup")
+     * @Groups({"get_contacts"})
      */
     private $contracts;
 

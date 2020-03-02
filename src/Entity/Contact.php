@@ -23,12 +23,13 @@ class Contact
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     *
+     *@Groups({"get_contacts"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contacts"})
      */
     private $name;
 
@@ -38,6 +39,7 @@ class Contact
      *     pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/",
      *     message="Please provide a correct phone number"
      * )
+     * @Groups({"get_contacts"})
      */
     private $mobile;
 
@@ -55,7 +57,7 @@ class Contact
      *     message = "The email is not a valid.",
      *     checkMX = true
      * )
-     *
+     *@Groups({"get_contacts"})
      */
 
     private $email;

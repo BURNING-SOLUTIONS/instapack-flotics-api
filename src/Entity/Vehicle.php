@@ -28,13 +28,13 @@ class Vehicle
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_vehicule"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_vehicule"})
      */
     private $vehicleRegistration;
 
