@@ -20,13 +20,13 @@ class Clauses
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract","get_concepts"})
+     * @Groups({"get_contract","get_concepts","get_clauses"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract","get_concepts"})
+     * @Groups({"get_contract","get_concepts","get_clauses"})
      */
     private $value;
 
@@ -42,7 +42,7 @@ class Clauses
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Concepts", inversedBy="clauses")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_clauses"})
      */
     private $concept;
 

@@ -25,20 +25,20 @@ class Bill
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_bill"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", unique=true)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_bill"})
      */
     private $number;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_bill"})
      */
     private $date;
 

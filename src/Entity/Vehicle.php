@@ -14,12 +14,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"vehicle_fuel"}})
+ * @ApiResource(normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}})
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
- * @UniqueEntity("vehicleRegistration")
+ * @UniqueEntity("registration")
  * @UniqueEntity("frame")
- * @ApiFilter(OrderFilter::class, properties={"vehicleRegistration", "frame","capacity","co2","mom","mma","brand","model","insurance"})
- * @ApiFilter(SearchFilter::class, properties={"vehicleRegistration": "partial", "brand": "partial", "frame": "partial","insurance": "partial", "vehicleType":"partial" })
+ * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance"})
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial", "vehicleType":"partial" })
  */
 class Vehicle
 {
@@ -28,74 +28,74 @@ class Vehicle
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"vehicle_fuel","get_vehicule"})
+     * @Groups({"vehicle_fuel","get_vehicle","get_agency","get_vehicleType"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"vehicle_fuel","get_vehicule"})
+     * @Groups({"vehicle_fuel","get_vehicle","get_agency","get_vehicleType"})
      */
-    private $vehicleRegistration;
+    private $registration;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $model;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $frame;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $co2;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $mom;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $mma;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $capacity;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $insurance;
 
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      *
      */
     private $fuelvehicle;
@@ -103,7 +103,7 @@ class Vehicle
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="VehicleType", inversedBy="vehicle")
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      * @ApiFilter(SearchFilter::class, properties={"vehicleType.type":"partial" })
      *
      */
@@ -111,13 +111,13 @@ class Vehicle
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="vehicles")
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="vehicle")
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"vehicle_fuel","get_agency"})
      */
     private $contracts;
 
@@ -132,17 +132,23 @@ class Vehicle
         return $this->id;
     }
 
-    public function getVehicleRegistration(): ?string
+    /**
+     * @return mixed
+     */
+    public function getRegistration()
     {
-        return $this->vehicleRegistration;
+        return $this->registration;
     }
 
-    public function setVehicleRegistration(string $vehicleRegistration): self
+    /**
+     * @param mixed $registration
+     */
+    public function setRegistration($registration): void
     {
-        $this->vehicleRegistration = $vehicleRegistration;
-
-        return $this;
+        $this->registration = $registration;
     }
+
+
 
     public function getBrand(): ?string
     {
