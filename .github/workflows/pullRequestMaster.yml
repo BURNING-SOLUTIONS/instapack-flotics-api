@@ -3,7 +3,7 @@ name: PHP Composer
 on:
   push:
     branches: 
-      - liliamlge7-patch-1
+      - api_floticsFilter
 
 jobs:
   build:
@@ -64,8 +64,4 @@ jobs:
         # GitHub token secret
        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    # - name: Run test suite
-    #   run: composer run-script test
+    
