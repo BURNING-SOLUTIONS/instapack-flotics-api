@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  *  @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ConceptsRepository")
- * @UniqueEntity("concepts")
- * @ApiFilter(SearchFilter::class, properties={"concepts": "partial"})
+ * @UniqueEntity("concept")
+ * @ApiFilter(SearchFilter::class, properties={"concept": "partial"})
  */
 class Concepts
 {
