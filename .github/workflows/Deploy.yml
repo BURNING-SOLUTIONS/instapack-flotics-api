@@ -1,0 +1,61 @@
+name: PHP Composer
+
+on:
+  push:
+     branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Delete vendor
+      run: rm -rf ./vendor
+    - name: Delete cache
+      run: rm -rf ./var/cache 
+    - name: List output files
+      run: ls
+    - name: Copy via ssh
+      uses: garygrossgarten/github-action-scp@v0.5.3
+      with:
+        # Path to the local folder you want to copy.
+        local: ./
+        # Path on the remote server to copy to.
+        remote: /home/manager/flotics_api_app
+        # Number of concurrent file transfers.
+        concurrency: 1000 # optional, default is 1
+        # Wether copy of directory should be recursive
+        recursive:  true # optional, default is true
+        # Log status of every file copy
+        verbose: true # optional, default is true
+        # Hostname or IP address of the server.
+        host: accounts.instapack.es # optional, default is localhost
+        # Username for authentication.
+        username: manager # optional
+        # Port number of the server.
+        port: 22 # optional, default is 22
+        # File Location or string that contains a private key for either key-based or hostbased user authentication (OpenSSH format)
+        #privateKey: # optional
+        # Password for password-based user authentication.
+        password: ${{ secrets.FTP_PASSWORD}} # optional
+        # For an encrypted private key, this is the passphrase used to decrypt it.
+        #passphrase: # optional
+        # Try keyboard-interactive user authentication if primary user authentication method fails.
+        tryKeyboard: true # optional
+      
+   
+   
+    - name:  Deploy to Azure 
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Execute Azure SH Deploy
+      run: |
+        az vm run-command invoke -g instapack_deploy -n instapack-suite-core-supervisor  --command-id RunShellScript --scripts "cd /home/manager/flotics_api_app && sudo ./release.sh"
+         
+     
+    - name: Azure logout 
+      run: |
+        az logout  
