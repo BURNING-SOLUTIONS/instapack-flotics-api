@@ -14,7 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"get_contract", "get_vehicule"}}))
+ * @ApiResource(normalizationContext={"groups"={"get_contract", "get_vehicle"}}))
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
@@ -28,68 +28,68 @@ class RentalAgency
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_agency","get_vehicle"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_agency","get_vehicle"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $cif;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_agency","get_vehicle"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $bussinesAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $fiscalAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $province;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $population;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $observations;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="rentalAgency")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $contracts;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="rentalAgency")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_vehicle"})
      */
     private $vehicles;
 

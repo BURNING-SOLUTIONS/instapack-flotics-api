@@ -27,20 +27,21 @@ class InstapackGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contacts"})
+     * @Groups({"get_contacts","get_instagroup"})
+     *
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_contacts","get_instagroup"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
-     * @Groups({"get_contacts"})
+     * @Groups({"get_contacts","get_instagroup"})
      */
     private $cif;
 
@@ -58,7 +59,7 @@ class InstapackGroup
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_contacts","get_instagroup"})
      */
     private $name;
 

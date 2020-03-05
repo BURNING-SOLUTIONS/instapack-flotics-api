@@ -12,7 +12,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={ "get_instagroup"}}))
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
  * @ApiFilter(SearchFilter::class, properties={"email": "partial", "name": "partial", "mobile": "partial", "charge":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"mobile", "phone","email","charge","name"})
@@ -23,13 +23,13 @@ class Contact
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     *@Groups({"get_contacts"})
+     *@Groups({"get_contacts","get_instagroup"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_contacts","get_instagroup"})
      */
     private $name;
 
@@ -39,7 +39,7 @@ class Contact
      *     pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/",
      *     message="Please provide a correct phone number"
      * )
-     * @Groups({"get_contacts"})
+     * @Groups({"get_contacts","get_instagroup"})
      */
     private $mobile;
 
@@ -47,6 +47,7 @@ class Contact
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Regex(
      *               pattern="/^((\+34)|(34))?[8|9][0-9]{8}$/", message="Your phone is invalid")
+     * @Groups({"get_instagroup"})
      */
     private $phone;
 
@@ -57,18 +58,20 @@ class Contact
      *     message = "The email is not a valid.",
      *     checkMX = true
      * )
-     *@Groups({"get_contacts"})
+     *@Groups({"get_contacts","get_instagroup"})
      */
 
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_instagroup"})
      */
     private $charge;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contacts")
+     * @Groups({"get_instagroup"})
      */
     private $instapackGroup;
 

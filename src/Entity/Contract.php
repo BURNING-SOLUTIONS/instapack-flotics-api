@@ -14,7 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("contractNumber")
  * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "type": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
@@ -28,107 +28,114 @@ class Contract
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", length=255, unique=true)
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_agency","get_bill","get_clauses","get_vehicle"})
      */
     private $contractNumber;
 
     /**
      * @ORM\Column(type="integer")
-     *
+     * @Groups({"get_agency","get_bill","get_clauses","get_vehicle"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_agency","get_bill","get_clauses","get_vehicle"})
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_contract"})
+     * @Groups({"get_contract","get_agency","get_bill","get_vehicle"})
      */
     private $endDate;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     *
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $annualKM;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $monthlyKM;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $deliveryAddress;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $exitKm;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $devolutionAddress;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $paymentPeriod;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $paymentMethod;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $initialDeposit;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract")
-     *
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $clauses;
 
-   
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
-     *
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $instapackGroup;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
-     *
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Bill", mappedBy="contractNumber")
-     *
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $bills;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
-     *
+     * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $vehicle;
 
