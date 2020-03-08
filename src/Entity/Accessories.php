@@ -11,7 +11,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\AccessoriesRepository")
- * @ApiFilter(SearchFilter::class, properties={"accessory": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"accessory": "partial"})
  * @ApiFilter(OrderFilter::class, properties={"accessory"})
  */
 class Accessories
