@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
- * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial", "province":"partial","population":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial", "province":"partial","population":"partial","bussinesAddress":"partial","fiscalAddress":"partial","observations":"partial","contracts":"partial","vehicles":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"code", "cif","name","province","population","contracts","vehicles"})
  *
  */

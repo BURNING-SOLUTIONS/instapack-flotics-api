@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
  * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance"})
- * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial", "vehicleType":"partial" })
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial", "vehicleType":"partial" ,"fuelvehicle":"partial","rentalAgency":"partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","contracts":"partial"})
  */
 class Vehicle
 {

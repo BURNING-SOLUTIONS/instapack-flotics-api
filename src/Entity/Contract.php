@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(normalizationContext={"groups"={"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("contractNumber")
- * @ApiFilter(SearchFilter::class, properties={"contractNumber": "exact", "type": "exact", "startDate": "exact","endDate": "exact","instapackGroup": "exact","rentalAgency": "exact"})
+ * @ApiFilter(SearchFilter::class, properties={"contractNumber": "partial", "type": "partial", "startDate": "partial","endDate": "partial","instapackGroup": "partial","rentalAgency": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial","vehicle":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
  *
  *

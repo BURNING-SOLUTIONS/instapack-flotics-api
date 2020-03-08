@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(normalizationContext={"groups"={ "get_instagroup"}}))
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
- * @ApiFilter(SearchFilter::class, properties={"email": "partial", "name": "partial", "mobile": "partial", "charge":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"email": "partial", "name": "partial", "mobile": "partial", "charge":"partial", "phone":"partial","instapackGroup":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"mobile", "phone","email","charge","name"})
  */
 class Contact
@@ -37,7 +37,7 @@ class Contact
      * @ORM\Column(type="integer")
      * @Assert\Regex(
      *     pattern="/^((\+34)|(34))?[6|7][0-9]{8}$/",
-     *     message="Please provide a correct phone number"
+     *     message="Please provide a correct mobile number"
      * )
      * @Groups({"get_contacts","get_instagroup"})
      */

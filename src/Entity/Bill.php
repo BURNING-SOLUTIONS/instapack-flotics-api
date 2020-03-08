@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  * @ORM\Entity(repositoryClass="App\Repository\BillRepository")
  * @UniqueEntity("number")
- * @ApiFilter(SearchFilter::class, properties={"number": "partial", "date": "partial", "expirationDate": "partial", "startDate":"partial","total":"partial","iva":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial", "date": "partial", "expirationDate": "partial", "startDate":"partial","total":"partial","iva":"partial","endDate":"partial","amounts":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"number", "date","expirationDate","startDate","endDate","amounts","iva","total"})
  */
 class Bill
