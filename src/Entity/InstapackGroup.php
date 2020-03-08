@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\InstapackGroupRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
- * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial","name":"partial","province":"partial","contacts":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial","name":"partial","province":"partial","contacts":"partial","fiscalAddress":"partial","businessAddress":"partial","population":"partial","observations":"partial","contracts":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"code", "cif","fiscalAddress","businessAddress","name","province","population","contacts","contracts"})
  */
 class InstapackGroup
