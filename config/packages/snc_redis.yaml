@@ -1,0 +1,24 @@
+snc_redis:
+  clients:
+    default:
+      type: predis
+      alias: default
+      dsn: 'redis:/%env(REDIS_KEY)%/@%env(REDIS_SERVER)%/1'
+    cache:
+      type: predis
+      alias: cache
+      dsn: 'redis://%env(REDIS_KEY)%@%env(REDIS_SERVER)%/1'
+      options:
+        profile: 2.2
+        connection_timeout: 10
+        read_write_timeout: 30
+
+# Define your clients here. The example below connects to database 0 of the default Redis server.
+#
+# See https://github.com/snc/SncRedisBundle/blob/master/Resources/doc/index.md for instructions on
+# how to configure the bundle.
+#
+#        default:
+#            type: phpredis
+#            alias: default
+#            dsn: "%env(REDIS_URL)%"

@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/pullRequestMaster.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/pullRequestMaster.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/api_symfony.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/api_symfony.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EventSubscriber/RequestSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/RequestSubscriber.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +22,11 @@
     </execution>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="api_flotics" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
@@ -101,6 +112,8 @@
       <path value="$PROJECT_DIR$/vendor/ocramius/proxy-manager" />
       <path value="$PROJECT_DIR$/vendor/zendframework/zend-code" />
       <path value="$PROJECT_DIR$/vendor/zendframework/zend-eventmanager" />
+      <path value="$PROJECT_DIR$/vendor/predis/predis" />
+      <path value="$PROJECT_DIR$/vendor/snc/redis-bundle" />
     </include_path>
   </component>
   <component name="ProjectId" id="1WKjyCgPXEfsILRRyC1JEq9MeRi" />
@@ -112,7 +125,12 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -188,29 +206,37 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="2281" y="72" key="#Deployment" timestamp="1583746512449">
+      <screen x="1920" y="0" width="1536" height="824" />
+    </state>
+    <state x="2281" y="72" key="#Deployment/0.0.1536.824/1920.0.1536.824@1920.0.1536.824" timestamp="1583746512449" />
     <state x="2639" y="324" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581498565080">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2639" y="324" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581498565080" />
-    <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser" timestamp="1583693819834">
+    <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser" timestamp="1583350153454">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1582548696463" />
     <state x="2619" y="163" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1582104881058" />
-    <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1583693819834" />
-    <state x="93" y="93" width="1350" height="638" key="DiffContextDialog" timestamp="1581980859946">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1583350153454" />
+    <state x="2036" y="117" width="1688" height="806" key="DiffContextDialog" timestamp="1583759817113">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state x="2036" y="117" width="1688" height="806" key="DiffContextDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1583759817113" />
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1581980859946" />
+    <state x="2534" y="310" key="WebDeployment.AddServerDialog.v.1" timestamp="1583746501633">
+      <screen x="1920" y="0" width="1536" height="824" />
+    </state>
+    <state x="2534" y="310" key="WebDeployment.AddServerDialog.v.1/0.0.1536.824/1920.0.1536.824@1920.0.1536.824" timestamp="1583746501633" />
     <state x="465" y="238" key="com.intellij.ide.util.TipDialog" timestamp="1578906405549">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="465" y="238" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578906405549" />
-    <state x="455" y="141" width="618" height="536" key="find.popup" timestamp="1583742007581">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="2494" y="182" width="773" height="677" key="find.popup" timestamp="1583755501733">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="455" y="141" width="618" height="536" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1583742007581" />
-    <state x="2494" y="182" width="773" height="677" key="find.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1582104832400" />
+    <state x="2494" y="182" width="773" height="677" key="find.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1583755501733" />
     <state x="455" y="141" width="618" height="536" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1583692449814" />
     <state x="493" y="190" key="run.anything.popup" timestamp="1583592285668">
       <screen x="0" y="0" width="1536" height="824" />
