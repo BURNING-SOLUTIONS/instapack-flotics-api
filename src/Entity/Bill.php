@@ -82,6 +82,7 @@ class Bill
      * @ORM\ManyToOne(targetEntity="App\Entity\Contract", inversedBy="bills")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_contract"})
+     * @ApiFilter(SearchFilter::class, properties={"contractNumber.number":"partial" })
      */
     private $contractNumber;
 

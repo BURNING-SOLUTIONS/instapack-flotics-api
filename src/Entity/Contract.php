@@ -17,8 +17,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(normalizationContext={"groups"={"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("contractNumber")
- * @ApiFilter(SearchFilter::class, properties={"contractNumber": "partial", "type": "partial", "startDate": "partial","endDate": "partial","instapackGroup": "partial","rentalAgency": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial","vehicle":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
+ * @ApiFilter(SearchFilter::class, properties={"contractNumber": "partial", "type": "partial", "startDate": "partial","endDate": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id","contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
  *
  *
  */
@@ -37,7 +37,7 @@ class Contract
      * @ORM\Column(type="integer", length=255, unique=true)
      * @Groups({"get_contract","get_agency","get_bill","get_clauses","get_vehicle"})
      */
-    private $contractNumber;
+    private $number;
 
     /**
      * @ORM\Column(type="integer")
@@ -116,6 +116,7 @@ class Contract
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @ApiFilter(SearchFilter::class, properties={"instapackGroup.name":"partial" })
      */
     private $instapackGroup;
 
@@ -123,6 +124,7 @@ class Contract
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @ApiFilter(SearchFilter::class, properties={"rentalAgency.name":"partial" })
      */
     private $rentalAgency;
 
@@ -136,6 +138,7 @@ class Contract
      * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @ApiFilter(SearchFilter::class, properties={"vehicle.number":"partial" })
      */
     private $vehicle;
 
@@ -154,17 +157,23 @@ class Contract
         return $this->id;
     }
 
-    public function getContractNumber(): ?int
+    /**
+     * @return mixed
+     */
+    public function getNumber()
     {
-        return $this->contractNumber;
+        return $this->number;
     }
 
-    public function setContractNumber(int $contractNumber): self
+    /**
+     * @param mixed $number
+     */
+    public function setNumber($number): void
     {
-        $this->contractNumber = $contractNumber;
-
-        return $this;
+        $this->number = $number;
     }
+
+
 
     /**
      * @return mixed

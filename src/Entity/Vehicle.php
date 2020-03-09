@@ -18,8 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
- * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance"})
- * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial", "vehicleType":"partial" ,"fuelvehicle":"partial","rentalAgency":"partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","contracts":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance","vehicleType"})
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial"})
  */
 class Vehicle
 {
@@ -96,6 +96,7 @@ class Vehicle
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @ApiFilter(SearchFilter::class, properties={"fuelvehicle.type":"partial" })
      *
      */
     private $fuelvehicle;
@@ -112,12 +113,14 @@ class Vehicle
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="vehicles")
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @ApiFilter(SearchFilter::class, properties={"rentalAgency.name":"partial" })
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="vehicle")
      * @Groups({"vehicle_fuel","get_agency"})
+     *
      */
     private $contracts;
 

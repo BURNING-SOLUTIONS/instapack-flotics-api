@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\VehicleTypeRepository")
  * @ApiFilter(SearchFilter::class, properties={"type": "partial","vehicle":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id","type","vehicle"})
  */
 
 class VehicleType
