@@ -3,17 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Bill.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Bill.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Clauses.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Clauses.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Concepts.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Concepts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Contact.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Contact.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Contract.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Contract.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/ContractAccessory.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ContractAccessory.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/FuelType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/FuelType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Vehicle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Vehicle.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/VehicleType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/VehicleType.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
