@@ -56,11 +56,11 @@ final class RequestSubscriber implements EventSubscriberInterface
             $jwt = explode(" ", $authHeader)[1];
             $decodedJwt = $this->decodeJWT($jwt);
             $username = $decodedJwt['username'];
-            if (!($this->redis->exist($username) and $this->redis->get($username) == $decodedJwt)) {
+            if (!($this->redis->exist($username) and $this->redis->get($username) == $jwt)) {
                 $unauthorizedException = new BadCredentialsException('Auth', 401);
                 $msg = $unauthorizedException->getMessageKey();
                 $statusCode = $unauthorizedException->getCode();
-                $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg)));
+                $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg, 'arrivedToken' => $jwt, 'username' => $username)));
             };
         }
 
