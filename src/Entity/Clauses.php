@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(normalizationContext={"groups"={"get_contract" , "get_concepts"}})
  * @ORM\Entity(repositoryClass="App\Repository\ClausesRepository")
  * @ApiFilter(SearchFilter::class, properties={"value": "partial", "contract": "partial", "concept": "partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id", "value"})
  */
 class Clauses
 {
@@ -36,6 +37,7 @@ class Clauses
      * @ORM\ManyToOne(targetEntity="App\Entity\Contract", inversedBy="clauses")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_contract"})
+     * @ApiFilter(SearchFilter::class, properties={"contract.number":"partial" })
      */
     private $contract;
 
@@ -43,6 +45,7 @@ class Clauses
      * @ORM\ManyToOne(targetEntity="App\Entity\Concepts", inversedBy="clauses")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_contract","get_clauses"})
+     * @ApiFilter(SearchFilter::class, properties={"concept.concept":"partial" })
      */
     private $concept;
 

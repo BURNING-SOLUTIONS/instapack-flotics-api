@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(normalizationContext={"groups"={ "get_instagroup"}}))
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
  * @ApiFilter(SearchFilter::class, properties={"email": "partial", "name": "partial", "mobile": "partial", "charge":"partial", "phone":"partial","instapackGroup":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"mobile", "phone","email","charge","name"})
+ * @ApiFilter(OrderFilter::class, properties={"id","mobile", "phone","email","charge","name"})
  */
 class Contact
 {
@@ -72,6 +72,7 @@ class Contact
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contacts")
      * @Groups({"get_instagroup"})
+     * @ApiFilter(SearchFilter::class, properties={"instapackGroup.name":"partial" })
      */
     private $instapackGroup;
 
