@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use App\Service\RedisCacheService;
 
@@ -55,9 +56,12 @@ final class RequestSubscriber implements EventSubscriberInterface
             $jwt = explode(" ", $authHeader)[1];
             $decodedJwt = $this->decodeJWT($jwt);
             $username = $decodedJwt['username'];
-            //comparar token jwt con cache redis en el mismo user
-            //echo $this->redis->get($username);
-            //echo var_dump($username); exit;
+            if (!($this->redis->exist($username) and $this->redis->get($username) == $decodedJwt)) {
+                $unauthorizedException = new BadCredentialsException('Auth', 401);
+                $msg = $unauthorizedException->getMessageKey();
+                $statusCode = $unauthorizedException->getCode();
+                $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg)));
+            };
         }
 
     }
