@@ -11,7 +11,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\ContractAccessoryRepository")
- * @ApiFilter(OrderFilter::class, properties={"contract", "accessory"})
+ * @ApiFilter(OrderFilter::class, properties={"id","contract", "accessory"})
  * @ApiFilter(SearchFilter::class, properties={"contract": "partial","accessory":"partial"})
  *
  */
@@ -33,6 +33,7 @@ class ContractAccessory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Accessories")
      * @ORM\JoinColumn(nullable=false)
+     * @ApiFilter(SearchFilter::class, properties={"accessory.accessory":"partial" })
      */
     private $accessory;
 

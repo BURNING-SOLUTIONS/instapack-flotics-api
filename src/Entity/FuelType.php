@@ -23,7 +23,7 @@ class FuelType
      * @ORM\Column(type="integer")
      * @Groups({"vehicle_fuel"})
      * @ApiFilter(SearchFilter::class, properties={"type": "partial"})
-     * @ApiFilter(OrderFilter::class, properties={"type","vehicle"})
+     * @ApiFilter(OrderFilter::class, properties={"id","type","vehicle"})
      */
     private $id;
 
