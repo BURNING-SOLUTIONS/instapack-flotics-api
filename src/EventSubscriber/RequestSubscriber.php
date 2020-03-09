@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use App\Service\RedisCacheService;
 
@@ -47,6 +48,7 @@ final class RequestSubscriber implements EventSubscriberInterface
 
         $headers = $event->getRequest()->headers;
         $authHeader = $headers->get('authorization');
+
         if (!$authHeader) {
             $unauthorizedException = new UnauthorizedHttpException('Auth', 'Unauthorized error, please provide valid JWT');
             $msg = $unauthorizedException->getMessage();
@@ -56,12 +58,27 @@ final class RequestSubscriber implements EventSubscriberInterface
             $jwt = explode(" ", $authHeader)[1];
             $decodedJwt = $this->decodeJWT($jwt);
             $username = $decodedJwt['username'];
+
             if (!($this->redis->exist($username) and $this->redis->get($username) == $jwt)) {
+
+
                 $unauthorizedException = new BadCredentialsException('Auth', 401);
                 $msg = $unauthorizedException->getMessageKey();
                 $statusCode = $unauthorizedException->getCode();
                 $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg, 'arrivedToken' => $jwt, 'username' => $username)));
-            };
+            } else {
+                $expirateToken = date('Y/m/d H:i:s', $decodedJwt['exp']);
+                $today = new \DateTime('now');
+                $timestamp = $today->getTimestamp();
+                if ($decodedJwt['exp'] > $timestamp) {
+                    $unauthorizedException = new CredentialsExpiredException('Expiration', 401);
+                    $msg = $unauthorizedException->getMessageKey();
+                    $statusCode = $unauthorizedException->getCode();
+                    $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg, 'exp' => $expirateToken)));
+                }
+
+            }
+
         }
 
     }

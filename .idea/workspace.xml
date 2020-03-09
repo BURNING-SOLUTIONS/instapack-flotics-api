@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="">
+    <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="Fixed Bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/EventSubscriber/RequestSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/RequestSubscriber.php" afterDir="false" />
     </list>
@@ -200,6 +200,10 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixed Bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed Bug" />
+  </component>
   <component name="WindowStateProjectService">
     <state x="2281" y="72" key="#Deployment" timestamp="1583746512449">
       <screen x="1920" y="0" width="1536" height="824" />
@@ -215,6 +219,10 @@
     <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1582548696463" />
     <state x="2619" y="163" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1582104881058" />
     <state x="559" y="129" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1583350153454" />
+    <state x="2508" y="115" key="CommitChangelistDialog2" timestamp="1583761910984">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2508" y="115" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1583761910984" />
     <state x="2036" y="117" width="1688" height="806" key="DiffContextDialog" timestamp="1583759817113">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
@@ -233,10 +241,10 @@
     </state>
     <state x="2494" y="182" width="773" height="677" key="find.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1583755501733" />
     <state x="455" y="141" width="618" height="536" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1583692449814" />
-    <state x="493" y="190" key="run.anything.popup" timestamp="1583592285668">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="2536" y="240" key="run.anything.popup" timestamp="1583769253802">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2536" y="240" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1582114651014" />
+    <state x="2536" y="240" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1583769253802" />
     <state x="493" y="190" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1583592285668" />
   </component>
 </project>
