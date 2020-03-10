@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use App\Service\RedisCacheService;
 
@@ -41,7 +42,7 @@ final class RequestSubscriber implements EventSubscriberInterface
     public function checkRequestIntegrity(RequestEvent $event): void
     {
 
-        $headers = $event->getRequest()->headers;
+        /*$headers = $event->getRequest()->headers;
         $authHeader = $headers->get('authorization');
         if (!$authHeader) {
             $unauthorizedException = new UnauthorizedHttpException('Auth', 'Unauthorized error, please provide valid JWT');
@@ -57,8 +58,19 @@ final class RequestSubscriber implements EventSubscriberInterface
                 $msg = $badCredentialsException->getMessageKey();
                 $statusCode = $badCredentialsException->getCode();
                 $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg, 'arrivedToken' => $jwt, 'username' => $username), $statusCode));
-            };
-        }
+            } else {
+                $expirateToken = date('Y/m/d H:i:s', $decodedJwt['exp']);
+                $today = new \DateTime('now');
+                $timestamp = $today->getTimestamp();
+                if ($decodedJwt['exp'] < $timestamp) {
+                    $expiredException = new CredentialsExpiredException('Expiration', 401);
+                    $msg = $expiredException->getMessageKey();
+                    $statusCode = $expiredException->getCode();
+                    $event->setResponse(new JsonResponse(array('code' => $statusCode, 'message' => $msg, 'exp' => $expirateToken)));
+                }
+
+            }
+        }*/
 
     }
 }
