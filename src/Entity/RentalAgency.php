@@ -14,6 +14,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ORM\Table(indexes={
+@ORM\Index(name="global_search_agency", columns={"name","code","cif"})
+})
  * @ApiResource(normalizationContext={"groups"={"get_contract", "get_vehicle"}}))
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
  * @UniqueEntity("code")
@@ -119,7 +122,6 @@ class RentalAgency
     {
         $this->code = $code;
     }
-
 
 
     public function getCif(): ?string
