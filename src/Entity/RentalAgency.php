@@ -23,7 +23,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "patch",
  *         "put",
  *         "delete",
- *         "post",
  *         "get"={
  *             "normalization_context"={"groups"={"get_only_item"}}
  *         }
