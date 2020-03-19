@@ -17,7 +17,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Table(indexes={
 @ORM\Index(name="global_search_agency", columns={"name","code","cif"})
 })
- * @ApiResource(normalizationContext={"groups"={"get_contract", "get_vehicle"}}))
+ * @ApiResource(
+ *     normalizationContext={"groups"={"get_contract", "get_vehicle"}},
+ *     itemOperations={
+ *         "patch",
+ *         "put",
+ *         "delete",
+ *         "post",
+ *         "get"={
+ *             "normalization_context"={"groups"={"get_only_item"}}
+ *         }
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\RentalAgencyRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
@@ -31,56 +42,56 @@ class RentalAgency
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract","get_agency","get_vehicle"})
+     * @Groups({"get_contract","get_agency","get_vehicle","get_only_item"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
-     * @Groups({"get_contract","get_agency","get_vehicle"})
+     * @Groups({"get_contract","get_agency","get_vehicle","get_only_item"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
-     * @Groups({"get_contract","get_vehicle"})
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
      */
     private $cif;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_agency","get_vehicle"})
+     * @Groups({"get_contract","get_agency","get_vehicle","get_only_item"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle"})
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
      */
     private $bussinesAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle"})
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
      */
     private $fiscalAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle"})
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
      */
     private $province;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle"})
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
      */
     private $population;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle"})
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
      */
     private $observations;
 
@@ -95,6 +106,42 @@ class RentalAgency
      * @Groups({"get_contract","get_vehicle"})
      */
     private $vehicles;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     */
+    private $mainContact;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     */
+    private $mainPhone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     */
+    private $mainEmail;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     */
+    private $secondContact;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     */
+    private $secondPhone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     */
+    private $secondEmail;
 
     public function __construct()
     {
@@ -266,6 +313,78 @@ class RentalAgency
                 $vehicle->setRentalAgency(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMainContact(): ?string
+    {
+        return $this->mainContact;
+    }
+
+    public function setMainContact(?string $mainContact): self
+    {
+        $this->mainContact = $mainContact;
+
+        return $this;
+    }
+
+    public function getMainPhone(): ?string
+    {
+        return $this->mainPhone;
+    }
+
+    public function setMainPhone(?string $mainPhone): self
+    {
+        $this->mainPhone = $mainPhone;
+
+        return $this;
+    }
+
+    public function getMainEmail(): ?string
+    {
+        return $this->mainEmail;
+    }
+
+    public function setMainEmail(?string $mainEmail): self
+    {
+        $this->mainEmail = $mainEmail;
+
+        return $this;
+    }
+
+    public function getSecondContact(): ?string
+    {
+        return $this->secondContact;
+    }
+
+    public function setSecondContact(?string $secondContact): self
+    {
+        $this->secondContact = $secondContact;
+
+        return $this;
+    }
+
+    public function getSecondPhone(): ?string
+    {
+        return $this->secondPhone;
+    }
+
+    public function setSecondPhone(?string $secondPhone): self
+    {
+        $this->secondPhone = $secondPhone;
+
+        return $this;
+    }
+
+    public function getSecondEmail(): ?string
+    {
+        return $this->secondEmail;
+    }
+
+    public function setSecondEmail(?string $secondEmail): self
+    {
+        $this->secondEmail = $secondEmail;
 
         return $this;
     }
