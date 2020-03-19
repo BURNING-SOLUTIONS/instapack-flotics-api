@@ -36,10 +36,10 @@ jobs:
      # run: composer validate
 
     - name: Stop Mysql
-      run: initctl stop mysql
+      run: sudo /etc/init.d/mysql stop
 
     - name: Start Mysql
-      run: initctl start mysql
+      run: sudo /etc/init.d/mysql start
 
     - name: Install dependencies
       run: composer install -n --prefer-dist
