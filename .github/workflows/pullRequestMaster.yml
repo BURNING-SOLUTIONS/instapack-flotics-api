@@ -35,6 +35,12 @@ jobs:
     #- name: Validate composer.json and composer.lock
      # run: composer validate
 
+    - name: Stop Mysql
+      run: initctl stop mysql
+
+    - name: Start Mysql
+      run: initctl start mysql
+
     - name: Install dependencies
       run: composer install -n --prefer-dist
     #- name: Prueba
