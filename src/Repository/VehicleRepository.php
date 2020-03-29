@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Vehicle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @method Vehicle|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +18,39 @@ class VehicleRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Vehicle::class);
+    }
+
+    public function constructSelectFieldsFromArray(string $alias, array $fields): string
+    {
+        $attrs = '';
+        $lastPosition = count($fields) - 1;
+        foreach ($fields as $key => $attr) {
+            $attrs .= $alias . '.' . $attr;
+            if ($key < $lastPosition) {
+                $attrs .= ',';
+            }
+        }
+        return $attrs;
+    }
+
+
+    public function findVehicleByOrParams(array $params, array $selectFields, array $pagination)
+    {
+        $attrs = $this->constructSelectFieldsFromArray('v', $selectFields);
+        $qb = $this->createQueryBuilder('v')
+            ->setFirstResult($pagination['first'])
+            ->setMaxResults($pagination['results']);
+        $qb->select($attrs);
+        foreach ($params as $key => $param) {
+            $qb->setParameter($key, '%' . $param . '%');
+            $qb->orWhere("v." . $key . " like :" . $key);
+        }
+
+        return $qb->getQuery()->getResult();/*$qb->where(
+            $qb->expr()->orX(
+            $qb->expr()->eq('v.registration', '?1'),
+            $qb->expr()->like('v.frame', '?2')
+        ))*/
     }
 
     // /**

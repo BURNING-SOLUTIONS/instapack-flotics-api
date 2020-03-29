@@ -12,8 +12,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiProperty;
 
 /**
+ * @ORM\Table(indexes={
+@ORM\Index(name="global_search_vehicle", columns={"registration","frame"})
+})
  * @ApiResource(normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}})
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
  * @UniqueEntity("registration")
@@ -28,6 +32,7 @@ class Vehicle
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @ApiProperty(identifier=true)
      * @ORM\Column(type="integer")
      * @Groups({"vehicle_fuel","get_vehicle","get_agency","get_vehicleType"})
      */
@@ -203,7 +208,6 @@ class Vehicle
     }
 
 
-
     public function getBrand(): ?string
     {
         return $this->brand;
@@ -243,7 +247,6 @@ class Vehicle
     {
         $this->frame = $frame;
     }
-
 
 
     public function getColor(): ?string
@@ -309,7 +312,6 @@ class Vehicle
     {
         $this->capacity = $capacity;
     }
-
 
 
     public function getInsurance()

@@ -19,6 +19,38 @@ class RentalAgencyRepository extends ServiceEntityRepository
         parent::__construct($registry, RentalAgency::class);
     }
 
+    public function constructSelectFieldsFromArray(string $alias, array $fields): string
+    {
+        $attrs = '';
+        $lastPosition = count($fields) - 1;
+        foreach ($fields as $key => $attr) {
+            $attrs .= $alias . '.' . $attr;
+            if ($key < $lastPosition) {
+                $attrs .= ',';
+            }
+        }
+        return $attrs;
+    }
+
+    public function findRentalAgencyByOrParams(array $params, array $selectFields, array $pagination)
+    {
+        $attrs = $this->constructSelectFieldsFromArray('r', $selectFields);
+        $qb = $this->createQueryBuilder('r')
+            ->setFirstResult($pagination['first'])
+            ->setMaxResults($pagination['results']);
+        $qb->select($attrs);
+        foreach ($params as $key => $param) {
+            $qb->setParameter($key, '%' . $param . '%');
+            $qb->orWhere("r." . $key . " like :" . $key);
+        }
+
+        return $qb->getQuery()->getResult();/*$qb->where(
+            $qb->expr()->orX(
+            $qb->expr()->eq('v.registration', '?1'),
+            $qb->expr()->like('v.frame', '?2')
+        ))*/
+    }
+
     // /**
     //  * @return RentalAgency[] Returns an array of RentalAgency objects
     //  */

@@ -42,7 +42,7 @@ final class RequestSubscriber implements EventSubscriberInterface
    /* public function checkRequestIntegrity(RequestEvent $event): void
     {
 
-        $headers = $event->getRequest()->headers;
+        /*$headers = $event->getRequest()->headers;
         $authHeader = $headers->get('authorization');
         if (!$authHeader) {
             $unauthorizedException = new UnauthorizedHttpException('Auth', 'Unauthorized error, please provide valid JWT');
@@ -70,7 +70,7 @@ final class RequestSubscriber implements EventSubscriberInterface
                 }
 
             }
-        }
+        }*/
 
     }*/
 }
