@@ -16,9 +16,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(normalizationContext={"groups"={"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
- * @UniqueEntity("contractNumber")
- * @ApiFilter(SearchFilter::class, properties={"contractNumber": "partial", "type": "partial", "startDate": "partial","endDate": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"id","contractNumber", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
+ * @UniqueEntity("number")
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial", "type": "partial", "startDate": "partial","endDate": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id","number", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
  *
  *
  */
@@ -104,6 +104,16 @@ class Contract
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $initialDeposit;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
+     */
+    private $totalKm;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
+     */
+    private $deliveryKm;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract")
@@ -135,8 +145,8 @@ class Contract
     private $bills;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="contracts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToOne(targetEntity="App\Entity\Vehicle")
+     * @ORM\JoinColumn(name="vehiclecontracts", referencedColumnName="id",nullable=false)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      * @ApiFilter(SearchFilter::class, properties={"vehicle.number":"partial" })
      */
@@ -149,7 +159,6 @@ class Contract
         $this->bills = new ArrayCollection();
 
     }
-
 
 
     public function getId(): ?int
@@ -174,7 +183,6 @@ class Contract
     }
 
 
-
     /**
      * @return mixed
      */
@@ -190,7 +198,6 @@ class Contract
     {
         $this->type = $type;
     }
-
 
 
     public function getStartDate(): ?\DateTimeInterface
@@ -306,8 +313,6 @@ class Contract
     }
 
 
-
-
     public function getInitialDeposit(): ?int
     {
         return $this->initialDeposit;
@@ -418,8 +423,37 @@ class Contract
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTotalKm()
+    {
+        return $this->totalKm;
+    }
 
+    /**
+     * @param mixed $totalKm
+     */
+    public function setTotalKm($totalKm): void
+    {
+        $this->totalKm = $totalKm;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getDeliveryKm()
+    {
+        return $this->deliveryKm;
+    }
+
+    /**
+     * @param mixed $deliveryKm
+     */
+    public function setDeliveryKm($deliveryKm): void
+    {
+        $this->deliveryKm = $deliveryKm;
+    }
 
 
 }
