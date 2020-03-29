@@ -2,32 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="Fixed Bug">
-      <change afterPath="$PROJECT_DIR$/src/Entity/Equipment.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/EquipmentVehicle.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318140609.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318141851.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318142214.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318164701.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318165537.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318165759.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318170619.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318171004.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318172619.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318172829.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318185131.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318185137.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318191053.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318191703.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318192209.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318192501.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200318230557.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200321171003.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/EquipmentRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/EquipmentVehicleRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Contract.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Contract.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Vehicle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Vehicle.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/EventSubscriber/RequestSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventSubscriber/RequestSubscriber.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
