@@ -28,7 +28,7 @@ final class RequestSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => ['checkRequestIntegrity', EventPriorities::PRE_READ],
+          //  KernelEvents::REQUEST => ['checkRequestIntegrity', EventPriorities::PRE_READ],
         ];
     }
 
@@ -39,7 +39,7 @@ final class RequestSubscriber implements EventSubscriberInterface
         return get_object_vars($jwtDecoded);
     }
 
-    public function checkRequestIntegrity(RequestEvent $event): void
+   /* public function checkRequestIntegrity(RequestEvent $event): void
     {
 
         $headers = $event->getRequest()->headers;
@@ -72,5 +72,5 @@ final class RequestSubscriber implements EventSubscriberInterface
             }
         }
 
-    }
+    }*/
 }

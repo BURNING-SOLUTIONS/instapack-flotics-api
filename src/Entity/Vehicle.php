@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,7 +19,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
  * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance","vehicleType"})
- * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","importTransportCard":"partial","transportCard":"partial",
+ *     "drivingLicense":"partial","dataSheet":"partial","environmental":"partial","madridSer":"partial","madridCentral":"partial","madridCentralRenovation":"partial","importMadridSer":"partial"})
  */
 class Vehicle
 {
@@ -91,7 +92,51 @@ class Vehicle
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $insurance;
-
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $drivingLicense;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $dataSheet;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $environmental;
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $madridSer;
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $madridCentral;
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $madridCentralRenovation;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $importMadridSer;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $transportCard;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $importTransportCard;
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
@@ -118,16 +163,22 @@ class Vehicle
     private $rentalAgency;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="vehicle")
-     * @Groups({"vehicle_fuel","get_agency"})
      *
+     * @Groups({"vehicle_fuel","get_agency"})
      */
-    private $contracts;
+
+    private $vehiclecontracts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\EquipmentVehicle", mappedBy="vehicle")
+     */
+    private $equipmentVehicles;
 
 
     public function __construct()
     {
-        $this->contracts = new ArrayCollection();
+        $this->vehiclecontracts = new ArrayCollection();
+        $this->equipmentVehicles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -309,21 +360,192 @@ class Vehicle
         return $this;
     }
 
-    /**
-     * @return Collection|Contract[]
-     */
-    public function getContracts(): Collection
+
+    public function getVehiclecontracts()
     {
-        return $this->contracts;
+        return $this->vehiclecontracts;
+    }
+
+
+    public function setVehiclecontracts(Contract $vehiclecontracts): void
+    {
+        $this->vehiclecontracts = $vehiclecontracts;
     }
 
     /**
-     * @param ArrayCollection $contracts
+     * @return mixed
      */
-    public function setContracts(ArrayCollection $contracts): void
+    public function getDrivingLicense()
     {
-        $this->contracts = $contracts;
+        return $this->drivingLicense;
     }
+
+    /**
+     * @param mixed $drivingLicense
+     */
+    public function setDrivingLicense($drivingLicense): void
+    {
+        $this->drivingLicense = $drivingLicense;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataSheet()
+    {
+        return $this->dataSheet;
+    }
+
+    /**
+     * @param mixed $dataSheet
+     */
+    public function setDataSheet($dataSheet): void
+    {
+        $this->dataSheet = $dataSheet;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnvironmental()
+    {
+        return $this->environmental;
+    }
+
+    /**
+     * @param mixed $environmental
+     */
+    public function setEnvironmental($environmental): void
+    {
+        $this->environmental = $environmental;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMadridSer()
+    {
+        return $this->madridSer;
+    }
+
+    /**
+     * @param mixed $madridSer
+     */
+    public function setMadridSer($madridSer): void
+    {
+        $this->madridSer = $madridSer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMadridCentral()
+    {
+        return $this->madridCentral;
+    }
+
+    /**
+     * @param mixed $madridCentral
+     */
+    public function setMadridCentral($madridCentral): void
+    {
+        $this->madridCentral = $madridCentral;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMadridCentralRenovation()
+    {
+        return $this->madridCentralRenovation;
+    }
+
+    /**
+     * @param mixed $madridCentralRenovation
+     */
+    public function setMadridCentralRenovation($madridCentralRenovation): void
+    {
+        $this->madridCentralRenovation = $madridCentralRenovation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImportMadridSer()
+    {
+        return $this->importMadridSer;
+    }
+
+    /**
+     * @param mixed $importMadridSer
+     */
+    public function setImportMadridSer($importMadridSer): void
+    {
+        $this->importMadridSer = $importMadridSer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransportCard()
+    {
+        return $this->transportCard;
+    }
+
+    /**
+     * @param mixed $transportCard
+     */
+    public function setTransportCard($transportCard): void
+    {
+        $this->transportCard = $transportCard;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImportTransportCard()
+    {
+        return $this->importTransportCard;
+    }
+
+    /**
+     * @param mixed $importTransportCard
+     */
+    public function setImportTransportCard($importTransportCard): void
+    {
+        $this->importTransportCard = $importTransportCard;
+    }
+
+    /**
+     * @return Collection|EquipmentVehicle[]
+     */
+    public function getEquipmentVehicles(): Collection
+    {
+        return $this->equipmentVehicles;
+    }
+
+    public function addEquipmentVehicle(EquipmentVehicle $equipmentVehicle): self
+    {
+        if (!$this->equipmentVehicles->contains($equipmentVehicle)) {
+            $this->equipmentVehicles[] = $equipmentVehicle;
+            $equipmentVehicle->addIdVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipmentVehicle(EquipmentVehicle $equipmentVehicle): self
+    {
+        if ($this->equipmentVehicles->contains($equipmentVehicle)) {
+            $this->equipmentVehicles->removeElement($equipmentVehicle);
+            $equipmentVehicle->removeIdVehicle($this);
+        }
+
+        return $this;
+    }
+
+
+
 
 
 }
