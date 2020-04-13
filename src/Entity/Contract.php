@@ -146,6 +146,8 @@ class Contract
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Vehicle")
+     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @ORM\JoinColumn(name="vehiclecontracts", referencedColumnName="id",nullable=false)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      * @ApiFilter(SearchFilter::class, properties={"vehicle.number":"partial" })
