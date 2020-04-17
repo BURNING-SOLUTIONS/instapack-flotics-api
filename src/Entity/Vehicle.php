@@ -113,17 +113,17 @@ class Vehicle
      */
     private $environmental;
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $madridSer;
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $madridCentral;
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $madridCentralRenovation;
