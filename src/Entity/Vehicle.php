@@ -22,9 +22,10 @@ use ApiPlatform\Core\Annotation\ApiProperty;
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
+ * @UniqueEntity("transportCard")
  * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance","vehicleType"})
- * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","importTransportCard":"partial","transportCard":"partial",
- *     "drivingLicense":"partial","dataSheet":"partial","environmental":"partial","madridSer":"partial","madridCentral":"partial","madridCentralRenovation":"partial","importMadridSer":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","transportCardPrice":"partial","transportCard":"partial",
+ *     "drivingLicense":"partial","dataSheet":"partial","environmental":"partial","madridSer":"partial","madridCentral":"partial","madridCentralRenovation":"partial","madridSerPrice":"partial"})
  */
 class Vehicle
 {
@@ -131,9 +132,9 @@ class Vehicle
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
-    private $importMadridSer;
+    private $madridSerPrice;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $transportCard;
@@ -141,7 +142,7 @@ class Vehicle
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
-    private $importTransportCard;
+    private $transportCardPrice;
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
@@ -473,17 +474,17 @@ class Vehicle
     /**
      * @return mixed
      */
-    public function getImportMadridSer()
+    public function getMadridSerPrice()
     {
-        return $this->importMadridSer;
+        return $this->madridSerPrice;
     }
 
     /**
-     * @param mixed $importMadridSer
+     * @param mixed $madridSerPrice
      */
-    public function setImportMadridSer($importMadridSer): void
+    public function setMadridSerPrice($madridSerPrice): void
     {
-        $this->importMadridSer = $importMadridSer;
+        $this->madridSerPrice = $madridSerPrice;
     }
 
     /**
@@ -505,17 +506,17 @@ class Vehicle
     /**
      * @return mixed
      */
-    public function getImportTransportCard()
+    public function getTransportCardPrice()
     {
-        return $this->importTransportCard;
+        return $this->transportCardPrice;
     }
 
     /**
-     * @param mixed $importTransportCard
+     * @param mixed $transportCardPrice
      */
-    public function setImportTransportCard($importTransportCard): void
+    public function setTransportCardPrice($transportCardPrice): void
     {
-        $this->importTransportCard = $importTransportCard;
+        $this->transportCardPrice = $transportCardPrice;
     }
 
     /**
@@ -545,9 +546,6 @@ class Vehicle
 
         return $this;
     }
-
-
-
 
 
 }
