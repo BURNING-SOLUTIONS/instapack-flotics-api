@@ -36,7 +36,7 @@ class FuelType
 
     /**
      * One product has many features. This is the inverse side.
-     * @ORM\OneToMany(targetEntity="Vehicle", mappedBy="fuelvehicle")
+     * @ORM\OneToMany(targetEntity="Vehicle", mappedBy="fuelVehicle")
      */
     private $vehicle;
 
