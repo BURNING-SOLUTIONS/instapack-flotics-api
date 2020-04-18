@@ -134,7 +134,7 @@ class Vehicle
      */
     private $madridSerPrice;
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $transportCard;
@@ -150,7 +150,7 @@ class Vehicle
      * @ApiFilter(SearchFilter::class, properties={"fuelvehicle.type":"partial" })
      *
      */
-    private $fuelvehicle;
+    private $fuelVehicle;
 
     /**
      * Many features have one product. This is the owning side.
@@ -327,14 +327,14 @@ class Vehicle
         return $this;
     }
 
-    public function getFuelvehicle(): ?FuelType
+    public function getFuelVehicle(): ?FuelType
     {
-        return $this->fuelvehicle;
+        return $this->fuelVehicle;
     }
 
-    public function setFuelvehicle(FuelType $fuelvehicle): self
+    public function setFuelvehicle(FuelType $fuelVehicle): self
     {
-        $this->fuelvehicle = $fuelvehicle;
+        $this->fuelvehicle = $fuelVehicle;
 
         return $this;
     }

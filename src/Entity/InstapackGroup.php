@@ -14,12 +14,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"get_contacts","get_contract"}}))
+ * @ApiResource(normalizationContext={"groups"={"get_instagroup"}}))
  * @ORM\Entity(repositoryClass="App\Repository\InstapackGroupRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
- * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial","name":"partial","province":"partial","contacts":"partial","fiscalAddress":"partial","businessAddress":"partial","population":"partial","observations":"partial","contracts":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"code", "cif","fiscalAddress","businessAddress","name","province","population","contacts","contracts"})
+ * @ApiFilter(SearchFilter::class, properties={"code": "partial", "cif": "partial", "name": "partial","name":"partial","province":"partial","fiscalAddress":"partial","businessAddress":"partial","population":"partial","observations":"partial","contracts":"partial","mainEmail":"partial","mainPhone":"partial","mainContact":"partial","secondEmail":"partial","secondPhone":"partial","secondContact":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"code", "cif","fiscalAddress","businessAddress","name","province","population","contracts","mainEmail","mainPhone","mainContact","secondEmail","secondPhone","secondContact"})
  */
 class InstapackGroup
 {
@@ -27,71 +27,101 @@ class InstapackGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contacts","get_instagroup"})
+     * @Groups({"get_instagroup"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_contacts","get_instagroup"})
+     * @Groups({"get_instagroup"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
-     * @Groups({"get_contacts","get_instagroup"})
+     * @Groups({"get_instagroup"})
      */
     private $cif;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_instagroup"})
      */
     private $fiscalAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_instagroup"})
      */
     private $businessAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts","get_instagroup"})
+     * @Groups({"get_instagroup"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_instagroup"})
      */
     private $province;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_instagroup"})
      */
     private $population;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contacts"})
+     * @Groups({"get_instagroup"})
      */
     private $observations;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_instagroup"})
+     */
+    private $mainContact;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Contact", mappedBy="instapackGroup")
-     * @Groups({"get_contacts"})
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_instagroup"})
      */
-    private $contacts;
+    private $mainPhone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_instagroup"})
+     */
+    private $mainEmail;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_instagroup"})
+     */
+    private $secondContact;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_instagroup"})
+     */
+    private $secondPhone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_instagroup"})
+     */
+    private $secondEmail;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="instapackGroup")
-     * @Groups({"get_contacts"})
+     * @Groups({"get_instagroup"})
      */
     private $contracts;
+
 
     public function __construct()
     {
@@ -201,35 +231,102 @@ class InstapackGroup
     }
 
     /**
-     * @return Collection|Contact[]
+     * @return mixed
      */
-    public function getContacts(): Collection
+    public function getMainContact()
     {
-        return $this->contacts;
+        return $this->mainContact;
     }
 
-    public function addContact(Contact $contact): self
+    /**
+     * @param mixed $mainContact
+     */
+    public function setMainContact($mainContact): void
     {
-        if (!$this->contacts->contains($contact)) {
-            $this->contacts[] = $contact;
-            $contact->setInstapackGroup($this);
-        }
-
-        return $this;
+        $this->mainContact = $mainContact;
     }
 
-    public function removeContact(Contact $contact): self
+    /**
+     * @return mixed
+     */
+    public function getMainPhone()
     {
-        if ($this->contacts->contains($contact)) {
-            $this->contacts->removeElement($contact);
-            // set the owning side to null (unless already changed)
-            if ($contact->getInstapackGroup() === $this) {
-                $contact->setInstapackGroup(null);
-            }
-        }
-
-        return $this;
+        return $this->mainPhone;
     }
+
+    /**
+     * @param mixed $mainPhone
+     */
+    public function setMainPhone($mainPhone): void
+    {
+        $this->mainPhone = $mainPhone;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMainEmail()
+    {
+        return $this->mainEmail;
+    }
+
+    /**
+     * @param mixed $mainEmail
+     */
+    public function setMainEmail($mainEmail): void
+    {
+        $this->mainEmail = $mainEmail;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecondContact()
+    {
+        return $this->secondContact;
+    }
+
+    /**
+     * @param mixed $secondContact
+     */
+    public function setSecondContact($secondContact): void
+    {
+        $this->secondContact = $secondContact;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecondPhone()
+    {
+        return $this->secondPhone;
+    }
+
+    /**
+     * @param mixed $secondPhone
+     */
+    public function setSecondPhone($secondPhone): void
+    {
+        $this->secondPhone = $secondPhone;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecondEmail()
+    {
+        return $this->secondEmail;
+    }
+
+    /**
+     * @param mixed $secondEmail
+     */
+    public function setSecondEmail($secondEmail): void
+    {
+        $this->secondEmail = $secondEmail;
+    }
+
+
 
     /**
      * @return Collection|Contract[]
