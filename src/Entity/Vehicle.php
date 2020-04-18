@@ -147,7 +147,7 @@ class Vehicle
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
-     * @ApiFilter(SearchFilter::class, properties={"fuelvehicle.type":"partial" })
+     * @ApiFilter(SearchFilter::class, properties={"fuelVehicle.type":"partial" })
      *
      */
     private $fuelVehicle;
@@ -332,9 +332,9 @@ class Vehicle
         return $this->fuelVehicle;
     }
 
-    public function setFuelvehicle(FuelType $fuelVehicle): self
+    public function setFuelVehicle(FuelType $fuelVehicle): self
     {
-        $this->fuelvehicle = $fuelVehicle;
+        $this->fuelVehicle = $fuelVehicle;
 
         return $this;
     }
