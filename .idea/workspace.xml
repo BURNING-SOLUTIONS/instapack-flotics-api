@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f2ce60b-f357-4c7e-b629-953bc477a7f6" name="Default Changelist" comment="Fixed Bug">
-      <change afterPath="$PROJECT_DIR$/src/Controller/VehicleController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utils/AzureFileManager.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utils/IFileManager.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utils/StorageFileManager.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.prod" beforeDir="false" afterPath="$PROJECT_DIR$/.env.prod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/FuelType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/FuelType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Vehicle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Vehicle.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/VehicleRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/VehicleRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/VehicleService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/VehicleService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +216,7 @@
       <workItem from="1584228295443" duration="599000" />
       <workItem from="1584347311655" duration="22712000" />
       <workItem from="1587126715118" duration="1417000" />
-      <workItem from="1587163366402" duration="40622000" />
+      <workItem from="1587163366402" duration="41239000" />
     </task>
     <servers />
   </component>
