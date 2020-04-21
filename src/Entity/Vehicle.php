@@ -343,9 +343,9 @@ class Vehicle
         return $this->fuelVehicle;
     }
 
-    public function setFuelvehicle(FuelType $fuelVehicle): self
+    public function setFuelVehicle(FuelType $fuelVehicle): self
     {
-        $this->fuelvehicle = $fuelVehicle;
+        $this->fuelVehicle = $fuelVehicle;
 
         return $this;
     }
