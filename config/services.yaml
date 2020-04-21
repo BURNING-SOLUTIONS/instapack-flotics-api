@@ -26,5 +26,15 @@ services:
   App\Service\RedisCacheService:
     arguments: ['@snc_redis.cache']
 
+  App\Entity\Vehicle:
+      # redundant thanks to _defaults, but value is overridable on each service
+      autowire: true
+
+  App\Utils\StorageFileManager:
+    arguments: ['App\Utils\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
+
+
+
+
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

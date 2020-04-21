@@ -81,4 +81,12 @@ class VehicleRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+
+    public function persistVehicle(Vehicle $app): void
+    {
+        $this->_em->persist($app);
+        $this->_em->flush();
+    }
 }

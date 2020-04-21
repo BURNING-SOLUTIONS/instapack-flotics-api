@@ -13,12 +13,23 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use App\Controller\VehicleController;
 
 /**
  * @ORM\Table(indexes={
 @ORM\Index(name="global_search_vehicle", columns={"registration","frame"})
 })
- * @ApiResource(normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}})
+ * @ApiResource(normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}},collectionOperations={
+ *     "get"={
+ *
+ *          },
+ *         "post"={
+ *
+ *             "method"="POST",
+ *             "controller"=VehicleController::class
+ *         },
+ *     }
+ *     )
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
@@ -147,7 +158,7 @@ class Vehicle
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
-     * @ApiFilter(SearchFilter::class, properties={"fuelvehicle.type":"partial" })
+     * @ApiFilter(SearchFilter::class, properties={"fuelVehicle.type":"partial" })
      *
      */
     private $fuelVehicle;
