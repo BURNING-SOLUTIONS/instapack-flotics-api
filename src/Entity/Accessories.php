@@ -27,6 +27,11 @@ class Accessories
      * @ORM\Column(type="string", length=255)
      */
     private $accessory;
+    /**
+     * @ORM\Column(type="string", length=255)
+     *
+     */
+    private $type;
 
     public function getId(): ?int
     {
@@ -44,4 +49,21 @@ class Accessories
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type): void
+    {
+        $this->type = $type;
+    }
+
 }

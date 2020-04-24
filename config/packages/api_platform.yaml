@@ -13,6 +13,11 @@ api_platform:
       items_per_page_parameter_name: perPage # Default value
   mapping:
     paths: ['%kernel.project_dir%/src/Entity']
+  formats:
+    jsonld:
+      mime_types: ['application/ld+json', 'multipart/form-data', 'application/merge-patch+json']
+    json:
+      mime_types: ['application/json', 'multipart/form-data', 'application/merge-patch+json']
   patch_formats:
     json: ['application/merge-patch+json']
   swagger:

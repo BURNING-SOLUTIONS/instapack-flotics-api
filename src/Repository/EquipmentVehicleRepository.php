@@ -19,6 +19,18 @@ class EquipmentVehicleRepository extends ServiceEntityRepository
         parent::__construct($registry, EquipmentVehicle::class);
     }
 
+    public function persistEquipmentVehicle(EquipmentVehicle $equipmentVehicle): void
+    {
+        $this->_em->persist($equipmentVehicle);
+        $this->_em->flush();
+    }
+
+    public function removeEquipmentVehicle(EquipmentVehicle $equipmentVehicle): void
+    {
+        $this->_em->remove($equipmentVehicle);
+        $this->_em->flush();
+    }
+
     // /**
     //  * @return EquipmentVehicle[] Returns an array of EquipmentVehicle objects
     //  */

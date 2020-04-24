@@ -22,6 +22,7 @@ class EquipmentVehicle
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups({"get_equipment"})
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -75,9 +76,10 @@ class EquipmentVehicle
     /**
      * @param mixed $vehicle
      */
-    public function setVehicle($vehicle): void
+    public function setVehicle($vehicle): EquipmentVehicle
     {
         $this->vehicle = $vehicle;
+        return $this;
     }
 
     /**
@@ -91,9 +93,11 @@ class EquipmentVehicle
     /**
      * @param mixed $equipment
      */
-    public function setEquipment($equipment): void
+    public function setEquipment($equipment): EquipmentVehicle
     {
         $this->equipment = $equipment;
+
+        return $this;
     }
 
     /**
@@ -107,9 +111,11 @@ class EquipmentVehicle
     /**
      * @param mixed $value
      */
-    public function setValue($value): void
+    public function setValue($value): EquipmentVehicle
     {
         $this->value = $value;
+
+        return $this;
     }
 
 }

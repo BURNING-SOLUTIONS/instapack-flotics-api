@@ -26,7 +26,7 @@ class Clauses
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      * @Groups({"get_contract","get_concepts","get_clauses"})
      */
     private $value;
@@ -59,7 +59,7 @@ class Clauses
         return $this->value;
     }
 
-    public function setValue(int $value): self
+    public function setValue(float $value): self
     {
         $this->value = $value;
 
