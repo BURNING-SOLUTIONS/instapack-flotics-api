@@ -29,7 +29,7 @@ class VehicleController
      * @param Vehicle $vehicle
      * @param RequestStack $request
      */
-    public function __construct(VehicleService $vechicleService,Vehicle $vehicle, RequestStack $request)
+    public function __construct(VehicleService $vechicleService, Vehicle $vehicle, RequestStack $request)
     {
         $this->vehicle = $vehicle;
         $this->request = $request;
@@ -49,8 +49,21 @@ class VehicleController
      */
     public function __invoke(Vehicle $data): Vehicle
     {
+        $method = $this->request->getCurrentRequest()->getMethod();
+        $parser = new RequestContextParser($this->request);
+        $equipments = $parser->getRequestValue('equipments');
 
-        $this->vechicleService->saveVehicle($data);
+        $equipments_array = array_map(function ($equipment) {
+            return get_object_vars($equipment);
+        }, $equipments);
+
+        if ($method == "POST") {
+            $this->vechicleService->saveVehicle($data, $equipments_array);
+        } else {
+            $this->vechicleService->updateVehicle($data, $equipments_array);
+        }
+
+
         return $data;
     }
 }

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
@@ -19,17 +20,25 @@ use App\Controller\VehicleController;
  * @ORM\Table(indexes={
 @ORM\Index(name="global_search_vehicle", columns={"registration","frame"})
 })
- * @ApiResource(normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}},collectionOperations={
- *     "get"={
- *
- *          },
+ * @ApiResource(
+ *     normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}},
+ *     collectionOperations={
+ *         "get",
  *         "post"={
- *
  *             "method"="POST",
  *             "controller"=VehicleController::class
  *         },
- *     }
- *     )
+ *      },
+ *     itemOperations={
+ *         "get",
+ *         "put",
+ *          "delete",
+ *         "patch"={
+ *             "method"="PATCH",
+ *             "controller"=VehicleController::class
+ *          },
+ *      }
+ *  )
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
@@ -81,41 +90,41 @@ class Vehicle
     private $color;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $co2;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $mom;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $mma;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $capacity;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $insurance;
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $drivingLicense;
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $dataSheet;
@@ -140,7 +149,7 @@ class Vehicle
      */
     private $madridCentralRenovation;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $madridSerPrice;
@@ -150,7 +159,7 @@ class Vehicle
      */
     private $transportCard;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $transportCardPrice;
@@ -188,6 +197,7 @@ class Vehicle
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\EquipmentVehicle", mappedBy="vehicle")
+     * @ApiSubresource
      */
     private $equipmentVehicles;
 
@@ -273,36 +283,36 @@ class Vehicle
         return $this;
     }
 
-    public function getCo2(): ?int
+    public function getCo2()
     {
         return $this->co2;
     }
 
-    public function setCo2(?int $co2): self
+    public function setCo2(?float $co2): self
     {
         $this->co2 = $co2;
 
         return $this;
     }
 
-    public function getMom(): ?int
+    public function getMom()
     {
         return $this->mom;
     }
 
-    public function setMom(?int $mom): self
+    public function setMom(?float $mom): self
     {
         $this->mom = $mom;
 
         return $this;
     }
 
-    public function getMma(): ?int
+    public function getMma()
     {
         return $this->mma;
     }
 
-    public function setMma(?int $mma): self
+    public function setMma(?float $mma): self
     {
         $this->mma = $mma;
 
@@ -320,7 +330,7 @@ class Vehicle
     /**
      * @param mixed $capacity
      */
-    public function setCapacity($capacity): void
+    public function setCapacity(?float $capacity): void
     {
         $this->capacity = $capacity;
     }
@@ -395,7 +405,7 @@ class Vehicle
     }
 
     /**
-     * @param mixed $drivingLicense
+     * @param mixed $drivingLicensedataSheet
      */
     public function setDrivingLicense($drivingLicense): void
     {
@@ -493,7 +503,7 @@ class Vehicle
     /**
      * @param mixed $madridSerPrice
      */
-    public function setMadridSerPrice($madridSerPrice): void
+    public function setMadridSerPrice(?float $madridSerPrice): void
     {
         $this->madridSerPrice = $madridSerPrice;
     }
@@ -525,7 +535,7 @@ class Vehicle
     /**
      * @param mixed $transportCardPrice
      */
-    public function setTransportCardPrice($transportCardPrice): void
+    public function setTransportCardPrice(?float $transportCardPrice): void
     {
         $this->transportCardPrice = $transportCardPrice;
     }
@@ -542,7 +552,7 @@ class Vehicle
     {
         if (!$this->equipmentVehicles->contains($equipmentVehicle)) {
             $this->equipmentVehicles[] = $equipmentVehicle;
-            $equipmentVehicle->addIdVehicle($this);
+            $equipmentVehicle->setVehicle($this);
         }
 
         return $this;
@@ -552,7 +562,7 @@ class Vehicle
     {
         if ($this->equipmentVehicles->contains($equipmentVehicle)) {
             $this->equipmentVehicles->removeElement($equipmentVehicle);
-            $equipmentVehicle->removeIdVehicle($this);
+            $equipmentVehicle->setVehicle($this);
         }
 
         return $this;

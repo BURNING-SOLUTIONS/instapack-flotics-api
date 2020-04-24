@@ -58,13 +58,13 @@ class Contract
     private $endDate;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $annualKM;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $monthlyKM;
@@ -76,7 +76,7 @@ class Contract
     private $deliveryAddress;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal",precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $exitKm;
@@ -100,17 +100,17 @@ class Contract
     private $paymentMethod;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal",precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $initialDeposit;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $totalKm;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $deliveryKm;
@@ -231,7 +231,7 @@ class Contract
         return $this->annualKM;
     }
 
-    public function setAnnualKM(?int $annualKM): self
+    public function setAnnualKM(?float $annualKM): self
     {
         $this->annualKM = $annualKM;
 
@@ -243,7 +243,7 @@ class Contract
         return $this->monthlyKM;
     }
 
-    public function setMonthlyKM(?int $monthlyKM): self
+    public function setMonthlyKM(?float $monthlyKM): self
     {
         $this->monthlyKM = $monthlyKM;
 
@@ -267,7 +267,7 @@ class Contract
         return $this->exitKm;
     }
 
-    public function setExitKm(?int $exitKm): self
+    public function setExitKm(?float $exitKm): self
     {
         $this->exitKm = $exitKm;
 
@@ -320,7 +320,7 @@ class Contract
         return $this->initialDeposit;
     }
 
-    public function setInitialDeposit(?int $initialDeposit): self
+    public function setInitialDeposit(?float $initialDeposit): self
     {
         $this->initialDeposit = $initialDeposit;
 
@@ -436,7 +436,7 @@ class Contract
     /**
      * @param mixed $totalKm
      */
-    public function setTotalKm($totalKm): void
+    public function setTotalKm(float $totalKm): void
     {
         $this->totalKm = $totalKm;
     }
@@ -452,7 +452,7 @@ class Contract
     /**
      * @param mixed $deliveryKm
      */
-    public function setDeliveryKm($deliveryKm): void
+    public function setDeliveryKm(float $deliveryKm): void
     {
         $this->deliveryKm = $deliveryKm;
     }

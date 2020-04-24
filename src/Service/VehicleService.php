@@ -2,22 +2,32 @@
 
 namespace App\Service;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Equipment;
+use App\Entity\EquipmentVehicle;
 use App\Entity\Vehicle;
 use App\Utils\StorageFileManager;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node\Expr\Array_;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use App\Traits\Base64Manager;
 
 
 class VehicleService
 {
+    use Base64Manager;
+
     private $dbManager;
     private $validator;
     private $vehicleRepository;
     private $filesManager;
+    private $equipmentVehicleService;
+    private $iriConverterInterface;
 
     /**
      * @var StorageFileManager
@@ -31,13 +41,15 @@ class VehicleService
      * @param StorageFileManager $filesManager
      * @param Request $request
      */
-    public function __construct(EntityManagerInterface $manager, ValidatorInterface $validator,StorageFileManager $filesManager)
+    public function __construct(EntityManagerInterface $manager, ValidatorInterface $validator, StorageFileManager $filesManager, EquipmentVehicleService $equipmentVehicleService, IriConverterInterface $iriConverterInterface)
     {
         $this->dbManager = $manager;
         $this->validator = $validator;
         $this->filesManager = $filesManager;
 
         $this->vehicleRepository = $this->dbManager->getRepository(Vehicle::class);
+        $this->equipmentVehicleService = $equipmentVehicleService;
+        $this->iriConverterInterface = $iriConverterInterface;
     }
 
     /**
@@ -62,30 +74,157 @@ class VehicleService
         return $this->vehicleRepository->findVehicleByOrParams($params, array('id', 'registration', 'frame'), $pagination);
     }
 
-    /**
-     * @param Vehicle $app
-     * @param Request $request
-     */
-    public function saveVehicle(Vehicle $app): void
+    public function uploadAzureFile(string $compulsaCirculacion_base64, string $azureRoute, string $prefix, string $identificator)
     {
-        $compulsaCirculacion_file = $app->getDrivingLicense();
+
         $file_manager = $this->filesManager->getCurrentFileManager();
-        $request=new Request();
-        $errors = $this->validator->validate($app);
-        if (!count($errors) > 0) {
-            if ($compulsaCirculacion_file) {
-                # Obtain current file uploaded manager
-                $compulsaCirculation_extension = $request->files->get('distributor_image');
-               // $compulsaCirculation_extension = $compulsaCirculation_extension->getClientOriginalExtension();
-                $vehicle_cloud_circulation_route = '%env(AZURE_CLOUD_FILES)%';
-                $circulation_uploaded_name = $app->getRegistration() /*. '.' . $compulsaCirculacion_extension*/;
-                $circulation_avatar_complete_route = $vehicle_cloud_circulation_route . '/' . $circulation_uploaded_name;
 
-                $file_manager->uploadFile($compulsaCirculation_extension, $vehicle_cloud_circulation_route, $circulation_uploaded_name);
+        $extension = $this->getBase64Extension($compulsaCirculacion_base64);
+        $fileData = $this->getBase64FileData($compulsaCirculacion_base64);
+        $tmpBasePath = $prefix . $identificator . '.' . $extension;
+        $upload = $this->base64ToFile($fileData, $tmpBasePath);
+        $file = new UploadedFile($tmpBasePath, $tmpBasePath, $extension);
+        $file_manager->uploadFile($file, $azureRoute, $tmpBasePath);
 
-                $app->setDrivingLicense($circulation_avatar_complete_route);
+        return $tmpBasePath;
+    }
+
+    function saveEquipments(Vehicle $vehicle, Array $equipments = array())
+    {
+        if ($equipments) {
+            foreach ($equipments as $equipment) {
+                $newEquipmentVehicle = new EquipmentVehicle();
+                $newEquipmentVehicle
+                    ->setValue($equipment['value'])
+                    ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
+                    ->setVehicle($vehicle);
+
+                $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
             }
-            $this->vehicleRepository->persistVehicle($app);
+            $this->vehicleRepository->persistVehicle($vehicle);
+        }
+    }
+
+    public function updateEquipments(Vehicle $vehicle, Array $equipments = array())
+    {
+        if ($equipments) {
+            foreach ($equipments as $equipment) {
+                $cantItems = (int)$equipment['value'];
+
+                if (array_key_exists('id', $equipment)) {
+                    $findEquipmentVehicle = $this->equipmentVehicleService->getEquipmentVehicleParams(array('id' => $equipment['id']));
+
+                    if ($cantItems > 0) {
+                        $findEquipmentVehicle->setValue($cantItems);
+                        $this->equipmentVehicleService->saveEquipmentVehicle($findEquipmentVehicle);
+                    } else {
+                        #im sure that equipment vehicle exist but value is lower or equal to 0 and its neccesary remove..
+                        $this->equipmentVehicleService->removeEquipmentVehicle($findEquipmentVehicle);
+                    }
+                } else {
+                    if ($cantItems > 0) {
+                        $newEquipmentVehicle = new EquipmentVehicle();
+                        $newEquipmentVehicle
+                            ->setValue($cantItems)
+                            ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
+                            ->setVehicle($vehicle);
+
+                        $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
+                    }
+                }
+
+            }
+            $this->vehicleRepository->persistVehicle($vehicle);
+        }
+    }
+
+    public function updateVehicle(Vehicle $vehicle, Array $equipments = array()): void
+    {
+
+        $compulsaCirculacion_base64 = $vehicle->getDrivingLicense();
+        $enviromental_base64 = $vehicle->getEnvironmental();
+        $sheet_base64 = $vehicle->getDataSheet();
+
+        $VEHICLES_AZURE_COMPULSE_PATH = $_ENV['VEHICLES_AZURE_COMPULSE_PATH'];
+        $VEHICLES_AZURE_DINSTINTIVE_PATH = $_ENV['VEHICLES_AZURE_DINSTINTIVE_PATH'];
+        $AZURE_READ_FILES_PATH = $_ENV['AZURE_READ_FILES_PATH'];
+        $VEHICLES_AZURE_SHEET_PATH = $_ENV['VEHICLES_AZURE_SHEET_PATH'];
+
+        $errors = $this->validator->validate($vehicle);
+
+        if (!count($errors) > 0) {
+            $this->dbManager->beginTransaction();
+            try {
+
+                if ($compulsaCirculacion_base64 && $this->isBase64($compulsaCirculacion_base64)) {
+                    $compulseFinalRoute = $this->uploadAzureFile($compulsaCirculacion_base64, $VEHICLES_AZURE_COMPULSE_PATH, "compulsa_circulacion_", $vehicle->getRegistration());
+                    $vehicle->setDrivingLicense($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_COMPULSE_PATH . '/' . $compulseFinalRoute);
+                }
+
+                if ($enviromental_base64 && $this->isBase64($enviromental_base64)) {
+                    $enviromentalFinalRoute = $this->uploadAzureFile($enviromental_base64, $VEHICLES_AZURE_DINSTINTIVE_PATH, "distintivo_ambiental_", $vehicle->getRegistration());
+                    $vehicle->setEnvironmental($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_DINSTINTIVE_PATH . '/' . $enviromentalFinalRoute);
+                }
+
+                if ($sheet_base64 && $this->isBase64($sheet_base64)) {
+                    $sheetFinalRoute = $this->uploadAzureFile($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
+                    $vehicle->setDataSheet($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_SHEET_PATH . '/' . $sheetFinalRoute);
+                }
+
+                $this->vehicleRepository->persistVehicle($vehicle);
+                $this->updateEquipments($vehicle, $equipments);
+                $this->dbManager->commit();
+
+            } catch (\Exception $e) {
+                $this->dbManager->rollback();
+                throw new \Exception($e->getMessage());
+            }
+
+        }
+
+    }
+
+
+    public function saveVehicle(Vehicle $vehicle, Array $equipments = array()): void
+    {
+        $compulsaCirculacion_base64 = $vehicle->getDrivingLicense();
+        $enviromental_base64 = $vehicle->getEnvironmental();
+        $sheet_base64 = $vehicle->getDataSheet();
+
+        $VEHICLES_AZURE_COMPULSE_PATH = $_ENV['VEHICLES_AZURE_COMPULSE_PATH'];
+        $VEHICLES_AZURE_DINSTINTIVE_PATH = $_ENV['VEHICLES_AZURE_DINSTINTIVE_PATH'];
+        $AZURE_READ_FILES_PATH = $_ENV['AZURE_READ_FILES_PATH'];
+        $VEHICLES_AZURE_SHEET_PATH = $_ENV['VEHICLES_AZURE_SHEET_PATH'];
+
+        $errors = $this->validator->validate($vehicle);
+
+        if (!count($errors) > 0) {
+            $this->dbManager->beginTransaction();
+            try {
+                // do stuff
+                if ($compulsaCirculacion_base64) {
+                    $compulseFinalRoute = $this->uploadAzureFile($compulsaCirculacion_base64, $VEHICLES_AZURE_COMPULSE_PATH, "compulsa_circulacion_", $vehicle->getRegistration());
+                    $vehicle->setDrivingLicense($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_COMPULSE_PATH . '/' . $compulseFinalRoute);
+                }
+                if ($enviromental_base64) {
+                    $enviromentalFinalRoute = $this->uploadAzureFile($enviromental_base64, $VEHICLES_AZURE_DINSTINTIVE_PATH, "distintivo_ambiental_", $vehicle->getRegistration());
+                    $vehicle->setEnvironmental($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_DINSTINTIVE_PATH . '/' . $enviromentalFinalRoute);
+                }
+
+                if ($sheet_base64) {
+                    $sheetFinalRoute = $this->uploadAzureFile($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
+                    $vehicle->setDataSheet($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_SHEET_PATH . '/' . $sheetFinalRoute);
+                }
+
+                $this->vehicleRepository->persistVehicle($vehicle);
+                $this->saveEquipments($vehicle, $equipments);
+                $this->dbManager->commit();
+
+            } catch (\Exception $e) {
+                $this->dbManager->rollback();
+                throw new \Exception($e->getMessage());
+            }
+
         }
 
 

@@ -61,19 +61,19 @@ class Bill
     private $endDate;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      * @Groups({"get_contract"})
      */
     private $amounts;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      * @Groups({"get_contract"})
      */
     private $iva;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      * @Groups({"get_contract"})
      */
     private $total;
@@ -165,7 +165,7 @@ class Bill
         return $this->amounts;
     }
 
-    public function setAmounts(int $amounts): self
+    public function setAmounts(float $amounts): self
     {
         $this->amounts = $amounts;
 
@@ -177,7 +177,7 @@ class Bill
         return $this->iva;
     }
 
-    public function setIva(int $iva): self
+    public function setIva(float $iva): self
     {
         $this->iva = $iva;
 
@@ -189,7 +189,7 @@ class Bill
         return $this->total;
     }
 
-    public function setTotal(int $total): self
+    public function setTotal(float $total): self
     {
         $this->total = $total;
 

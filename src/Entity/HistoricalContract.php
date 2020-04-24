@@ -54,13 +54,13 @@ class HistoricalContract
     private $endDate;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
     private $annualKM;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * )
      */
     private $monthlyKM;
@@ -72,7 +72,7 @@ class HistoricalContract
     private $deliveryAddress;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
     private $exitKm;
@@ -96,17 +96,17 @@ class HistoricalContract
     private $paymentMethod;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
     private $initialDeposit;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
     private $totalKm;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
     private $deliveryKm;
@@ -281,7 +281,7 @@ class HistoricalContract
     /**
      * @param mixed $annualKM
      */
-    public function setAnnualKM($annualKM): void
+    public function setAnnualKM(float $annualKM): void
     {
         $this->annualKM = $annualKM;
     }
@@ -297,7 +297,7 @@ class HistoricalContract
     /**
      * @param mixed $monthlyKM
      */
-    public function setMonthlyKM($monthlyKM): void
+    public function setMonthlyKM(float $monthlyKM): void
     {
         $this->monthlyKM = $monthlyKM;
     }
@@ -329,7 +329,7 @@ class HistoricalContract
     /**
      * @param mixed $exitKm
      */
-    public function setExitKm($exitKm): void
+    public function setExitKm(float $exitKm): void
     {
         $this->exitKm = $exitKm;
     }
@@ -393,7 +393,7 @@ class HistoricalContract
     /**
      * @param mixed $initialDeposit
      */
-    public function setInitialDeposit($initialDeposit): void
+    public function setInitialDeposit(float $initialDeposit): void
     {
         $this->initialDeposit = $initialDeposit;
     }
@@ -409,7 +409,7 @@ class HistoricalContract
     /**
      * @param mixed $totalKm
      */
-    public function setTotalKm($totalKm): void
+    public function setTotalKm(float $totalKm): void
     {
         $this->totalKm = $totalKm;
     }
@@ -425,7 +425,7 @@ class HistoricalContract
     /**
      * @param mixed $deliveryKm
      */
-    public function setDeliveryKm($deliveryKm): void
+    public function setDeliveryKm(float $deliveryKm): void
     {
         $this->deliveryKm = $deliveryKm;
     }
