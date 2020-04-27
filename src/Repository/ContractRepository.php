@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Clauses;
 use App\Entity\Contract;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -79,4 +80,22 @@ class ContractRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    public function getClausesByContract($contract,$cantDays/*, $arrayconceptos*/) :array
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+        #$rolesJoin = join(',', $roles);
+        return $queryBuilder
+            ->select('c')
+            ->from(Clauses::class, 'c')
+            ->Where('c.billperiod <= :cantDays')
+            ->andWhere('c.contract = :contract')
+            ->setParameter('contract', $contract)
+            ->setParameter('cantDays', $cantDays)
+            ->getQuery()
+            ->getArrayResult();
+
+
+    }
 }

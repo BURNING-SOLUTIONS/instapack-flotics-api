@@ -30,7 +30,11 @@ class Clauses
      * @Groups({"get_contract","get_concepts","get_clauses"})
      */
     private $value;
-
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"get_contract","get_concepts","get_clauses"})
+     */
+    private $billperiod;
 
 
     /**
@@ -91,4 +95,21 @@ class Clauses
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getBillperiod()
+    {
+        return $this->billperiod;
+    }
+
+    /**
+     * @param mixed $billperiod
+     */
+    public function setBillperiod($billperiod): void
+    {
+        $this->billperiod = $billperiod;
+    }
+
 }
