@@ -29,10 +29,12 @@ services:
   App\Entity\Vehicle:
       # redundant thanks to _defaults, but value is overridable on each service
       autowire: true
+  App\Entity\Contract:
+    # redundant thanks to _defaults, but value is overridable on each service
+    autowire: true
 
   App\Utils\StorageFileManager:
     arguments: ['App\Utils\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
-
 
 
 

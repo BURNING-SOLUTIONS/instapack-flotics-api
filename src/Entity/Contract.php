@@ -40,8 +40,9 @@ class Contract
     private $number;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="App\Entity\ContractType", mappedBy="contract")
      * @Groups({"get_agency","get_bill","get_clauses","get_vehicle"})
+     * @ApiFilter(SearchFilter::class, properties={"type.type":"partial" })
      */
     private $type;
 
@@ -154,11 +155,21 @@ class Contract
      */
     private $vehicle;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $entryKm;
+
+
+
+
+
 
     public function __construct()
     {
         $this->clauses = new ArrayCollection();
         $this->bills = new ArrayCollection();
+        $this->type = new ArrayCollection();
 
     }
 
@@ -185,21 +196,6 @@ class Contract
     }
 
 
-    /**
-     * @return mixed
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type): void
-    {
-        $this->type = $type;
-    }
 
 
     public function getStartDate(): ?\DateTimeInterface
@@ -455,6 +451,49 @@ class Contract
     public function setDeliveryKm(float $deliveryKm): void
     {
         $this->deliveryKm = $deliveryKm;
+    }
+
+    /**
+     * @return Collection|ContractType[]
+     */
+    public function getType(): Collection
+    {
+        return $this->type;
+    }
+
+    public function addType(ContractType $type): self
+    {
+        if (!$this->type->contains($type)) {
+            $this->type[] = $type;
+            $type->setContract($this);
+        }
+
+        return $this;
+    }
+
+    public function removeType(ContractType $type): self
+    {
+        if ($this->type->contains($type)) {
+            $this->type->removeElement($type);
+            // set the owning side to null (unless already changed)
+            if ($type->getContract() === $this) {
+                $type->setContract(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEntryKm(): ?int
+    {
+        return $this->entryKm;
+    }
+
+    public function setEntryKm(int $entryKm): self
+    {
+        $this->entryKm = $entryKm;
+
+        return $this;
     }
 
 
