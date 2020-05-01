@@ -3,13 +3,15 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_contract", "get_contracts_type"},"enable_max_depth"=true})
  * @ORM\Entity(repositoryClass="App\Repository\ContractTypeRepository")
+ * @ApiFilter(SearchFilter::class, properties={"name": "partial"})
  */
 class ContractType
 {
@@ -17,25 +19,21 @@ class ContractType
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get_contract","get_contracts_type"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_contract","get_contracts_type"})
      */
-    private $type;
+    private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Contract", inversedBy="type")
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contracts_type"})
      */
-    private $contract;
-
-   
-
-    public function __construct()
-    {
-
-    }
+    private $description;
 
 
     public function getId(): ?int
@@ -43,31 +41,29 @@ class ContractType
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getName(): ?string
     {
-        return $this->type;
+        return $this->name;
     }
 
-    public function setType(string $type): self
+    public function setName(string $name): self
     {
-        $this->type = $type;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getContract(): ?Contract
+    public function getDescription(): ?string
     {
-        return $this->contract;
+        return $this->description;
     }
 
-    public function setContract(?Contract $contract): self
+    public function setDescription(?string $description): self
     {
-        $this->contract = $contract;
+        $this->description = $description;
 
         return $this;
     }
-
-
 
 
 }

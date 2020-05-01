@@ -14,12 +14,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
+ * @ApiResource(normalizationContext={"groups"={"get_contract","get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("number")
- * @ApiFilter(SearchFilter::class, properties={"number": "partial", "type": "partial", "startDate": "partial","endDate": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"id","number", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
- *
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial", "startDate": "partial","endDate": "partial","deliveryAddress":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id","number","startDate","endDate","maximumKm","entryKm","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
  *
  */
 class Contract
@@ -39,12 +38,6 @@ class Contract
      */
     private $number;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ContractType", mappedBy="contract")
-     * @Groups({"get_agency","get_bill","get_clauses","get_vehicle"})
-     * @ApiFilter(SearchFilter::class, properties={"type.type":"partial" })
-     */
-    private $type;
 
     /**
      * @ORM\Column(type="datetime")
@@ -59,28 +52,10 @@ class Contract
     private $endDate;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
-     */
-    private $annualKM;
-
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
-     */
-    private $monthlyKM;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
     private $deliveryAddress;
-
-    /**
-     * @ORM\Column(type="decimal",precision=10, scale=2, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
-     */
-    private $exitKm;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -109,12 +84,20 @@ class Contract
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
-    private $totalKm;
+    private $maximumKm;
+
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @ORM\Column(type="integer")
+     */
+    private $entryKm;
+
+    /**
+     * @ORM\Column(type="decimal",precision=10, scale=2, nullable=true)
      * @Groups({"get_agency","get_bill","get_vehicle"})
      */
-    private $deliveryKm;
+    private $exitKm;
+
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract")
@@ -151,25 +134,22 @@ class Contract
      * @Assert\NotBlank()
      * @ORM\JoinColumn(name="vehiclecontracts", referencedColumnName="id",nullable=false)
      * @Groups({"get_agency","get_bill","get_vehicle"})
-     * @ApiFilter(SearchFilter::class, properties={"vehicle.number":"partial" })
+     * @ApiFilter(SearchFilter::class, properties={"vehicle.registration":"partial" })
      */
     private $vehicle;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ContractType")
+     * @ApiFilter(SearchFilter::class, properties={"type.name":"partial" })
+     * @Groups({"get_contract","get_agency","get_bill","get_vehicle"})
      */
-    private $entryKm;
-
-
-
-
+    private $type;
 
 
     public function __construct()
     {
         $this->clauses = new ArrayCollection();
         $this->bills = new ArrayCollection();
-        $this->type = new ArrayCollection();
 
     }
 
@@ -196,8 +176,6 @@ class Contract
     }
 
 
-
-
     public function getStartDate(): ?\DateTimeInterface
     {
         return $this->startDate;
@@ -222,29 +200,6 @@ class Contract
         return $this;
     }
 
-    public function getAnnualKM(): ?int
-    {
-        return $this->annualKM;
-    }
-
-    public function setAnnualKM(?float $annualKM): self
-    {
-        $this->annualKM = $annualKM;
-
-        return $this;
-    }
-
-    public function getMonthlyKM(): ?int
-    {
-        return $this->monthlyKM;
-    }
-
-    public function setMonthlyKM(?float $monthlyKM): self
-    {
-        $this->monthlyKM = $monthlyKM;
-
-        return $this;
-    }
 
     public function getDeliveryAddress(): ?string
     {
@@ -424,65 +379,19 @@ class Contract
     /**
      * @return mixed
      */
-    public function getTotalKm()
+    public function getMaximumKm()
     {
-        return $this->totalKm;
+        return $this->maximumKm;
     }
 
     /**
-     * @param mixed $totalKm
+     * @param mixed $maximumKm
      */
-    public function setTotalKm(float $totalKm): void
+    public function setMaximumKm(float $maximumKm): void
     {
-        $this->totalKm = $totalKm;
+        $this->maximumKm = $maximumKm;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDeliveryKm()
-    {
-        return $this->deliveryKm;
-    }
-
-    /**
-     * @param mixed $deliveryKm
-     */
-    public function setDeliveryKm(float $deliveryKm): void
-    {
-        $this->deliveryKm = $deliveryKm;
-    }
-
-    /**
-     * @return Collection|ContractType[]
-     */
-    public function getType(): Collection
-    {
-        return $this->type;
-    }
-
-    public function addType(ContractType $type): self
-    {
-        if (!$this->type->contains($type)) {
-            $this->type[] = $type;
-            $type->setContract($this);
-        }
-
-        return $this;
-    }
-
-    public function removeType(ContractType $type): self
-    {
-        if ($this->type->contains($type)) {
-            $this->type->removeElement($type);
-            // set the owning side to null (unless already changed)
-            if ($type->getContract() === $this) {
-                $type->setContract(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getEntryKm(): ?int
     {
@@ -492,6 +401,18 @@ class Contract
     public function setEntryKm(int $entryKm): self
     {
         $this->entryKm = $entryKm;
+
+        return $this;
+    }
+
+    public function getType(): ?ContractType
+    {
+        return $this->type;
+    }
+
+    public function setType(?ContractType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
