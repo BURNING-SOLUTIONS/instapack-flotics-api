@@ -118,6 +118,7 @@ class Vehicle
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
      */
     private $insurance;
+
     /**
      * @ORM\Column(type="string", nullable=true)
      * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
@@ -200,6 +201,12 @@ class Vehicle
      * @ApiSubresource
      */
     private $equipmentVehicles;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     */
+    private $insuranceExpired;
 
 
     public function __construct()
@@ -564,6 +571,18 @@ class Vehicle
             $this->equipmentVehicles->removeElement($equipmentVehicle);
             $equipmentVehicle->setVehicle($this);
         }
+
+        return $this;
+    }
+
+    public function getInsuranceExpired(): ?\DateTimeInterface
+    {
+        return $this->insuranceExpired;
+    }
+
+    public function setInsuranceExpired(?\DateTimeInterface $insuranceExpired): self
+    {
+        $this->insuranceExpired = $insuranceExpired;
 
         return $this;
     }
