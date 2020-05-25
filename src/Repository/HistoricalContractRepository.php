@@ -19,6 +19,12 @@ class HistoricalContractRepository extends ServiceEntityRepository
         parent::__construct($registry, HistoricalContract::class);
     }
 
+    public function persistHistoricalContract(HistoricalContract $historicalContract): void
+    {
+        $this->_em->persist($historicalContract);
+        $this->_em->flush();
+    }
+
     // /**
     //  * @return HistoricalContract[] Returns an array of HistoricalContract objects
     //  */

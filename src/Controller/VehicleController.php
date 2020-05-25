@@ -17,8 +17,6 @@ use App\Service\VehicleService;
 
 class VehicleController
 {
-    private $oauthService;
-    private $applicationService;
     private $request;
     private $vehicle;
     private $vechicleService;
@@ -29,9 +27,8 @@ class VehicleController
      * @param Vehicle $vehicle
      * @param RequestStack $request
      */
-    public function __construct(VehicleService $vechicleService, Vehicle $vehicle, RequestStack $request)
+    public function __construct(VehicleService $vechicleService, RequestStack $request)
     {
-        $this->vehicle = $vehicle;
         $this->request = $request;
         $this->vechicleService = $vechicleService;
     }

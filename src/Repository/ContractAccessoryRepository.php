@@ -19,6 +19,12 @@ class ContractAccessoryRepository extends ServiceEntityRepository
         parent::__construct($registry, ContractAccessory::class);
     }
 
+    public function persistContractAccessory(ContractAccessory $contractAccessory): void
+    {
+        $this->_em->persist($contractAccessory);
+        $this->_em->flush();
+    }
+
     // /**
     //  * @return ContractAccessory[] Returns an array of ContractAccessory objects
     //  */

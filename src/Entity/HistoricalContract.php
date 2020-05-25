@@ -3,22 +3,22 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use Symfony\Component\Serializer\Annotation\Groups;
+use App\Repository\HistoricalContractRepository;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\HistoricalContractRepository")
  * @UniqueEntity("number")
- * @ApiFilter(SearchFilter::class, properties={"number": "partial", "type": "partial", "startDate": "partial","endDate": "partial","annualKM":"partial","monthlyKM":"partial","deliveryAddress":"partial","exitKm":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","bills":"partial","vehicle":"partial","instapackGroup":"partial","rentalAgency":""})
- * @ApiFilter(OrderFilter::class, properties={"id","number", "type","startDate","endDate","annualKM","monthlyKM","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial", "type": "partial","entryKM":"partial","deliveryAddress":"partial","exitKM":"partial","maximumKM":"partial","devolutionAddress":"partial","initialDeposit":"partial","vehicle":"partial","instapackGroup":"partial","rentalAgency":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"startDate","endDate","id","number", "type","entryKM","exitKM","initialDeposit","instapackGroup","rentalAgency","maximumKM","devolutionAddress","vehicle"})
+ * @ApiFilter(DateFilter::class, properties={"startDate": DateFilter::EXCLUDE_NULL, "endDate": DateFilter::EXCLUDE_NULL})
  *
  */
 class HistoricalContract
@@ -36,7 +36,7 @@ class HistoricalContract
     private $number;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255, length=255)
      *
      */
     private $type;
@@ -57,13 +57,7 @@ class HistoricalContract
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
-    private $annualKM;
-
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * )
-     */
-    private $monthlyKM;
+    private $entryKM;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -75,7 +69,7 @@ class HistoricalContract
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
-    private $exitKm;
+    private $exitKM;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -84,32 +78,10 @@ class HistoricalContract
     private $devolutionAddress;
 
     /**
-     * @ORM\Column(type="integer")
-     *
-     */
-    private $paymentPeriod;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     *
-     */
-    private $paymentMethod;
-
-    /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
      */
     private $initialDeposit;
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     *
-     */
-    private $totalKm;
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     *
-     */
-    private $deliveryKm;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -125,17 +97,14 @@ class HistoricalContract
     private $rentalAgency;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     *
-     */
-    private $bills;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     *
-     *
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $vehicle;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $maximumKM;
 
     public function getId(): ?int
     {
@@ -153,9 +122,11 @@ class HistoricalContract
     /**
      * @param mixed $instapackGroup
      */
-    public function setInstapackGroup($instapackGroup): void
+    public function setInstapackGroup($instapackGroup): self
     {
         $this->instapackGroup = $instapackGroup;
+
+        return $this;
     }
 
     /**
@@ -169,25 +140,11 @@ class HistoricalContract
     /**
      * @param mixed $rentalAgency
      */
-    public function setRentalAgency($rentalAgency): void
+    public function setRentalAgency($rentalAgency): self
     {
         $this->rentalAgency = $rentalAgency;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getBills()
-    {
-        return $this->bills;
-    }
-
-    /**
-     * @param mixed $bills
-     */
-    public function setBills($bills): void
-    {
-        $this->bills = $bills;
+        return $this;
     }
 
     /**
@@ -201,9 +158,11 @@ class HistoricalContract
     /**
      * @param mixed $vehicle
      */
-    public function setVehicle($vehicle): void
+    public function setVehicle($vehicle): self
     {
         $this->vehicle = $vehicle;
+
+        return $this;
     }
 
     /**
@@ -217,9 +176,11 @@ class HistoricalContract
     /**
      * @param mixed $number
      */
-    public function setNumber($number): void
+    public function setNumber($number): self
     {
         $this->number = $number;
+
+        return $this;
     }
 
     /**
@@ -233,9 +194,11 @@ class HistoricalContract
     /**
      * @param mixed $type
      */
-    public function setType($type): void
+    public function setType($type): self
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**
@@ -249,9 +212,11 @@ class HistoricalContract
     /**
      * @param mixed $startDate
      */
-    public function setStartDate($startDate): void
+    public function setStartDate($startDate): self
     {
         $this->startDate = $startDate;
+
+        return $this;
     }
 
     /**
@@ -265,41 +230,30 @@ class HistoricalContract
     /**
      * @param mixed $endDate
      */
-    public function setEndDate($endDate): void
+    public function setEndDate($endDate): self
     {
         $this->endDate = $endDate;
+
+        return $this;
     }
+
 
     /**
      * @return mixed
      */
-    public function getAnnualKM()
+    public function getEntryKM()
     {
-        return $this->annualKM;
+        return $this->entryKM;
     }
 
     /**
-     * @param mixed $annualKM
+     * @param mixed $entryKM
      */
-    public function setAnnualKM(float $annualKM): void
+    public function setEntryKM(float $entryKM): self
     {
-        $this->annualKM = $annualKM;
-    }
+        $this->entryKM = $entryKM;
 
-    /**
-     * @return mixed
-     */
-    public function getMonthlyKM()
-    {
-        return $this->monthlyKM;
-    }
-
-    /**
-     * @param mixed $monthlyKM
-     */
-    public function setMonthlyKM(float $monthlyKM): void
-    {
-        $this->monthlyKM = $monthlyKM;
+        return $this;
     }
 
     /**
@@ -313,9 +267,11 @@ class HistoricalContract
     /**
      * @param mixed $deliveryAddress
      */
-    public function setDeliveryAddress($deliveryAddress): void
+    public function setDeliveryAddress($deliveryAddress): self
     {
         $this->deliveryAddress = $deliveryAddress;
+
+        return $this;
     }
 
     /**
@@ -323,15 +279,17 @@ class HistoricalContract
      */
     public function getExitKm()
     {
-        return $this->exitKm;
+        return $this->exitKM;
     }
 
     /**
-     * @param mixed $exitKm
+     * @param mixed $exitKM
      */
-    public function setExitKm(float $exitKm): void
+    public function setExitKm(?float $exitKM): self
     {
-        $this->exitKm = $exitKm;
+        $this->exitKM = $exitKM;
+
+        return $this;
     }
 
     /**
@@ -345,41 +303,11 @@ class HistoricalContract
     /**
      * @param mixed $devolutionAddress
      */
-    public function setDevolutionAddress($devolutionAddress): void
+    public function setDevolutionAddress($devolutionAddress): self
     {
         $this->devolutionAddress = $devolutionAddress;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getPaymentPeriod()
-    {
-        return $this->paymentPeriod;
-    }
-
-    /**
-     * @param mixed $paymentPeriod
-     */
-    public function setPaymentPeriod($paymentPeriod): void
-    {
-        $this->paymentPeriod = $paymentPeriod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPaymentMethod()
-    {
-        return $this->paymentMethod;
-    }
-
-    /**
-     * @param mixed $paymentMethod
-     */
-    public function setPaymentMethod($paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
+        return $this;
     }
 
     /**
@@ -393,41 +321,23 @@ class HistoricalContract
     /**
      * @param mixed $initialDeposit
      */
-    public function setInitialDeposit(float $initialDeposit): void
+    public function setInitialDeposit(?float $initialDeposit): self
     {
         $this->initialDeposit = $initialDeposit;
+
+        return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTotalKm()
+    public function getMaximumKM(): ?string
     {
-        return $this->totalKm;
+        return $this->maximumKM;
     }
 
-    /**
-     * @param mixed $totalKm
-     */
-    public function setTotalKm(float $totalKm): void
+    public function setMaximumKM(?string $maximumKM): self
     {
-        $this->totalKm = $totalKm;
-    }
+        $this->maximumKM = $maximumKM;
 
-    /**
-     * @return mixed
-     */
-    public function getDeliveryKm()
-    {
-        return $this->deliveryKm;
-    }
-
-    /**
-     * @param mixed $deliveryKm
-     */
-    public function setDeliveryKm(float $deliveryKm): void
-    {
-        $this->deliveryKm = $deliveryKm;
+        return $this;
     }
 
 }

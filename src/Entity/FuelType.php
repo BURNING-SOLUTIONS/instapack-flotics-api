@@ -21,7 +21,7 @@ class FuelType
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"get_vehicle"})
      * @ApiFilter(SearchFilter::class, properties={"type": "partial"})
      * @ApiFilter(OrderFilter::class, properties={"id","type","vehicle"})
      */
@@ -29,7 +29,7 @@ class FuelType
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel"})
+     * @Groups({"get_vehicle"})
      */
     private $type;
 
