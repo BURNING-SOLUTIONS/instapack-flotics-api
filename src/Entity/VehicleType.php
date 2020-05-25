@@ -24,13 +24,13 @@ class VehicleType
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $type;
 

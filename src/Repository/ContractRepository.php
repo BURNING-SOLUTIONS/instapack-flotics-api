@@ -52,6 +52,36 @@ class ContractRepository extends ServiceEntityRepository
         ))*/
     }
 
+
+    public function getClausesByContract($contract, $cantDays/*, $arrayconceptos*/): array
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+        #$rolesJoin = join(',', $roles);
+        return $queryBuilder
+            ->select('c')
+            ->from(Clauses::class, 'c')
+            ->Where('c.billperiod <= :cantDays')
+            ->andWhere('c.contract = :contract')
+            ->setParameter('contract', $contract)
+            ->setParameter('cantDays', $cantDays)
+            ->getQuery()
+            ->getArrayResult();
+
+
+    }
+
+    public function persistContract(Contract $contract): void
+    {
+        $this->_em->persist($contract);
+        $this->_em->flush();
+    }
+
+    public function deleteContract(Contract $contract): void
+    {
+        $this->_em->remove($contract);
+        $this->_em->flush();
+    }
+
     // /**
     //  * @return Contract[] Returns an array of Contract objects
     //  */
@@ -80,22 +110,4 @@ class ContractRepository extends ServiceEntityRepository
         ;
     }
     */
-
-
-    public function getClausesByContract($contract,$cantDays/*, $arrayconceptos*/) :array
-    {
-        $queryBuilder = $this->createQueryBuilder('a');
-        #$rolesJoin = join(',', $roles);
-        return $queryBuilder
-            ->select('c')
-            ->from(Clauses::class, 'c')
-            ->Where('c.billperiod <= :cantDays')
-            ->andWhere('c.contract = :contract')
-            ->setParameter('contract', $contract)
-            ->setParameter('cantDays', $cantDays)
-            ->getQuery()
-            ->getArrayResult();
-
-
-    }
 }

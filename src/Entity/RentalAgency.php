@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 @ORM\Index(name="global_search_agency", columns={"name","code","cif"})
 })
  * @ApiResource(
- *     normalizationContext={"groups"={"get_contract", "get_vehicle"}},
+ *     normalizationContext={"groups"={"get_contract","get_agency","vehicle_agency"}},
  *     itemOperations={
  *         "patch",
  *         "put",
@@ -41,104 +41,102 @@ class RentalAgency
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract","get_agency","get_vehicle","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
-     * @Groups({"get_contract","get_agency","get_vehicle","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
      */
     private $cif;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_agency","get_vehicle","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $bussinesAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $fiscalAddress;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $province;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $population;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $observations;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Contract", mappedBy="rentalAgency")
-     * @Groups({"get_contract","get_vehicle"})
      */
     private $contracts;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="rentalAgency")
-     * @Groups({"get_contract","get_vehicle"})
      */
     private $vehicles;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $mainContact;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $mainPhone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $mainEmail;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $secondContact;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $secondPhone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_contract","get_vehicle","get_only_item"})
+     * @Groups({"get_only_item","get_agency"})
      */
     private $secondEmail;
 

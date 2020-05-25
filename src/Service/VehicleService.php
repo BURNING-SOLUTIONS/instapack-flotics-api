@@ -89,55 +89,6 @@ class VehicleService
         return $tmpBasePath;
     }
 
-    function saveEquipments(Vehicle $vehicle, Array $equipments = array())
-    {
-        if ($equipments) {
-            foreach ($equipments as $equipment) {
-                $newEquipmentVehicle = new EquipmentVehicle();
-                $newEquipmentVehicle
-                    ->setValue($equipment['value'])
-                    ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
-                    ->setVehicle($vehicle);
-
-                $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
-            }
-            $this->vehicleRepository->persistVehicle($vehicle);
-        }
-    }
-
-    public function updateEquipments(Vehicle $vehicle, Array $equipments = array())
-    {
-        if ($equipments) {
-            foreach ($equipments as $equipment) {
-                $cantItems = (int)$equipment['value'];
-
-                if (array_key_exists('id', $equipment)) {
-                    $findEquipmentVehicle = $this->equipmentVehicleService->getEquipmentVehicleParams(array('id' => $equipment['id']));
-
-                    if ($cantItems > 0) {
-                        $findEquipmentVehicle->setValue($cantItems);
-                        $this->equipmentVehicleService->saveEquipmentVehicle($findEquipmentVehicle);
-                    } else {
-                        #im sure that equipment vehicle exist but value is lower or equal to 0 and its neccesary remove..
-                        $this->equipmentVehicleService->removeEquipmentVehicle($findEquipmentVehicle);
-                    }
-                } else {
-                    if ($cantItems > 0) {
-                        $newEquipmentVehicle = new EquipmentVehicle();
-                        $newEquipmentVehicle
-                            ->setValue($cantItems)
-                            ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
-                            ->setVehicle($vehicle);
-
-                        $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
-                    }
-                }
-
-            }
-            $this->vehicleRepository->persistVehicle($vehicle);
-        }
-    }
-
     public function updateVehicle(Vehicle $vehicle, Array $equipments = array()): void
     {
 
@@ -227,6 +178,55 @@ class VehicleService
 
         }
 
-
     }
+
+    public function saveEquipments(Vehicle $vehicle, Array $equipments = array()): void
+    {
+        if ($equipments) {
+            foreach ($equipments as $equipment) {
+                $newEquipmentVehicle = new EquipmentVehicle();
+                $newEquipmentVehicle
+                    ->setValue($equipment['value'])
+                    ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
+                    ->setVehicle($vehicle);
+
+                $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
+            }
+            $this->vehicleRepository->persistVehicle($vehicle);
+        }
+    }
+
+    public function updateEquipments(Vehicle $vehicle, Array $equipments = array())
+    {
+        if ($equipments) {
+            foreach ($equipments as $equipment) {
+                $cantItems = (int)$equipment['value'];
+
+                if (array_key_exists('id', $equipment)) {
+                    $findEquipmentVehicle = $this->equipmentVehicleService->getEquipmentVehicleParams(array('id' => $equipment['id']));
+
+                    if ($cantItems > 0) {
+                        $findEquipmentVehicle->setValue($cantItems);
+                        $this->equipmentVehicleService->saveEquipmentVehicle($findEquipmentVehicle);
+                    } else {
+                        #im sure that equipment vehicle exist but value is lower or equal to 0 and its neccesary remove..
+                        $this->equipmentVehicleService->removeEquipmentVehicle($findEquipmentVehicle);
+                    }
+                } else {
+                    if ($cantItems > 0) {
+                        $newEquipmentVehicle = new EquipmentVehicle();
+                        $newEquipmentVehicle
+                            ->setValue($cantItems)
+                            ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
+                            ->setVehicle($vehicle);
+
+                        $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
+                    }
+                }
+
+            }
+            $this->vehicleRepository->persistVehicle($vehicle);
+        }
+    }
+
 }

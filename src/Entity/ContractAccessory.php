@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @ApiResource()
@@ -39,10 +40,10 @@ class ContractAccessory
 
     /**
      * @ORM\Column(type="integer")
-     * @ApiFilter(SearchFilter::class, properties={"value":"partial" })
+     * @ApiFilter(SearchFilter::class, properties={"ammount":"partial" })
      *
      */
-    private $value;
+    private $ammount;
 
 
     public function getId(): ?int
@@ -77,17 +78,19 @@ class ContractAccessory
     /**
      * @return mixed
      */
-    public function getValue()
+    public function getAmmount()
     {
-        return $this->value;
+        return $this->ammount;
     }
 
     /**
-     * @param mixed $value
+     * @param $ammount
      */
-    public function setValue($value): void
+    public function setAmmount($ammount): self
     {
-        $this->value = $value;
+        $this->ammount = $ammount;
+
+        return $this;
     }
 
 }

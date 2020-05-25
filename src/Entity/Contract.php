@@ -11,14 +11,37 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Controller\ContractController;
+use App\Controller\DeleteContractController;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"get_contract","get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"},"enable_max_depth"=true})
+ * @ApiResource(
+ *     normalizationContext={"groups"={"get_contract","get_bill","get_clauses","vehicle_contract"},"enable_max_depth"=true},
+ *     collectionOperations={
+ *         "get",
+ *         "post"={
+ *             "method"="POST",
+ *             "controller"=ContractController::class
+ *         },
+ *      },
+ *     itemOperations={
+ *          "get",
+ *          "put",
+ *          "patch",
+ *          "delete"={
+ *             "method"="DELETE",
+ *             "controller"=DeleteContractController::class
+ *         }
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("number")
- * @ApiFilter(SearchFilter::class, properties={"number": "partial", "startDate": "partial","endDate": "partial","deliveryAddress":"partial","devolutionAddress":"partial","paymentPeriod":"partial","initialDeposit":"partial","clauses":"partial","bills":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"id","number","startDate","endDate","maximumKm","entryKm","exitKm","paymentPeriod","paymentMethod","initialDeposit"})
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial","deliveryAddress":"partial","devolutionAddress":"partial","initialDeposit":"partial","paymentMethod":"partial","bills":"partial"})
+ * @ApiFilter(DateFilter::class, properties={"startDate": DateFilter::EXCLUDE_NULL, "endDate": DateFilter::EXCLUDE_NULL})
+ * @ApiFilter(OrderFilter::class, properties={"id","number","startDate","endDate","maximumKm","entryKm","exitKm","paymentMethod","initialDeposit"})
  *
  */
 class Contract
@@ -27,81 +50,75 @@ class Contract
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_agency","get_bill","get_clauses","get_vehicle","get_instagroup"})
+     * @Groups({"get_bill","get_clauses","vehicle_contract","get_contract"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", length=255, unique=true)
-     * @Groups({"get_contract","get_agency","get_bill","get_clauses","get_vehicle"})
+     * @Groups({"get_bill","get_clauses","vehicle_contract","get_contract"})
      */
     private $number;
 
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_contract","get_agency","get_bill","get_clauses","get_vehicle"})
+     * @Groups({"get_bill","get_clauses","vehicle_contract","get_contract"})
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_contract","get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill","vehicle_contract","get_contract"})
      */
     private $endDate;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $deliveryAddress;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $devolutionAddress;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Groups({"get_agency","get_bill","get_vehicle"})
-     */
-    private $paymentPeriod;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $paymentMethod;
 
     /**
      * @ORM\Column(type="decimal",precision=10, scale=2, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $initialDeposit;
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $maximumKm;
 
     /**
-     * @Groups({"get_agency","get_bill","get_vehicle"})
-     * @ORM\Column(type="integer")
+     * @Groups({"get_bill"})
+     * @ORM\Column(type="decimal",precision=10, scale=2)
      */
     private $entryKm;
 
     /**
      * @ORM\Column(type="decimal",precision=10, scale=2, nullable=true)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $exitKm;
 
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract")
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract", cascade={"remove"})
+     * @Groups({"get_bill"})
      */
     private $clauses;
 
@@ -109,7 +126,7 @@ class Contract
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      * @ApiFilter(SearchFilter::class, properties={"instapackGroup.name":"partial" })
      */
     private $instapackGroup;
@@ -117,23 +134,23 @@ class Contract
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="contracts")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill","get_contract"})
      * @ApiFilter(SearchFilter::class, properties={"rentalAgency.name":"partial" })
      */
     private $rentalAgency;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Bill", mappedBy="contractNumber")
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill"})
      */
     private $bills;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Vehicle")
+     * @ORM\OneToOne(targetEntity="App\Entity\Vehicle",inversedBy="contract", cascade={"persist"})
      * @Assert\NotNull()
      * @Assert\NotBlank()
-     * @ORM\JoinColumn(name="vehiclecontracts", referencedColumnName="id",nullable=false)
-     * @Groups({"get_agency","get_bill","get_vehicle"})
+     * @ORM\JoinColumn(name="vehicle_id", referencedColumnName="id",nullable=false)
+     * @Groups({"get_bill","get_contract"})
      * @ApiFilter(SearchFilter::class, properties={"vehicle.registration":"partial" })
      */
     private $vehicle;
@@ -141,15 +158,28 @@ class Contract
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ContractType")
      * @ApiFilter(SearchFilter::class, properties={"type.name":"partial" })
-     * @Groups({"get_contract","get_agency","get_bill","get_vehicle"})
+     * @Groups({"get_bill","vehicle_contract","get_contract"})
      */
     private $type;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ContractAccessory", mappedBy="contract", cascade={"remove"})
+     * @ApiSubresource
+     */
+    private $contractAccessories;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_contract"})
+     */
+    private $contractFile;
 
 
     public function __construct()
     {
         $this->clauses = new ArrayCollection();
         $this->bills = new ArrayCollection();
+        $this->contractAccessories = new ArrayCollection();
 
     }
 
@@ -233,18 +263,6 @@ class Contract
     public function setDevolutionAddress(?string $devolutionAddress): self
     {
         $this->devolutionAddress = $devolutionAddress;
-
-        return $this;
-    }
-
-    public function getPaymentPeriod(): ?int
-    {
-        return $this->paymentPeriod;
-    }
-
-    public function setPaymentPeriod(int $paymentPeriod): self
-    {
-        $this->paymentPeriod = $paymentPeriod;
 
         return $this;
     }
@@ -364,6 +382,38 @@ class Contract
         return $this;
     }
 
+    /**
+     * @return Collection|Bill[]
+     */
+    public function getContractAccessories(): Collection
+    {
+        return $this->contractAccessories;
+    }
+
+
+    public function addContractAccessory(ContractAccessory $contract): self
+    {
+        if (!$this->contractAccessories->contains($contract)) {
+            $this->contractAccessories[] = $contract;
+            $contract->setContract($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContractAccessory(ContractAccessory $contract): self
+    {
+        if ($this->contractAccessories->contains($contract)) {
+            $this->contractAccessories->removeElement($contract);
+            // set the owning side to null (unless already changed)
+            if ($contract->getContract() === $this) {
+                $contract->setContract(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getVehicle(): ?Vehicle
     {
         return $this->vehicle;
@@ -413,6 +463,18 @@ class Contract
     public function setType(?ContractType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getContractFile(): ?string
+    {
+        return $this->contractFile;
+    }
+
+    public function setContractFile(?string $contractFile): self
+    {
+        $this->contractFile = $contractFile;
 
         return $this;
     }

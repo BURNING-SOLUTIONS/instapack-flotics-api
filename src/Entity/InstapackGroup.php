@@ -14,7 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"get_instagroup"}}))
+ * @ApiResource(normalizationContext={"groups"={"get_instagroup","get_contract"}}))
  * @ORM\Entity(repositoryClass="App\Repository\InstapackGroupRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("cif")
@@ -27,21 +27,21 @@ class InstapackGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_instagroup"})
+     * @Groups({"get_instagroup","get_contract"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_instagroup"})
+     * @Groups({"get_instagroup","get_contract"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Regex(pattern="/^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/", message="Your Cif is invalid")
-     * @Groups({"get_instagroup"})
+     * @Groups({"get_instagroup","get_contract"})
      */
     private $cif;
 

@@ -12,6 +12,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Controller\VehicleController;
@@ -21,7 +22,7 @@ use App\Controller\VehicleController;
 @ORM\Index(name="global_search_vehicle", columns={"registration","frame"})
 })
  * @ApiResource(
- *     normalizationContext={"groups"={"vehicle_fuel","get_agency","get_vehicleType"}},
+ *     normalizationContext={"groups"={"get_vehicle","vehicle_contract","vehicle_agency"}},
  *     collectionOperations={
  *         "get",
  *         "post"={
@@ -32,7 +33,7 @@ use App\Controller\VehicleController;
  *     itemOperations={
  *         "get",
  *         "put",
- *          "delete",
+ *         "delete",
  *         "patch"={
  *             "method"="PATCH",
  *             "controller"=VehicleController::class
@@ -55,119 +56,119 @@ class Vehicle
      * @ORM\GeneratedValue
      * @ApiProperty(identifier=true)
      * @ORM\Column(type="integer")
-     * @Groups({"vehicle_fuel","get_vehicle","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle","get_contract"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"vehicle_fuel","get_vehicle","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle","get_contract"})
      */
     private $registration;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle","get_contract"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle","get_contract"})
      */
     private $model;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle","get_contract"})
      */
     private $frame;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $co2;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $mom;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $mma;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $capacity;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $insurance;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $drivingLicense;
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $dataSheet;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $environmental;
     /**
      * @ORM\Column(type="datetime",nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $madridSer;
     /**
      * @ORM\Column(type="datetime",nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $madridCentral;
     /**
      * @ORM\Column(type="datetime",nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $madridCentralRenovation;
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $madridSerPrice;
     /**
      * @ORM\Column(type="string", length=255, unique=true, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $transportCard;
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $transportCardPrice;
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      * @ApiFilter(SearchFilter::class, properties={"fuelVehicle.type":"partial" })
      *
      */
@@ -176,7 +177,7 @@ class Vehicle
     /**
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="VehicleType", inversedBy="vehicle")
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      * @ApiFilter(SearchFilter::class, properties={"vehicleType.type":"partial" })
      *
      */
@@ -184,34 +185,34 @@ class Vehicle
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="vehicles")
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"vehicle_agency"})
      * @ApiFilter(SearchFilter::class, properties={"rentalAgency.name":"partial" })
      */
     private $rentalAgency;
 
     /**
-     *
-     * @Groups({"vehicle_fuel","get_agency"})
+     * @ORM\OneToOne(targetEntity="Contract", mappedBy="vehicle", cascade={"persist"})
+     * @ApiFilter(SearchFilter::class, properties={"contract.number":"partial"})
+     * @ApiFilter(ExistsFilter::class, properties={"contract"})
+     * @Groups({"vehicle_contract"})
      */
-
-    private $vehiclecontracts;
+    private $contract;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EquipmentVehicle", mappedBy="vehicle")
+     * @ORM\OneToMany(targetEntity="App\Entity\EquipmentVehicle", mappedBy="vehicle", cascade={"remove"})
      * @ApiSubresource
      */
     private $equipmentVehicles;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"vehicle_fuel","get_agency","get_vehicleType"})
+     * @Groups({"get_vehicle"})
      */
     private $insuranceExpired;
 
 
     public function __construct()
     {
-        $this->vehiclecontracts = new ArrayCollection();
         $this->equipmentVehicles = new ArrayCollection();
     }
 
@@ -391,17 +392,18 @@ class Vehicle
         return $this;
     }
 
-
-    public function getVehiclecontracts()
+    public function getContract()
     {
-        return $this->vehiclecontracts;
+        return $this->contract;
     }
 
-
-    public function setVehiclecontracts(Contract $vehiclecontracts): void
+    public function setContract(Contract $contract): self
     {
-        $this->vehiclecontracts = $vehiclecontracts;
+        $this->contract = $contract;
+
+        return $this;
     }
+
 
     /**
      * @return mixed
