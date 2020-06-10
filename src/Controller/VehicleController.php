@@ -18,13 +18,11 @@ use App\Service\VehicleService;
 class VehicleController
 {
     private $request;
-    private $vehicle;
     private $vechicleService;
 
     /**
      * VehicleController constructor.
      * @param VehicleService $vechicleService
-     * @param Vehicle $vehicle
      * @param RequestStack $request
      */
     public function __construct(VehicleService $vechicleService, RequestStack $request)
@@ -49,18 +47,20 @@ class VehicleController
         $method = $this->request->getCurrentRequest()->getMethod();
         $parser = new RequestContextParser($this->request);
         $equipments = $parser->getRequestValue('equipments');
+        $equipments_array = array();
 
-        $equipments_array = array_map(function ($equipment) {
-            return get_object_vars($equipment);
-        }, $equipments);
+        if ($equipments) {
+            $equipments_array = array_map(function ($equipment) {
+                return get_object_vars($equipment);
+            }, $equipments);
+        }
 
         if ($method == "POST") {
             $this->vechicleService->saveVehicle($data, $equipments_array);
-        } else {
-            $this->vechicleService->updateVehicle($data, $equipments_array);
+            return $data;
         }
 
-
+        $this->vechicleService->updateVehicle($data, $equipments_array);
         return $data;
     }
 }

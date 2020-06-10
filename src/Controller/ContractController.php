@@ -41,17 +41,19 @@ class ContractController
         $method = $this->request->getCurrentRequest()->getMethod();
         $parser = new RequestContextParser($this->request);
         $accessories = $parser->getRequestValue('accessories');
+        $accessories_array = array();
 
-        $accessories_array = array_map(function ($accessories) {
-            return get_object_vars($accessories);
-        }, $accessories);
+        if ($accessories) {
+            $accessories_array = array_map(function ($accessories) {
+                return get_object_vars($accessories);
+            }, $accessories);
+        }
 
         if ($method == "POST") {
             $this->contractService->saveContract($data, $accessories_array);
         } /*else {
             $this->contractService->updateVehicle($data, $accessories_array);
         }*/
-
 
         return $data;
     }

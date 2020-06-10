@@ -34,9 +34,9 @@ class VehicleRepository extends ServiceEntityRepository
     }
 
 
-    public function findVehicleByOrParams(array $params, array $selectFields, array $pagination)
+    public function findVehicleByOrParams(array $params, array $retrieveFields, array $pagination)
     {
-        $attrs = $this->constructSelectFieldsFromArray('v', $selectFields);
+        $attrs = $this->constructSelectFieldsFromArray('v', $retrieveFields);
         $qb = $this->createQueryBuilder('v')
             ->setFirstResult($pagination['first'])
             ->setMaxResults($pagination['results']);

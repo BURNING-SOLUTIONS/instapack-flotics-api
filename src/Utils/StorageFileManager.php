@@ -4,7 +4,7 @@
 namespace App\Utils;
 
 
-use App\Utils\IFileManager;
+use App\Interfaces\IFileManager;
 use App\Utils\AzureFileManager;
 
 //use IP\RestBundle\Helper\LocalFileManager;

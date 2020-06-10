@@ -71,27 +71,13 @@ class VehicleService
      */
     public function getVehicleByOrParams(array $params, array $pagination = array('first' => 0, 'results' => 40))
     {
-        return $this->vehicleRepository->findVehicleByOrParams($params, array('id', 'registration', 'frame'), $pagination);
-    }
-
-    public function uploadAzureFile(string $compulsaCirculacion_base64, string $azureRoute, string $prefix, string $identificator)
-    {
-
-        $file_manager = $this->filesManager->getCurrentFileManager();
-
-        $extension = $this->getBase64Extension($compulsaCirculacion_base64);
-        $fileData = $this->getBase64FileData($compulsaCirculacion_base64);
-        $tmpBasePath = $prefix . $identificator . '.' . $extension;
-        $upload = $this->base64ToFile($fileData, $tmpBasePath);
-        $file = new UploadedFile($tmpBasePath, $tmpBasePath, $extension);
-        $file_manager->uploadFile($file, $azureRoute, $tmpBasePath);
-
-        return $tmpBasePath;
+        $retrieveFields = array('id', 'registration', 'frame');
+        return $this->vehicleRepository->findVehicleByOrParams($params, $retrieveFields, $pagination);
     }
 
     public function updateVehicle(Vehicle $vehicle, Array $equipments = array()): void
     {
-
+        $file_manager = $this->filesManager->getCurrentFileManager();
         $compulsaCirculacion_base64 = $vehicle->getDrivingLicense();
         $enviromental_base64 = $vehicle->getEnvironmental();
         $sheet_base64 = $vehicle->getDataSheet();
@@ -108,17 +94,17 @@ class VehicleService
             try {
 
                 if ($compulsaCirculacion_base64 && $this->isBase64($compulsaCirculacion_base64)) {
-                    $compulseFinalRoute = $this->uploadAzureFile($compulsaCirculacion_base64, $VEHICLES_AZURE_COMPULSE_PATH, "compulsa_circulacion_", $vehicle->getRegistration());
+                    $compulseFinalRoute = $file_manager->uploadBase64File($compulsaCirculacion_base64, $VEHICLES_AZURE_COMPULSE_PATH, "compulsa_circulacion_", $vehicle->getRegistration());
                     $vehicle->setDrivingLicense($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_COMPULSE_PATH . '/' . $compulseFinalRoute);
                 }
 
                 if ($enviromental_base64 && $this->isBase64($enviromental_base64)) {
-                    $enviromentalFinalRoute = $this->uploadAzureFile($enviromental_base64, $VEHICLES_AZURE_DINSTINTIVE_PATH, "distintivo_ambiental_", $vehicle->getRegistration());
+                    $enviromentalFinalRoute = $file_manager->uploadBase64File($enviromental_base64, $VEHICLES_AZURE_DINSTINTIVE_PATH, "distintivo_ambiental_", $vehicle->getRegistration());
                     $vehicle->setEnvironmental($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_DINSTINTIVE_PATH . '/' . $enviromentalFinalRoute);
                 }
 
                 if ($sheet_base64 && $this->isBase64($sheet_base64)) {
-                    $sheetFinalRoute = $this->uploadAzureFile($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
+                    $sheetFinalRoute = $file_manager->uploadBase64File($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
                     $vehicle->setDataSheet($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_SHEET_PATH . '/' . $sheetFinalRoute);
                 }
 
@@ -135,9 +121,9 @@ class VehicleService
 
     }
 
-
     public function saveVehicle(Vehicle $vehicle, Array $equipments = array()): void
     {
+        $file_manager = $this->filesManager->getCurrentFileManager();
         $compulsaCirculacion_base64 = $vehicle->getDrivingLicense();
         $enviromental_base64 = $vehicle->getEnvironmental();
         $sheet_base64 = $vehicle->getDataSheet();
@@ -154,16 +140,16 @@ class VehicleService
             try {
                 // do stuff
                 if ($compulsaCirculacion_base64) {
-                    $compulseFinalRoute = $this->uploadAzureFile($compulsaCirculacion_base64, $VEHICLES_AZURE_COMPULSE_PATH, "compulsa_circulacion_", $vehicle->getRegistration());
+                    $compulseFinalRoute = $file_manager->uploadBase64File($compulsaCirculacion_base64, $VEHICLES_AZURE_COMPULSE_PATH, "compulsa_circulacion_", $vehicle->getRegistration());
                     $vehicle->setDrivingLicense($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_COMPULSE_PATH . '/' . $compulseFinalRoute);
                 }
                 if ($enviromental_base64) {
-                    $enviromentalFinalRoute = $this->uploadAzureFile($enviromental_base64, $VEHICLES_AZURE_DINSTINTIVE_PATH, "distintivo_ambiental_", $vehicle->getRegistration());
+                    $enviromentalFinalRoute = $file_manager->uploadBase64File($enviromental_base64, $VEHICLES_AZURE_DINSTINTIVE_PATH, "distintivo_ambiental_", $vehicle->getRegistration());
                     $vehicle->setEnvironmental($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_DINSTINTIVE_PATH . '/' . $enviromentalFinalRoute);
                 }
 
                 if ($sheet_base64) {
-                    $sheetFinalRoute = $this->uploadAzureFile($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
+                    $sheetFinalRoute = $file_manager->uploadBase64File($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
                     $vehicle->setDataSheet($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_SHEET_PATH . '/' . $sheetFinalRoute);
                 }
 

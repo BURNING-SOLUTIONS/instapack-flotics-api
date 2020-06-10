@@ -59,7 +59,7 @@ class InstapackGroup
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_instagroup"})
+     * @Groups({"get_instagroup","get_contract"})
      */
     private $name;
 
@@ -325,7 +325,6 @@ class InstapackGroup
     {
         $this->secondEmail = $secondEmail;
     }
-
 
 
     /**

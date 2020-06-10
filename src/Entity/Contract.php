@@ -16,6 +16,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Controller\ContractController;
 use App\Controller\DeleteContractController;
+use App\Controller\ExportContractsController;
 
 /**
  * @ApiResource(
@@ -26,6 +27,14 @@ use App\Controller\DeleteContractController;
  *             "method"="POST",
  *             "controller"=ContractController::class
  *         },
+ *         "export_contracts"={
+ *              "method"="GET",
+ *              "path"="/contracts/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportContractsController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
+ *         }
  *      },
  *     itemOperations={
  *          "get",
@@ -39,7 +48,7 @@ use App\Controller\DeleteContractController;
  * )
  * @ORM\Entity(repositoryClass="App\Repository\ContractRepository")
  * @UniqueEntity("number")
- * @ApiFilter(SearchFilter::class, properties={"number": "partial","deliveryAddress":"partial","devolutionAddress":"partial","initialDeposit":"partial","paymentMethod":"partial","bills":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"number": "partial","deliveryAddress":"partial","devolutionAddress":"partial","maximumKm":"partial","entryKm":"partial","initialDeposit":"partial","paymentMethod":"partial","bills":"partial"})
  * @ApiFilter(DateFilter::class, properties={"startDate": DateFilter::EXCLUDE_NULL, "endDate": DateFilter::EXCLUDE_NULL})
  * @ApiFilter(OrderFilter::class, properties={"id","number","startDate","endDate","maximumKm","entryKm","exitKm","paymentMethod","initialDeposit"})
  *

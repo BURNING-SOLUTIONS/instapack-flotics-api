@@ -12,13 +12,25 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use App\Controller\ExportAgenciesController;
 /**
  * @ORM\Table(indexes={
 @ORM\Index(name="global_search_agency", columns={"name","code","cif"})
 })
  * @ApiResource(
  *     normalizationContext={"groups"={"get_contract","get_agency","vehicle_agency"}},
+ *     collectionOperations={
+ *          "get",
+ *          "post",
+ *          "export_agencies"={
+ *              "method"="GET",
+ *              "path"="/rental_agencies/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportAgenciesController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
+ *         }
+ *     },
  *     itemOperations={
  *         "patch",
  *         "put",
