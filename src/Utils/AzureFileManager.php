@@ -4,19 +4,33 @@
 namespace App\Utils;
 
 
-use App\Utils\IFileManager;
+use App\Traits\Base64Manager;
+use App\Interfaces\IFileManager;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AzureFileManager implements IFileManager
 {
+    use Base64Manager;
 
     private $connectionString;
 
     public function __construct($connectionString)
     {
         $this->connectionString = $connectionString;
+    }
+
+    public function uploadBase64File(string $base64, string $azureRoute, string $prefix, string $identificator): string
+    {
+        $extension = $this->getBase64Extension($base64);
+        $fileData = $this->getBase64FileData($base64);
+        $tmpBasePath = $prefix . $identificator . '.' . $extension;
+        $upload = $this->base64ToFile($fileData, $tmpBasePath);
+        $file = new UploadedFile($tmpBasePath, $tmpBasePath, $extension);
+        $this->uploadFile($file, $azureRoute, $tmpBasePath);
+
+        return $tmpBasePath;
     }
 
     public function uploadFile(UploadedFile $file, string $container_name, string $upload_name = "")
@@ -40,7 +54,6 @@ class AzureFileManager implements IFileManager
     {
 
     }
-
 
 
 }

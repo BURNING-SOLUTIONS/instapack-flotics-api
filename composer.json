@@ -9,6 +9,8 @@
         "doctrine/annotations": "^1.8",
         "doctrine/doctrine-migrations-bundle": "^2.1",
         "microsoft/azure-storage-blob": "^1.5",
+        "mpdf/mpdf": "^8.0",
+        "phpoffice/phpspreadsheet": "^1.13",
         "predis/predis": "^1.1",
         "snc/redis-bundle": "^3.2",
         "symfony/console": "4.4.*",

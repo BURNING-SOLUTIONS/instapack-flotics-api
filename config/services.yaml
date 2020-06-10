@@ -34,7 +34,7 @@ services:
 #    autowire: true
 
   App\Utils\StorageFileManager:
-    arguments: ['App\Utils\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
+    arguments: ['App\Interfaces\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
 
 
 

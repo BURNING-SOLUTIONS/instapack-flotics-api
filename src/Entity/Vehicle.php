@@ -16,6 +16,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Controller\VehicleController;
+use App\Controller\ExportVehiclesController;
 
 /**
  * @ORM\Table(indexes={
@@ -29,6 +30,14 @@ use App\Controller\VehicleController;
  *             "method"="POST",
  *             "controller"=VehicleController::class
  *         },
+ *         "export_vehicles"={
+ *              "method"="GET",
+ *              "path"="/vehicles/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportVehiclesController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
+ *         }
  *      },
  *     itemOperations={
  *         "get",
@@ -392,12 +401,12 @@ class Vehicle
         return $this;
     }
 
-    public function getContract()
+    public function getContract(): ?Contract
     {
         return $this->contract;
     }
 
-    public function setContract(Contract $contract): self
+    public function setContract(?Contract $contract): self
     {
         $this->contract = $contract;
 
