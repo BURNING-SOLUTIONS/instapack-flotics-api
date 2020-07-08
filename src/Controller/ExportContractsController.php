@@ -40,11 +40,13 @@ class ExportContractsController
     {
         $parser = new RequestContextParser($this->request);
         $extension = $format == 'excel' ? 'xlsx' : 'pdf';
-        $exporter = new ExportDocumentFactory($format);
         $fileColumns = $this->constructContractsColumnsToExport($data);
-        # call__invokable class $exporter method
-        $filePath = ($exporter)($fileColumns);
+        //Factory Pattern, I create
+        $fileExporter = (new ExportDocumentFactory($format))(); //# call__invokable method of ExportDocumentFactory class
+
+        $filePath = $fileExporter->export($fileColumns);
         $file = file_get_contents($filePath);
+
         $response = new Response($file);
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,

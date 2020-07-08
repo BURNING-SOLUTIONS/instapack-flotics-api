@@ -40,11 +40,13 @@ class ExportVehiclesController
     {
         $parser = new RequestContextParser($this->request);
         $extension = $format == 'excel' ? 'xlsx' : 'pdf';
-        $exporter = new ExportDocumentFactory($format);
         $fileColumns = $this->constructVehiclesColumnsToExport($data);
-        # call__invokable class $exporter method
-        $filePath = ($exporter)($fileColumns);
+        //Factory Pattern, I create
+        $fileExporter = (new ExportDocumentFactory($format))(); //# call__invokable method of ExportDocumentFactory class
+
+        $filePath = $fileExporter->export($fileColumns);
         $file = file_get_contents($filePath);
+
         $response = new Response($file);
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
@@ -74,7 +76,7 @@ class ExportVehiclesController
                     "Mom" => $vehicle->getMom(),
                     "Mma" => $vehicle->getMma(),
                     "Co2" => $vehicle->getCo2(),
-                    "Seguro" => $vehicle->getInsurance(),
+                    #"Seguro" => $vehicle->getInsurance(),
                     "Tarj. Transporte" => $vehicle->getTransportCard(),
                     "M. Central" => $vehicle->getMadridCentral() ? $vehicle->getMadridCentral()->format('Y-m-d') : '-',
                     "M. Ser" => $vehicle->getMadridSer() ? $vehicle->getMadridSer()->format('Y-m-d') : '-',

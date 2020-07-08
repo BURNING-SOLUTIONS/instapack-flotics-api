@@ -3,20 +3,15 @@
 namespace App\Service;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
-use App\Entity\Equipment;
 use App\Entity\EquipmentVehicle;
 use App\Entity\Vehicle;
 use App\Utils\StorageFileManager;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpParser\Node\Expr\Array_;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Traits\Base64Manager;
-
 
 class VehicleService
 {
@@ -39,7 +34,6 @@ class VehicleService
      * @param EntityManagerInterface $manager
      * @param ValidatorInterface $validator
      * @param StorageFileManager $filesManager
-     * @param Request $request
      */
     public function __construct(EntityManagerInterface $manager, ValidatorInterface $validator, StorageFileManager $filesManager, EquipmentVehicleService $equipmentVehicleService, IriConverterInterface $iriConverterInterface)
     {
