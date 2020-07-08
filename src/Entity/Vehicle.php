@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Messages\VehicleHistoryMessage;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Controller\VehicleController;
 use App\Controller\ExportVehiclesController;
+use function GuzzleHttp\Psr7\str;
 
 /**
  * @ORM\Table(indexes={
@@ -53,13 +55,11 @@ use App\Controller\ExportVehiclesController;
  * @UniqueEntity("registration")
  * @UniqueEntity("frame")
  * @UniqueEntity("transportCard")
- * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","insurance","vehicleType"})
- * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","insurance": "partial","model":"partial", "color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","transportCardPrice":"partial","transportCard":"partial",
- *     "drivingLicense":"partial","dataSheet":"partial","environmental":"partial","madridSer":"partial","madridCentral":"partial","madridCentralRenovation":"partial","madridSerPrice":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","vehicleType","currentKms"})
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","model":"partial", "currentKms":"partial","color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","transportCardPrice":"partial","transportCard":"partial","drivingLicense":"partial","dataSheet":"partial","environmental":"partial","madridSer":"partial","madridCentral":"partial","madridCentralRenovation":"partial","madridSerPrice":"partial"})
  */
 class Vehicle
 {
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -127,12 +127,6 @@ class Vehicle
      * @ORM\Column(type="string", nullable=true)
      * @Groups({"get_vehicle"})
      */
-    private $insurance;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Groups({"get_vehicle"})
-     */
     private $drivingLicense;
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -179,7 +173,6 @@ class Vehicle
      * @ORM\ManyToOne(targetEntity="FuelType", inversedBy="vehicle")
      * @Groups({"get_vehicle"})
      * @ApiFilter(SearchFilter::class, properties={"fuelVehicle.type":"partial" })
-     *
      */
     private $fuelVehicle;
 
@@ -203,7 +196,7 @@ class Vehicle
      * @ORM\OneToOne(targetEntity="Contract", mappedBy="vehicle", cascade={"persist"})
      * @ApiFilter(SearchFilter::class, properties={"contract.number":"partial"})
      * @ApiFilter(ExistsFilter::class, properties={"contract"})
-     * @Groups({"vehicle_contract"})
+     * @Groups({"vehicle_contract","get_vehicle"})
      */
     private $contract;
 
@@ -214,15 +207,51 @@ class Vehicle
     private $equipmentVehicles;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_vehicle"})
      */
-    private $insuranceExpired;
+    private $currentMma;
 
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Groups({"get_vehicle"})
+     */
+    private $usefulCharge;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VehicleWorkshop", mappedBy="vehicle")
+     */
+    private $vehicleWorkshops;
+
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=2, nullable=true)
+     * @Groups({"get_vehicle"})
+     */
+    private $currentKms;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VehicleIncident", mappedBy="vehicle")
+     */
+    private $vehicleIncidents;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @Groups({"get_vehicle"})
+     */
+    private $client = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VehicleHistory", mappedBy="vehicle")
+     * @ApiSubresource
+     */
+    private $vehicleHistories;
 
     public function __construct()
     {
         $this->equipmentVehicles = new ArrayCollection();
+        $this->vehicleWorkshops = new ArrayCollection();
+        $this->vehicleIncidents = new ArrayCollection();
+        $this->vehicleHistories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -350,19 +379,6 @@ class Vehicle
     public function setCapacity(?float $capacity): void
     {
         $this->capacity = $capacity;
-    }
-
-
-    public function getInsurance()
-    {
-        return $this->insurance;
-    }
-
-    public function setInsurance(?string $insurance): self
-    {
-        $this->insurance = $insurance;
-
-        return $this;
     }
 
     public function getFuelVehicle(): ?FuelType
@@ -586,17 +602,153 @@ class Vehicle
         return $this;
     }
 
-    public function getInsuranceExpired(): ?\DateTimeInterface
+    public function getCurrentMma(): ?string
     {
-        return $this->insuranceExpired;
+        return $this->currentMma;
     }
 
-    public function setInsuranceExpired(?\DateTimeInterface $insuranceExpired): self
+    public function setCurrentMma(?string $currentMma): self
     {
-        $this->insuranceExpired = $insuranceExpired;
+        if (!$currentMma) {
+            $currentMma = $this->mma;
+        }
+
+        $this->currentMma = $currentMma;
+        return $this;
+    }
+
+    public function getUsefulCharge(): ?string
+    {
+        return $this->usefulCharge;
+    }
+
+    public function setUsefulCharge(string $usefulCharge): self
+    {
+        $calculateUseful = (float)$this->mma - (float)$this->mom;
+        $this->usefulCharge = (string)$calculateUseful;
 
         return $this;
     }
 
+    /**
+     * @return Collection|VehicleWorkshop[]
+     */
+    public function getVehicleWorkshops(): Collection
+    {
+        return $this->vehicleWorkshops;
+    }
+
+    public function addVehicleWorkshop(VehicleWorkshop $vehicleWorkshop): self
+    {
+        if (!$this->vehicleWorkshops->contains($vehicleWorkshop)) {
+            $this->vehicleWorkshops[] = $vehicleWorkshop;
+            $vehicleWorkshop->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleWorkshop(VehicleWorkshop $vehicleWorkshop): self
+    {
+        if ($this->vehicleWorkshops->contains($vehicleWorkshop)) {
+            $this->vehicleWorkshops->removeElement($vehicleWorkshop);
+            // set the owning side to null (unless already changed)
+            if ($vehicleWorkshop->getVehicle() === $this) {
+                $vehicleWorkshop->setVehicle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCurrentKms(): ?string
+    {
+        return $this->currentKms;
+    }
+
+    public function setCurrentKms(?string $currentKms): self
+    {
+        $this->currentKms = $currentKms;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleIncident[]
+     */
+    public function getVehicleIncidents(): Collection
+    {
+        return $this->vehicleIncidents;
+    }
+
+    public function addVehicleIncident(VehicleIncident $vehicleIncident): self
+    {
+        if (!$this->vehicleIncidents->contains($vehicleIncident)) {
+            $this->vehicleIncidents[] = $vehicleIncident;
+            $vehicleIncident->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleIncident(VehicleIncident $vehicleIncident): self
+    {
+        if ($this->vehicleIncidents->contains($vehicleIncident)) {
+            $this->vehicleIncidents->removeElement($vehicleIncident);
+            // set the owning side to null (unless already changed)
+            if ($vehicleIncident->getVehicle() === $this) {
+                $vehicleIncident->setVehicle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getClient(): ?array
+    {
+        return $this->client;
+    }
+
+    public function setClient(?array $client): self
+    {
+        if (!$client) {
+            $this->client = null;
+        } else {
+            $this->client = $client;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleHistory[]
+     */
+    public function getVehicleHistories(): Collection
+    {
+        return $this->vehicleHistories;
+    }
+
+    public function addVehicleHistory(VehicleHistory $vehicleHistory): self
+    {
+        if (!$this->vehicleHistories->contains($vehicleHistory)) {
+            $this->vehicleHistories[] = $vehicleHistory;
+            $vehicleHistory->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleHistory(VehicleHistory $vehicleHistory): self
+    {
+        if ($this->vehicleHistories->contains($vehicleHistory)) {
+            $this->vehicleHistories->removeElement($vehicleHistory);
+            // set the owning side to null (unless already changed)
+            if ($vehicleHistory->getVehicle() === $this) {
+                $vehicleHistory->setVehicle(null);
+            }
+        }
+
+        return $this;
+    }
 
 }
