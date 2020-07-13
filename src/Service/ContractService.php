@@ -68,23 +68,9 @@ class ContractService
         return $this->contractRepository->findContractByOrParams($params, array('id', 'number'), $pagination);
     }
 
-    public function uploadAzureFile(string $base64, string $azureRoute, string $prefix, string $identificator)
-    {
-
-        $file_manager = $this->filesManager->getCurrentFileManager();
-
-        $extension = $this->getBase64Extension($base64);
-        $fileData = $this->getBase64FileData($base64);
-        $tmpBasePath = $prefix . $identificator . '.' . $extension;
-        $upload = $this->base64ToFile($fileData, $tmpBasePath);
-        $file = new UploadedFile($tmpBasePath, $tmpBasePath, $extension);
-        $file_manager->uploadFile($file, $azureRoute, $tmpBasePath);
-
-        return $tmpBasePath;
-    }
-
     public function saveContract(Contract $contract, Array $accessories = array()): void
     {
+        $file_manager = $this->filesManager->getCurrentFileManager();
         $contractFile_base64 = $contract->getContractFile();
         $CONTRACTS_AZURE_FILE_PATH = $_ENV['CONTRACTS_AZURE_FILE_PATH'];
         $AZURE_READ_FILES_PATH = $_ENV['AZURE_READ_FILES_PATH'];
@@ -96,7 +82,7 @@ class ContractService
             try {
                 // do stuff
                 if ($contractFile_base64) {
-                    $contractFinalRoute = $this->uploadAzureFile($contractFile_base64, $CONTRACTS_AZURE_FILE_PATH, "ficha_tecnica_", $contract->getNumber());
+                    $contractFinalRoute = $file_manager->uploadBase64File($contractFile_base64, $CONTRACTS_AZURE_FILE_PATH, "ficha_tecnica_", $contract->getNumber());
                     $contract->setContractFile($AZURE_READ_FILES_PATH . $CONTRACTS_AZURE_FILE_PATH . '/' . $contractFinalRoute);
                 }
 

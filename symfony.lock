@@ -107,11 +107,29 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "maennchen/zipstream-php": {
+        "version": "2.1.0"
+    },
+    "markbaker/complex": {
+        "version": "1.4.8"
+    },
+    "markbaker/matrix": {
+        "version": "1.2.0"
+    },
     "microsoft/azure-storage-blob": {
         "version": "1.5.0"
     },
     "microsoft/azure-storage-common": {
         "version": "1.4.1"
+    },
+    "mpdf/mpdf": {
+        "version": "v8.0.6"
+    },
+    "myclabs/deep-copy": {
+        "version": "1.9.5"
+    },
+    "myclabs/php-enum": {
+        "version": "1.7.6"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -135,7 +153,7 @@
         "version": "2.1.1"
     },
     "php": {
-        "version": "7.1"
+        "version": "7.2"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.0.0"
@@ -145,6 +163,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.0.1"
+    },
+    "phpoffice/phpspreadsheet": {
+        "version": "1.13.0"
     },
     "predis/predis": {
         "version": "v1.1.1"
@@ -164,8 +185,14 @@
     "psr/log": {
         "version": "1.1.2"
     },
+    "psr/simple-cache": {
+        "version": "1.0.1"
+    },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
+    },
+    "setasign/fpdi": {
+        "version": "v2.3.3"
     },
     "snc/redis-bundle": {
         "version": "2.0",
@@ -285,6 +312,18 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "8a2675c061737658bed85102e9241c752620e575"
+        },
+        "files": [
+            "./config/packages/messenger.yaml"
+        ]
+    },
     "symfony/mime": {
         "version": "v4.4.1"
     },
@@ -299,6 +338,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.13.1"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.17.1"
     },
     "symfony/property-access": {
         "version": "v4.4.1"

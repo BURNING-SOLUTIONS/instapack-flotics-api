@@ -15,7 +15,7 @@ services:
   # this creates a service per class whose id is the fully-qualified class name
   App\:
     resource: '../src/*'
-    exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+    exclude: '../src/{DependencyInjection,Dhl_Entity,Entity,Migrations,Tests,Kernel.php}'
 
   # controllers are imported separately to make sure services can be injected
   # as action arguments even if you don't extend any base controller class
@@ -25,6 +25,9 @@ services:
 
   App\Service\RedisCacheService:
     arguments: ['@snc_redis.cache']
+
+  App\Messages\Handlers\VehicleHistoryHandler:
+    tags: ['messenger.message_handler']
 
 #  App\Entity\Vehicle:
       # redundant thanks to _defaults, but value is overridable on each service
@@ -36,7 +39,22 @@ services:
   App\Utils\StorageFileManager:
     arguments: ['App\Utils\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
 
+  App\EventListener\OnFlushListener:
+    tags:
+      - { name: doctrine.event_listener, event: onFlush , connection: default  }
 
+  App\EventListener\NewVehicleListener:
+    tags:
+      - { name: doctrine.event_listener, event: postPersist }
+
+  App\EventListener\UpdateVehicleListener:
+    tags:
+      - { name: doctrine.event_listener, event: preUpdate }
+
+  App\EventSubscriber\NewVehicleSubscriber:
+    arguments: ["@service_container"]
+    tags:
+      - { name: kernel.event_subscriber }
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

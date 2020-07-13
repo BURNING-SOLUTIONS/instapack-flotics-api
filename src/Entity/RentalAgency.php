@@ -12,13 +12,25 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use App\Controller\ExportAgenciesController;
 /**
  * @ORM\Table(indexes={
 @ORM\Index(name="global_search_agency", columns={"name","code","cif"})
 })
  * @ApiResource(
  *     normalizationContext={"groups"={"get_contract","get_agency","vehicle_agency"}},
+ *     collectionOperations={
+ *          "get",
+ *          "post",
+ *          "export_agencies"={
+ *              "method"="GET",
+ *              "path"="/rental_agencies/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportAgenciesController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
+ *         }
+ *     },
  *     itemOperations={
  *         "patch",
  *         "put",
@@ -140,10 +152,16 @@ class RentalAgency
      */
     private $secondEmail;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VehicleWorkshop", mappedBy="rentalAgency")
+     */
+    private $vehicleWorkshops;
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
         $this->vehicles = new ArrayCollection();
+        $this->vehicleWorkshops = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -382,6 +400,37 @@ class RentalAgency
     public function setSecondEmail(?string $secondEmail): self
     {
         $this->secondEmail = $secondEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleWorkshop[]
+     */
+    public function getVehicleWorkshops(): Collection
+    {
+        return $this->vehicleWorkshops;
+    }
+
+    public function addVehicleWorkshop(VehicleWorkshop $vehicleWorkshop): self
+    {
+        if (!$this->vehicleWorkshops->contains($vehicleWorkshop)) {
+            $this->vehicleWorkshops[] = $vehicleWorkshop;
+            $vehicleWorkshop->setRentalAgency($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleWorkshop(VehicleWorkshop $vehicleWorkshop): self
+    {
+        if ($this->vehicleWorkshops->contains($vehicleWorkshop)) {
+            $this->vehicleWorkshops->removeElement($vehicleWorkshop);
+            // set the owning side to null (unless already changed)
+            if ($vehicleWorkshop->getRentalAgency() === $this) {
+                $vehicleWorkshop->setRentalAgency(null);
+            }
+        }
 
         return $this;
     }

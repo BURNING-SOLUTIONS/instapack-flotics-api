@@ -12,7 +12,7 @@ api_platform:
       maximum_items_per_page: 100
       items_per_page_parameter_name: perPage # Default value
   mapping:
-    paths: ['%kernel.project_dir%/src/Entity']
+    paths: ['%kernel.project_dir%/src/Entity','%kernel.project_dir%/src/Dhl_Entity']
 #  formats:
 #    jsonld:
 #      mime_types: ['application/ld+json', 'multipart/form-data', 'application/merge-patch+json']
