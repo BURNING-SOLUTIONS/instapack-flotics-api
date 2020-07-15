@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200308184929 extends AbstractMigration
+final class Version20200715111821 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,9 +22,7 @@ final class Version20200308184929 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_E98F2859AAD0FA19 ON contract');
-        $this->addSql('ALTER TABLE contract CHANGE contract_number number INT NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_E98F285996901F54 ON contract (number)');
+        $this->addSql('ALTER TABLE rates CHANGE vehicle_name vehicle_model VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +30,6 @@ final class Version20200308184929 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_E98F285996901F54 ON contract');
-        $this->addSql('ALTER TABLE contract CHANGE number contract_number INT NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_E98F2859AAD0FA19 ON contract (contract_number)');
+        $this->addSql('ALTER TABLE rates CHANGE vehicle_model vehicle_name VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`');
     }
 }
