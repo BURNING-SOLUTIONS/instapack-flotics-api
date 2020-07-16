@@ -21,7 +21,9 @@ use App\Service\RedisCacheService;
 final class EntityDeleteSubscriber implements EventSubscriberInterface
 {
 
-    const ERROR_CONSTRAINT = "El elemento no puede ser eliminado, pues esta relacionado con otras entidades en la aplicación, tenga en cuanta que no puede eliminar por ejemplo un vehículo o una agencia si ya tienen contrato registrado.";
+    //"El elemento no puede ser eliminado, pues esta relacionado con otras entidades en la aplicación, tenga en cuanta que no puede eliminar por ejemplo un vehículo o una agencia si ya tienen contrato registrado.";
+    const ERROR_CONSTRAINT = "No se puede eliminar el elemento seleccionado. Está relacionado con otra entidad (Ej: Contratos, Agencias, Datos en Histórico, etc) dentro de la aplicación.";
+
     private $redis;
 
     public function __construct(RedisCacheService $redis)

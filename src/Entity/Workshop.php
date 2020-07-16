@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -37,7 +36,7 @@ class Workshop
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     *@Groups({"get_workshop"})
+     * @Groups({"get_workshop"})
      */
     private $code;
 
@@ -108,7 +107,7 @@ class Workshop
     private $secondDirection;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      * @Groups({"get_workshop"})
      */
     private $createdAt;

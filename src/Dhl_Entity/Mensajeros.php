@@ -3,12 +3,26 @@
 namespace Dhl\Dhl_Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\MessengerController;
+use App\Repository\MessengerRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * Mensajeros
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get"={
+ *             "method"="GET",
+ *             "controller"=MessengerController::class
+ *         }
+ *     },
+ *     itemOperations={"get"})
  *
  * @ORM\Table(name="mensajeros", indexes={@ORM\Index(name="_dta_index_mensajeros_77_501576825__K4_K46_2_3_9987_4364", columns={"Cod_Men", "BajaTem_Men"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\MessengerRepository")
  */
 class Mensajeros
 {

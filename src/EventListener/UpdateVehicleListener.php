@@ -26,6 +26,7 @@ class UpdateVehicleListener
 
     public function preUpdate(PreUpdateEventArgs $event)
     {
+        $changeset = array();
         $entity = $event->getObject();
         $entityManager = $event->getObjectManager();
         // only act on some "Product" entity
@@ -34,10 +35,50 @@ class UpdateVehicleListener
         }
         // ... do something with the Vehicle
         if ($event->hasChangedField('client')) {
-            // Do something when the client is changed.
-            $updateVehicleHistoryEvent = new UpdateVehicleHistoryEvent(array('client'), $entity, $this->bus);
+            if ($this->isDifferentClient($event->getEntityChangeSet()['client'])) {
+                $changeset[] = 'client';
+            }
+        }
+
+        if ($event->hasChangedField('deliveryMan')) {
+            if ($this->isDifferentDeliveryMan($event->getEntityChangeSet()['deliveryMan'])) {
+                $changeset[] = 'deliveryMan';
+            }
+        }
+
+        if ($changeset) {
+            // Do something when the deliveryMan is changed.
+            $updateVehicleHistoryEvent = new UpdateVehicleHistoryEvent($changeset, $entity, $this->bus);
             $this->dispatcher->dispatch($updateVehicleHistoryEvent, UpdateVehicleHistoryEvent::NAME);
         }
+    }
+
+    #check and compare if last client value and new client value are different for current updated vehicle
+    public function isDifferentClient(array $client): bool
+    {
+        $oldValue = $client[0];
+        $newValue = $client[1];
+        if (!$newValue && $oldValue) {
+            return true;
+        }
+        if (array_key_exists('nomCli', $newValue) && array_key_exists('nomCli', $oldValue)) {
+            return $newValue['nomCli'] !== $oldValue['nomCli'];
+        }
+        return true;
+    }
+
+    #check and compare if last client value and new client value are different for current updated vehicle
+    public function isDifferentDeliveryMan(array $deliveryMan): bool
+    {
+        $oldValue = $deliveryMan[0];
+        $newValue = $deliveryMan[1];
+        if (!$newValue && $oldValue) {
+            return true;
+        }
+        if (array_key_exists('nomMen', $newValue) && array_key_exists('nomMen', $oldValue)) {
+            return $newValue['nomMen'] !== $oldValue['nomMen'];
+        }
+        return true;
     }
 
 }

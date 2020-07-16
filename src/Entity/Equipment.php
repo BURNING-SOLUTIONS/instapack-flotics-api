@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\EquipmentRepository")
  * @ApiFilter(SearchFilter::class, properties={"name": "partial", "type":"partial"})
- * @ApiFilter(OrderFilter::class, properties={"name","type"})
+ * @ApiFilter(OrderFilter::class, properties={"name","type","price"})
  */
 class Equipment
 {
@@ -44,6 +44,12 @@ class Equipment
      * @ORM\OneToMany(targetEntity="App\Entity\EquipmentVehicle", mappedBy="equipment")
      */
     private $equipmentVehicles;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @Groups({"get_equipment"})
+     */
+    private $price;
 
     public function __construct()
     {
@@ -107,6 +113,18 @@ class Equipment
             $this->equipmentVehicles->removeElement($equipmentVehicle);
             $equipmentVehicle->removeequipment($this);
         }
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?string $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

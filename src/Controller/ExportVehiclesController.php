@@ -68,6 +68,8 @@ class ExportVehiclesController
                     "Marca" => $vehicle->getBrand(),
                     "Modelo" => $vehicle->getModel(),
                     "Agencia" => $vehicle->getRentalAgency()->getName(),
+                    "Cliente" => !$vehicle->getClient() ? '' : $vehicle->getClient()['nomCli'],
+                    "Repartidor" => !$vehicle->getDeliveryMan() ? '' : $vehicle->getDeliveryMan()['nomMen'],
                     "#Contrato" => $vehicle->getContract() ? $vehicle->getContract()->getNumber() : '-',
                     "Tipo" => $vehicle->getContract() ? $vehicle->getContract()->getType()->getName() : '-',
                     "Fin Contrato" => $vehicle->getContract() ? $vehicle->getContract()->getEndDate()->format('Y-m-d') : '-',
@@ -76,10 +78,10 @@ class ExportVehiclesController
                     "Mom" => $vehicle->getMom(),
                     "Mma" => $vehicle->getMma(),
                     "Co2" => $vehicle->getCo2(),
-                    #"Seguro" => $vehicle->getInsurance(),
                     "Tarj. Transporte" => $vehicle->getTransportCard(),
-                    "M. Central" => $vehicle->getMadridCentral() ? $vehicle->getMadridCentral()->format('Y-m-d') : '-',
-                    "M. Ser" => $vehicle->getMadridSer() ? $vehicle->getMadridSer()->format('Y-m-d') : '-',
+                    #"Seguro" => $vehicle->getInsurance(),
+                    #"M. Central" => $vehicle->getMadridCentral() ? $vehicle->getMadridCentral()->format('Y-m-d') : '-',
+                    #"M. Ser" => $vehicle->getMadridSer() ? $vehicle->getMadridSer()->format('Y-m-d') : '-',
                 );
             }
         }

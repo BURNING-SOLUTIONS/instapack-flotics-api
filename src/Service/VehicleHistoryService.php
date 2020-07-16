@@ -15,12 +15,16 @@ const NEW_VEHICLE_WORKSHOP = 2;
 const EXIT_VEHICLE_WORKSHOP = 3;
 const NEW_VEHICLE_CLIENT = 4;
 const DELETE_VEHICLE_CLIENT = 5;
+const NEW_VEHICLE_DELIVERY = 6;
+const DELETE_VEHICLE_DELIVERY = 7;
 
 const NEW_VEHICLE_LOCATION = "Alta vehículo";
 const NEW_VEHICLE_WORKSHOP_LOCATION = "Visita al taller";
+const NEW_VEHICLE_DELIVERY_LOCATION = "Repartidor asignado";
 const EXIT_VEHICLE_WORKSHOP_LOCATION = "Salida del taller";
 const NEW_VEHICLE_CLIENT_LOCATION = "Asignado a cliente";
 const DELETE_VEHICLE_CLIENT_LOCATION = "Cliente removido";
+const DELETE_VEHICLE_DELIVERY_LOCATION = "Repartidor desasignado";
 
 class VehicleHistoryService
 {
@@ -84,6 +88,21 @@ class VehicleHistoryService
         if (!count($errors) > 0) {
             try {
                 $this->vehicleHistoryRepository->persistVehicleHistory($vehicleHistoryClient);
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage());
+            }
+        }
+    }
+
+    public function saveVehicleHistoryDelivery(VehicleHistory $vehicleHistoryDelivery): void
+    {
+        $type = $vehicleHistoryDelivery->getDeliveryMan() ? NEW_VEHICLE_DELIVERY : DELETE_VEHICLE_DELIVERY;
+        $location = $vehicleHistoryDelivery->getDeliveryMan() ? NEW_VEHICLE_DELIVERY_LOCATION : DELETE_VEHICLE_DELIVERY_LOCATION;
+        $vehicleHistoryDelivery->setType($type)->setLocation($location);
+        $errors = $this->validator->validate($vehicleHistoryDelivery);
+        if (!count($errors) > 0) {
+            try {
+                $this->vehicleHistoryRepository->persistVehicleHistory($vehicleHistoryDelivery);
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage());
             }

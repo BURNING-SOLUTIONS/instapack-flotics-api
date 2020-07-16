@@ -56,7 +56,7 @@ use function GuzzleHttp\Psr7\str;
  * @UniqueEntity("frame")
  * @UniqueEntity("transportCard")
  * @ApiFilter(OrderFilter::class, properties={"registration", "frame","capacity","co2","mom","mma","brand","model","vehicleType","currentKms"})
- * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","model":"partial", "currentKms":"partial","color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","transportCardPrice":"partial","transportCard":"partial","drivingLicense":"partial","dataSheet":"partial","environmental":"partial","madridSer":"partial","madridCentral":"partial","madridCentralRenovation":"partial","madridSerPrice":"partial"})
+ * @ApiFilter(SearchFilter::class, properties={"registration": "partial", "brand": "partial", "frame": "partial","model":"partial", "currentKms":"partial","color":"partial","co2":"partial","mom":"partial","mma":"partial","capacity":"partial","transportCardPrice":"partial","transportCard":"partial","drivingLicense":"partial","dataSheet":"partial","environmental":"partial"})
  */
 class Vehicle
 {
@@ -138,26 +138,6 @@ class Vehicle
      * @Groups({"get_vehicle"})
      */
     private $environmental;
-    /**
-     * @ORM\Column(type="datetime",nullable=true)
-     * @Groups({"get_vehicle"})
-     */
-    private $madridSer;
-    /**
-     * @ORM\Column(type="datetime",nullable=true)
-     * @Groups({"get_vehicle"})
-     */
-    private $madridCentral;
-    /**
-     * @ORM\Column(type="datetime",nullable=true)
-     * @Groups({"get_vehicle"})
-     */
-    private $madridCentralRenovation;
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
-     * @Groups({"get_vehicle"})
-     */
-    private $madridSerPrice;
     /**
      * @ORM\Column(type="string", length=255, unique=true, nullable=true)
      * @Groups({"get_vehicle"})
@@ -246,12 +226,24 @@ class Vehicle
      */
     private $vehicleHistories;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VehicleAuthorization", mappedBy="vehicle")
+     */
+    private $vehicleAuthorizations;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @Groups({"get_vehicle"})
+     */
+    private $deliveryMan = null;
+
     public function __construct()
     {
         $this->equipmentVehicles = new ArrayCollection();
         $this->vehicleWorkshops = new ArrayCollection();
         $this->vehicleIncidents = new ArrayCollection();
         $this->vehicleHistories = new ArrayCollection();
+        $this->vehicleAuthorizations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -481,70 +473,6 @@ class Vehicle
     /**
      * @return mixed
      */
-    public function getMadridSer()
-    {
-        return $this->madridSer;
-    }
-
-    /**
-     * @param mixed $madridSer
-     */
-    public function setMadridSer($madridSer): void
-    {
-        $this->madridSer = $madridSer;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMadridCentral()
-    {
-        return $this->madridCentral;
-    }
-
-    /**
-     * @param mixed $madridCentral
-     */
-    public function setMadridCentral($madridCentral): void
-    {
-        $this->madridCentral = $madridCentral;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMadridCentralRenovation()
-    {
-        return $this->madridCentralRenovation;
-    }
-
-    /**
-     * @param mixed $madridCentralRenovation
-     */
-    public function setMadridCentralRenovation($madridCentralRenovation): void
-    {
-        $this->madridCentralRenovation = $madridCentralRenovation;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMadridSerPrice()
-    {
-        return $this->madridSerPrice;
-    }
-
-    /**
-     * @param mixed $madridSerPrice
-     */
-    public function setMadridSerPrice(?float $madridSerPrice): void
-    {
-        $this->madridSerPrice = $madridSerPrice;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getTransportCard()
     {
         return $this->transportCard;
@@ -746,6 +674,53 @@ class Vehicle
             if ($vehicleHistory->getVehicle() === $this) {
                 $vehicleHistory->setVehicle(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleAuthorization[]
+     */
+    public function getVehicleAuthorizations(): Collection
+    {
+        return $this->vehicleAuthorizations;
+    }
+
+    public function addVehicleAuthorization(VehicleAuthorization $vehicleAuthorization): self
+    {
+        if (!$this->vehicleAuthorizations->contains($vehicleAuthorization)) {
+            $this->vehicleAuthorizations[] = $vehicleAuthorization;
+            $vehicleAuthorization->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleAuthorization(VehicleAuthorization $vehicleAuthorization): self
+    {
+        if ($this->vehicleAuthorizations->contains($vehicleAuthorization)) {
+            $this->vehicleAuthorizations->removeElement($vehicleAuthorization);
+            // set the owning side to null (unless already changed)
+            if ($vehicleAuthorization->getVehicle() === $this) {
+                $vehicleAuthorization->setVehicle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDeliveryMan(): ?array
+    {
+        return $this->deliveryMan;
+    }
+
+    public function setDeliveryMan(?array $deliveryMan): self
+    {
+        if (!$deliveryMan) {
+            $this->deliveryMan = null;
+        } else {
+            $this->deliveryMan = $deliveryMan;
         }
 
         return $this;
