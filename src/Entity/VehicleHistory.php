@@ -1,144 +1,162 @@
 <?php
 
- namespace App\Entity;
+namespace App\Entity;
 
- use ApiPlatform\Core\Annotation\ApiResource;
- use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
- use ApiPlatform\Core\Annotation\ApiFilter;
- use Symfony\Component\Serializer\Annotation\Groups;
- use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\ORM\Mapping as ORM;
 
 #Queda pendiente crear la entidad revision local e incluirla aqui para ver en el historico del vehiculo si paso por esa
 #Revision local, com mismo se tiene ya el cliente y el el taller..
 
- /**
-  * @ApiResource(
-  *  normalizationContext={"groups"={"get_vehicleHistory","history_workshop"}}
-  * )
-  * @ORM\Entity(repositoryClass="App\Repository\VehicleHistoryRepository")
-  * @ApiFilter(DateFilter::class, properties={"createdAt": DateFilter::EXCLUDE_NULL})
-  */
- class VehicleHistory
- {
-  /**
-   * @ORM\Id()
-   * @ORM\GeneratedValue()
-   * @ORM\Column(type="integer")
-   * @Groups({"get_vehicleHistory"})
-   */
-  private $id;
+/**
+ * @ApiResource(
+ *  normalizationContext={"groups"={"get_vehicleHistory","history_workshop"}}
+ * )
+ * @ORM\Entity(repositoryClass="App\Repository\VehicleHistoryRepository")
+ * @ApiFilter(DateFilter::class, properties={"createdAt": DateFilter::EXCLUDE_NULL})
+ */
+class VehicleHistory
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     * @Groups({"get_vehicleHistory"})
+     */
+    private $id;
 
-  /**
-   * @ORM\Column(type="datetime")
-   * @Groups({"get_vehicleHistory"})
-   */
-  private $createdAt;
+    /**
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
+     * @Groups({"get_vehicleHistory"})
+     */
+    private $createdAt;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="App\Entity\VehicleWorkshop", inversedBy="vehicleHistories")
-   * @Groups({"history_workshop"})
-   */
-  private $workshop;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VehicleWorkshop", inversedBy="vehicleHistories")
+     * @Groups({"history_workshop"})
+     */
+    private $workshop;
 
-  /**
-   * @ORM\Column(type="string", length=255, nullable=true)
-   * @Groups({"get_vehicleHistory"})
-   */
-  private $client;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_vehicleHistory"})
+     */
+    private $client;
 
-  /**
-   * @ORM\Column(type="string", length=255)
-   * @Groups({"get_vehicleHistory"})
-   */
-  private $location;
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"get_vehicleHistory"})
+     */
+    private $location;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="vehicleHistories")
-   * @Groups({"get_vehicleHistory"})
-   * @ORM\JoinColumn(nullable=false)
-   */
-  private $vehicle;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="vehicleHistories")
+     * @Groups({"get_vehicleHistory"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $vehicle;
 
-  /**
-   * @ORM\Column(type="integer", length=1)
-   * @Groups({"get_vehicleHistory"})
-   */
-  private $type;
+    /**
+     * @ORM\Column(type="integer", length=1)
+     * @Groups({"get_vehicleHistory"})
+     */
+    private $type;
 
-  public function getId(): ?int
-  {
-   return $this->id;
-  }
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_vehicleHistory"})
+     */
+    private $deliveryMan;
 
-  public function getCreatedAt(): ?\DateTimeInterface
-  {
-   return $this->createdAt;
-  }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-  public function setCreatedAt(\DateTimeInterface $createdAt): self
-  {
-   $this->createdAt = $createdAt;
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
 
-   return $this;
-  }
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
-  public function getWorkshop(): ?VehicleWorkshop
-  {
-   return $this->workshop;
-  }
+        return $this;
+    }
 
-  public function setWorkshop(?VehicleWorkshop $workshop): self
-  {
-   $this->workshop = $workshop;
+    public function getWorkshop(): ?VehicleWorkshop
+    {
+        return $this->workshop;
+    }
 
-   return $this;
-  }
+    public function setWorkshop(?VehicleWorkshop $workshop): self
+    {
+        $this->workshop = $workshop;
 
-  public function getClient(): ?string
-  {
-   return $this->client;
-  }
+        return $this;
+    }
 
-  public function setClient(?string $client): self
-  {
-   $this->client = $client;
+    public function getClient(): ?string
+    {
+        return $this->client;
+    }
 
-   return $this;
-  }
+    public function setClient(?string $client): self
+    {
+        $this->client = $client;
 
-  public function getLocation(): ?string
-  {
-   return $this->location;
-  }
+        return $this;
+    }
 
-  public function setLocation(?string $location): self
-  {
-   $this->location = $location;
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
 
-   return $this;
-  }
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
 
-  public function getVehicle(): ?Vehicle
-  {
-   return $this->vehicle;
-  }
+        return $this;
+    }
 
-  public function setVehicle(?Vehicle $vehicle): self
-  {
-   $this->vehicle = $vehicle;
+    public function getVehicle(): ?Vehicle
+    {
+        return $this->vehicle;
+    }
 
-   return $this;
-  }
+    public function setVehicle(?Vehicle $vehicle): self
+    {
+        $this->vehicle = $vehicle;
 
-  public function getType(): ?int
-  {
-   return $this->type;
-  }
+        return $this;
+    }
 
-  public function setType(int $type): self
-  {
-   $this->type = $type;
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
 
-   return $this;
-  }
- }
+    public function setType(int $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDeliveryMan(): ?string
+    {
+        return $this->deliveryMan;
+    }
+
+    public function setDeliveryMan(?string $deliveryMan): self
+    {
+        $this->deliveryMan = $deliveryMan;
+
+        return $this;
+    }
+}

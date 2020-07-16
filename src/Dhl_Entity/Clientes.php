@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use App\Controller\clientController;
+use App\Controller\ClientController;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Repository\ClientsRepository;
 use App\Entity\Vehicle;
@@ -17,7 +17,7 @@ use App\Entity\Vehicle;
  *     collectionOperations={
  *         "get"={
  *             "method"="GET",
- *             "controller"=clientController::class
+ *             "controller"=ClientController::class
  *         }
  *     },
  *     itemOperations={"get"})

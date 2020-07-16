@@ -24,13 +24,13 @@ class VehicleType
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_vehicle"})
+     * @Groups({"get_vehicle","get_rates"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_vehicle"})
+     * @Groups({"get_vehicle","get_rates"})
      */
     private $type;
 
@@ -40,6 +40,8 @@ class VehicleType
      * @ORM\OneToMany(targetEntity="Vehicle", mappedBy="vehicleType")
      */
     private $vehicle;
+
+
 
     public function getId(): ?int
     {
@@ -73,6 +75,8 @@ class VehicleType
     {
         $this->vehicle = $vehicle;
     }
+
+
 
 
 }
