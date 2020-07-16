@@ -15,7 +15,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource(normalizationContext={"groups"={"workshop_services"}})
+ * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\WorkshopServicesRepository")
  * @UniqueEntity("name")
  * @ApiFilter(SearchFilter::class, properties={"name": "partial", "workshops": "partial"})
@@ -27,20 +27,20 @@ class WorkshopServices
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"workshop_services"})
+     *
      */
     private $id;
 
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $name;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Workshop", mappedBy="services")
-     * @Groups({"workshop_services"})
+     *
      */
     private $workshops;
 

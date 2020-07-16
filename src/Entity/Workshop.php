@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *   normalizationContext={"groups"={"history_workshop","workshop_services"}}
+ *   normalizationContext={"groups"={"history_workshop","get_workshop"}}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\WorkshopRepository")
  * @UniqueEntity("code")
@@ -31,25 +31,25 @@ class Workshop
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"history_workshop","get_workshop"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     *@Groups({"history_workshop","workshop_services"})
+     *@Groups({"get_workshop"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"history_workshop","get_workshop"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      * @Assert\Regex(
      *               pattern="/^((\+34)|(34))?[6|7|8|9][0-9]{8}$/", message="Your phone is invalid")
      */
@@ -57,7 +57,7 @@ class Workshop
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      * @Assert\Email(
      *     message = "The email is not a valid.",
      *     checkMX = true
@@ -66,18 +66,18 @@ class Workshop
     private $mainEmail;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $mainContact;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $mainDirection;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      * @Assert\Regex(
      *               pattern="/^((\+34)|(34))?[6|7|8|9][0-9]{8}$/", message="Your phone is invalid")
      */
@@ -86,7 +86,7 @@ class Workshop
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      * @Assert\Email(
      *     message = "The email is not a valid.",
      *     checkMX = true
@@ -96,52 +96,52 @@ class Workshop
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $secondContact;
 
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $secondDirection;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $active;
 
     /**
      * @ORM\Column(type="decimal", precision=2, scale=1, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $avgRate;
 
     /**
      * @ORM\Column(type="decimal", precision=12, scale=2, nullable=true)
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $totalBilled;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\WorkshopServices", inversedBy="workshops")
      * @ApiFilter(SearchFilter::class, properties={"services.name":"partial" })
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $services;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\VehicleWorkshop", mappedBy="workshop")
      * @ApiFilter(SearchFilter::class, properties={"vehicleWorkshops.vehicle":"partial" })
-     * @Groups({"history_workshop","workshop_services"})
+     * @Groups({"get_workshop"})
      */
     private $vehicleWorkshops;
 
