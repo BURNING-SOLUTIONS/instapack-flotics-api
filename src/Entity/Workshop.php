@@ -14,6 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 
 /**
  * @ApiResource(
@@ -24,6 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @UniqueEntity("name")
  * @ApiFilter(SearchFilter::class, properties={"id":"partial","code":"partial","name":"partial","mainPhone":"partial","mainEmail":"partial","secondPhone":"partial","secondEmail":"partial","mainContact":"partial","services":"partial","totalBilled":"partial","avgRate":"partial","active":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"id","code","name","mainPhone","mainEmail","secondPhone","secondEmail","mainContact","services","totalBilled","avgRate","active","createdAt"})
+ * @ApiFilter(RangeFilter::class, properties={"avgRate"})
  */
 class Workshop
 {
@@ -122,6 +124,10 @@ class Workshop
     /**
      * @ORM\Column(type="decimal", precision=2, scale=1, nullable=true)
      * @Groups({"get_workshop"})
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 5.0,
+     * )
      */
     private $avgRate;
 
