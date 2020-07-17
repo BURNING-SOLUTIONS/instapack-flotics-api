@@ -31,7 +31,7 @@ class VehicleWorkshop
     private $estimationDays;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      * @Groups({"get_VehicleWorkshop"})
      */
     private $createdAt;

@@ -34,21 +34,23 @@ class VehicleHistoryHandler
         $history = new VehicleHistory();
         $vehicle = $message->getVehicle();
         $client = $vehicle->getClient();
+        $deliveryMan = $vehicle->getDeliveryMan();
         $clientName = $client ? $client['nomCli'] : null;
-        $history
-            ->setCreatedAt($now)
-            ->setVehicle($vehicle);
-
+        $deliveryManName = $deliveryMan ? $deliveryMan['nomMen'] : null;
+        $history->setCreatedAt($now)->setVehicle($vehicle);
         $this->vehicleHistoryService->saveVehicleHistory($history);
-
         # When create new vehicle, if have client we register first assigned client history
         if ($client) {
             $historyClient = new VehicleHistory();
-            $historyClient
-                ->setCreatedAt($now)
-                ->setClient($clientName)
-                ->setVehicle($vehicle);
+            $historyClient->setCreatedAt($now)->setClient($clientName)->setVehicle($vehicle);
             $this->vehicleHistoryService->saveVehicleHistoryClient($historyClient);
+        }
+
+        # When create new vehicle, if have deliveryMan we register first assigned client history
+        if ($deliveryManName) {
+            $historyDelivery = new VehicleHistory();
+            $historyDelivery->setCreatedAt($now)->setDeliveryMan($deliveryManName)->setVehicle($vehicle);
+            $this->vehicleHistoryService->saveVehicleHistoryDelivery($historyDelivery);
         }
     }
 
@@ -58,22 +60,27 @@ class VehicleHistoryHandler
         $changes = $message->getChangeset();
         $vehicle = $message->getVehicle();
         $client = $vehicle->getClient();
+        $deliveryMan = $vehicle->getDeliveryMan();
         $clientName = $client ? $client['nomCli'] : null;
+        $deliveryManName = $deliveryMan ? $deliveryMan['nomMen'] : null;
 
         foreach ($changes as $change) {
             switch ($change) {
                 case 'client':
                     $historyClient = new VehicleHistory();
-                    $historyClient
-                        ->setCreatedAt($now)
-                        ->setVehicle($vehicle)
-                        ->setClient($clientName);
+                    $historyClient->setCreatedAt($now)->setVehicle($vehicle)->setClient($clientName);
+                    #proceed to save new vehicle client history asigned
+                    $this->vehicleHistoryService->saveVehicleHistoryClient($historyClient);
+                    break;
+                case 'deliveryMan':
+                    $historydeliveryMan = new VehicleHistory();
+                    $historydeliveryMan->setCreatedAt($now)->setVehicle($vehicle)->setDeliveryMan($deliveryManName);
+                    #proceed to save new vehicle client history asigned
+                    $this->vehicleHistoryService->saveVehicleHistoryDelivery($historydeliveryMan);
                     break;
             }
         }
 
-        #proceed to save new vehicle client history asigned
-        $this->vehicleHistoryService->saveVehicleHistoryClient($historyClient);
     }
 
 }
