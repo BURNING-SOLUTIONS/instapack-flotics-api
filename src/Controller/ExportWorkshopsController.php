@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\Vehicle;
+use App\Entity\Workshop;
 use Symfony\Component\HttpFoundation\Response;
 use App\Utils\RequestContextParser;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -12,7 +13,7 @@ use App\Factory\ExportDocumentFactory;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 
 
-class ExportVehiclesController
+class ExportWorkshopsController
 {
     private $request;
 
@@ -26,7 +27,7 @@ class ExportVehiclesController
     }
 
     /**
-     * @param Vehicle $data
+     * @param Workshop $data
      * @return array
      * In custom controllers By Api-Platform, The __invoke method of the action is called when the matching route is hit.
      * It can return either an instance of Symfony\Component\HttpFoundation\Response (that will be displayed to the client
@@ -40,7 +41,7 @@ class ExportVehiclesController
     {
         $parser = new RequestContextParser($this->request);
         $extension = $format == 'excel' ? 'xlsx' : 'pdf';
-        $fileColumns = $this->constructVehiclesColumnsToExport($data);
+        $fileColumns = $this->constructWorkshopsColumnsToExport($data);
         //Factory Pattern, I create
         $fileExporter = (new ExportDocumentFactory($format))(); //# call__invokable method of ExportDocumentFactory class
 
@@ -50,38 +51,29 @@ class ExportVehiclesController
         $response = new Response($file);
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
-            'vehicles.' . $extension
+            'workshops.' . $extension
         );
         // Return the excel file as an attachment
         $response->headers->set('Content-Disposition', $disposition);
         return $response;
     }
 
-    public function constructVehiclesColumnsToExport($vehicles)
+    public function constructWorkshopsColumnsToExport($workshops)
     {
         $columns = [];
-        foreach ($vehicles as $index => $vehicle) {
-            if ($vehicle instanceof Vehicle) {
+        foreach ($workshops as $index => $workshop) {
+            if ($workshop instanceof Workshop) {
                 $columns[] = array(
-                    "Matrícula" => $vehicle->getRegistration(),
-                    "Bastidor" => $vehicle->getFrame(),
-                    "Marca" => $vehicle->getBrand(),
-                    "Modelo" => $vehicle->getModel(),
-                    "Agencia" => $vehicle->getRentalAgency()->getName(),
-                    "Cliente" => !$vehicle->getClient() ? '' : $vehicle->getClient()['nomCli'],
-                    "Repartidor" => !$vehicle->getDeliveryMan() ? '' : $vehicle->getDeliveryMan()['nomMen'],
-                    "#Contrato" => $vehicle->getContract() ? $vehicle->getContract()->getNumber() : '-',
-                    "Tipo" => $vehicle->getContract() ? $vehicle->getContract()->getType()->getName() : '-',
-                    "Fin Contrato" => $vehicle->getContract() ? $vehicle->getContract()->getEndDate()->format('Y-m-d') : '-',
-                    "Combustible" => $vehicle->getFuelVehicle()->getType(),
-                    "Carga" => $vehicle->getCapacity(),
-                    "Mom" => $vehicle->getMom(),
-                    "Mma" => $vehicle->getMma(),
-                    "Co2" => $vehicle->getCo2(),
-                    "Tarj. Transporte" => $vehicle->getTransportCard(),
-                    #"Seguro" => $vehicle->getInsurance(),
-                    #"M. Central" => $vehicle->getMadridCentral() ? $vehicle->getMadridCentral()->format('Y-m-d') : '-',
-                    #"M. Ser" => $vehicle->getMadridSer() ? $vehicle->getMadridSer()->format('Y-m-d') : '-',
+                    "Código" => $workshop->getCode(),
+                    "Nombre" => $workshop->getName(),
+                    "Alta" => $workshop->getCreatedAt()->format('Y-m-d'),
+                    "Dirección" => $workshop->getMainDirection(),
+                    "Móvil" => $workshop->getMainPhone(),
+                    "Móvil Secundario" => $workshop->getSecondPhone(),
+                    "Email" => $workshop->getMainEmail(),
+                    "Servicios" => count($workshop->getVehicleWorkshops()),
+                    "Clasificación" => $workshop->getAvgRate(),
+                    "Facturación" => $workshop->getTotalBilled()
                 );
             }
         }

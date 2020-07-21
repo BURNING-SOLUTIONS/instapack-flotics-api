@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Events\UpdateVehicleHistoryEvent;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Events;
 use App\Entity\Vehicle;
@@ -30,6 +31,26 @@ class OnFlushListener
         $uow = $em->getUnitOfWork();
         $entities_updated = $uow->getScheduledEntityUpdates();
         $entities_new = $uow->getScheduledEntityInsertions();
+        $myChanges = array();
+
+        foreach ($entities_updated as $entity) {
+            if ($entity instanceof Vehicle) {
+                $changeset = $uow->getEntityChangeSet($entity);
+                if (array_key_exists('client', $changeset)) {
+                    $myChanges[] = 'client';
+                }
+
+                if (array_key_exists('deliveryMan', $changeset)) {
+                    $myChanges[] = 'deliveryMan';
+                }
+
+                if ($changeset) {
+                    // Do something when the deliveryMan is changed.
+                    $updateVehicleHistoryEvent = new UpdateVehicleHistoryEvent($myChanges, $entity, $this->bus);
+                    $this->dispatcher->dispatch($updateVehicleHistoryEvent, UpdateVehicleHistoryEvent::NAME);
+                }
+            }
+        }
 
         /*foreach ($entities_new as $entity) {
             if ($entity instanceof Vehicle) {
@@ -37,12 +58,6 @@ class OnFlushListener
                 $this->dispatcher->dispatch($newVehicleHistoryEvent, NewVehicleHistoryEvent::NAME);
             }
         }*/
-
-        /* foreach ($entities_updated as $entity) {
-            if ($entity instanceof Vehicle) {
-                $this->bus->dispatch(new VehicleHistoryMessage("vehicle-updated", $entity, "carrefour"));
-            }
-        } */
 
         /* foreach ($uow->getScheduledEntityUpdates() as $entity) {
 

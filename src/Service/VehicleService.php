@@ -3,11 +3,15 @@
 namespace App\Service;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Authorizations;
+use App\Entity\Equipment;
 use App\Entity\EquipmentVehicle;
 use App\Entity\Vehicle;
+use App\Entity\VehicleAuthorization;
 use App\Utils\StorageFileManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Service\VehicleAuthorizationService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +26,7 @@ class VehicleService
     private $vehicleRepository;
     private $filesManager;
     private $equipmentVehicleService;
+    private $vehicleAuthorizationService;
     private $iriConverterInterface;
 
     /**
@@ -35,7 +40,7 @@ class VehicleService
      * @param ValidatorInterface $validator
      * @param StorageFileManager $filesManager
      */
-    public function __construct(EntityManagerInterface $manager, ValidatorInterface $validator, StorageFileManager $filesManager, EquipmentVehicleService $equipmentVehicleService, IriConverterInterface $iriConverterInterface)
+    public function __construct(EntityManagerInterface $manager, ValidatorInterface $validator, StorageFileManager $filesManager, EquipmentVehicleService $equipmentVehicleService, VehicleAuthorizationService $vehicleAuthorizationService, IriConverterInterface $iriConverterInterface)
     {
         $this->dbManager = $manager;
         $this->validator = $validator;
@@ -43,6 +48,7 @@ class VehicleService
 
         $this->vehicleRepository = $this->dbManager->getRepository(Vehicle::class);
         $this->equipmentVehicleService = $equipmentVehicleService;
+        $this->vehicleAuthorizationService = $vehicleAuthorizationService;
         $this->iriConverterInterface = $iriConverterInterface;
     }
 
@@ -69,7 +75,7 @@ class VehicleService
         return $this->vehicleRepository->findVehicleByOrParams($params, $retrieveFields, $pagination);
     }
 
-    public function updateVehicle(Vehicle $vehicle, Array $equipments = array()): void
+    public function updateVehicle(Vehicle $vehicle, Array $equipments = array(), $authorizations = array()): void
     {
         $file_manager = $this->filesManager->getCurrentFileManager();
         $compulsaCirculacion_base64 = $vehicle->getDrivingLicense();
@@ -104,6 +110,7 @@ class VehicleService
 
                 $this->vehicleRepository->persistVehicle($vehicle);
                 $this->updateEquipments($vehicle, $equipments);
+                $this->updateAuthorizations($vehicle, $authorizations);
                 $this->dbManager->commit();
 
             } catch (\Exception $e) {
@@ -115,7 +122,7 @@ class VehicleService
 
     }
 
-    public function saveVehicle(Vehicle $vehicle, Array $equipments = array()): void
+    public function saveVehicle(Vehicle $vehicle, Array $equipments = array(), $authorizations = array()): void
     {
         $file_manager = $this->filesManager->getCurrentFileManager();
         $compulsaCirculacion_base64 = $vehicle->getDrivingLicense();
@@ -146,11 +153,11 @@ class VehicleService
                     $sheetFinalRoute = $file_manager->uploadBase64File($sheet_base64, $VEHICLES_AZURE_SHEET_PATH, "ficha_tecnica_", $vehicle->getRegistration());
                     $vehicle->setDataSheet($AZURE_READ_FILES_PATH . $VEHICLES_AZURE_SHEET_PATH . '/' . $sheetFinalRoute);
                 }
-
                 $this->vehicleRepository->persistVehicle($vehicle);
                 $this->saveEquipments($vehicle, $equipments);
-                $this->dbManager->commit();
+                $this->saveAuthorizations($vehicle, $authorizations);
 
+                $this->dbManager->commit();
             } catch (\Exception $e) {
                 $this->dbManager->rollback();
                 throw new \Exception($e->getMessage());
@@ -165,44 +172,131 @@ class VehicleService
         if ($equipments) {
             foreach ($equipments as $equipment) {
                 $newEquipmentVehicle = new EquipmentVehicle();
-                $newEquipmentVehicle
-                    ->setValue($equipment['value'])
-                    ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
-                    ->setVehicle($vehicle);
+                $existedEquipment = $this->iriConverterInterface->getItemFromIri($equipment['equipment']);
 
-                $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
+                if ($existedEquipment instanceof Equipment) {
+                    $newEquipmentVehicle
+                        ->setValue($equipment['value'])
+                        ->setEquipment($existedEquipment)
+                        ->setVehicle($vehicle);
+                }
+                $equipmentCreated = $this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle);
+                $vehicle->addEquipmentVehicle($equipmentCreated);
             }
             $this->vehicleRepository->persistVehicle($vehicle);
         }
     }
 
-    public function updateEquipments(Vehicle $vehicle, Array $equipments = array())
+    public function saveAuthorizations(Vehicle $vehicle, array $authorizations = array()): void
+    {
+        if ($authorizations) {
+            foreach ($authorizations as $authorization) {
+                $newVehicleAuthorization = new VehicleAuthorization();
+                $existedAuthorization = $this->iriConverterInterface->getItemFromIri($authorization['authorization']);
+
+                if ($existedAuthorization instanceof Authorizations) {
+                    $newVehicleAuthorization
+                        ->setAuthorization($existedAuthorization)
+                        ->setStart(new \DateTime($authorization['startDate']))
+                        ->setEnd(new \DateTime($authorization['endDate']))
+                        ->setVehicle($vehicle)
+                        ->setActive($authorization['active'] ?: true)
+                        ->setRenewNotifications($authorization['notifications'] ?: true);
+                }
+                $authorizationCreated = $this->vehicleAuthorizationService->saveVehicleAuthorization($newVehicleAuthorization);
+                $vehicle->addVehicleAuthorization($authorizationCreated);
+            }
+            $this->vehicleRepository->persistVehicle($vehicle);
+        }
+
+    }
+
+    public function updateEquipments(Vehicle $vehicle, array $equipments = array())
     {
         if ($equipments) {
             foreach ($equipments as $equipment) {
-                $cantItems = (int)$equipment['value'];
+                $totalEquipments = (int)$equipment['value'];
+                $haveEquipments = $totalEquipments > 0;
 
                 if (array_key_exists('id', $equipment)) {
                     $findEquipmentVehicle = $this->equipmentVehicleService->getEquipmentVehicleParams(array('id' => $equipment['id']));
 
-                    if ($cantItems > 0) {
-                        $findEquipmentVehicle->setValue($cantItems);
+                    if ($haveEquipments) {
+                        $findEquipmentVehicle->setValue($totalEquipments);
                         $this->equipmentVehicleService->saveEquipmentVehicle($findEquipmentVehicle);
-                    } else {
-                        #im sure that equipment vehicle exist but value is lower or equal to 0 and its neccesary remove..
-                        $this->equipmentVehicleService->removeEquipmentVehicle($findEquipmentVehicle);
+                        continue;
                     }
-                } else {
-                    if ($cantItems > 0) {
-                        $newEquipmentVehicle = new EquipmentVehicle();
-                        $newEquipmentVehicle
-                            ->setValue($cantItems)
-                            ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
-                            ->setVehicle($vehicle);
+                    #im sure that equipment vehicle exist but value is lower or equal to 0 and its neccesary remove..
+                    $this->equipmentVehicleService->removeEquipmentVehicle($findEquipmentVehicle);
+                    continue;
+                }
+                if ($haveEquipments) {
+                    $newEquipmentVehicle = new EquipmentVehicle();
+                    $newEquipmentVehicle
+                        ->setValue($totalEquipments)
+                        ->setEquipment($this->iriConverterInterface->getItemFromIri($equipment['equipment']))
+                        ->setVehicle($vehicle);
 
-                        $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
+                    $vehicle->addEquipmentVehicle($this->equipmentVehicleService->saveEquipmentVehicle($newEquipmentVehicle));
+                }
+            }
+            $this->vehicleRepository->persistVehicle($vehicle);
+        }
+    }
+
+    public function updateAuthorizations(Vehicle $vehicle, array $vehicleAuthorizations = array())
+    {
+        if ($vehicleAuthorizations) {
+
+            foreach ($vehicleAuthorizations as $vehicleAuthorization) {
+                [
+                    'authorization' => $authorization,
+                    'removed' => $removed,
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                    'active' => $active,
+                    'notifications' => $notifications,
+                ] = $vehicleAuthorization;
+                $existedAuthorization = $this->iriConverterInterface->getItemFromIri($authorization);
+                $vehicleAuthorizationId = $vehicleAuthorization['@id'] ?? null;
+
+                #If is received @id is edited or removed ('if have in true removed key') vehicleAuthorization
+                if ($vehicleAuthorizationId) {
+                    $vehicleAuthorizationId = $vehicleAuthorization['@id'];
+                    $existedVehicleAuthorization = $this->iriConverterInterface->getItemFromIri($vehicleAuthorizationId);
+
+                    if ($existedVehicleAuthorization instanceof VehicleAuthorization) {
+                        if ($removed) {
+                            $this->vehicleAuthorizationService->removeVehicleAuthorization($existedVehicleAuthorization);
+                            continue;
+                        }
+                        $existedVehicleAuthorization
+                            ->setAuthorization($existedAuthorization)
+                            ->setStart(new \DateTime($startDate))
+                            ->setEnd(new \DateTime($endDate))
+                            ->setVehicle($vehicle)
+                            ->setActive($active ?: true)
+                            ->setRenewNotifications($notifications ?: true);
+
+                        $this->vehicleAuthorizationService->saveVehicleAuthorization($existedVehicleAuthorization);
+                        continue;
                     }
                 }
+
+                #If not received @id persist new vehicleAuthorization
+                $newVehicleAuthorization = new VehicleAuthorization();
+
+                if ($existedAuthorization instanceof Authorizations) {
+                    $newVehicleAuthorization
+                        ->setAuthorization($existedAuthorization)
+                        ->setStart(new \DateTime($vehicleAuthorization['startDate']))
+                        ->setEnd(new \DateTime($vehicleAuthorization['endDate']))
+                        ->setVehicle($vehicle)
+                        ->setActive($vehicleAuthorization['active'] ?: true)
+                        ->setRenewNotifications($vehicleAuthorization['notifications'] ?: true);
+                }
+                $authorizationCreated = $this->vehicleAuthorizationService->saveVehicleAuthorization($newVehicleAuthorization);
+                $vehicle->addVehicleAuthorization($authorizationCreated);
 
             }
             $this->vehicleRepository->persistVehicle($vehicle);

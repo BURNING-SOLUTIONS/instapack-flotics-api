@@ -39,9 +39,9 @@ services:
   App\Utils\StorageFileManager:
     arguments: ['App\Utils\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
 
-  App\EventListener\OnFlushListener:
-    tags:
-      - { name: doctrine.event_listener, event: onFlush , connection: default  }
+#  App\EventListener\OnFlushListener:
+#    tags:
+#      - { name: doctrine.event_listener, event: onFlush , connection: default  }
 
   App\EventListener\NewVehicleListener:
     tags:

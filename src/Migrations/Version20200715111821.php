@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200219122450 extends AbstractMigration
+final class Version20200715111821 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,7 @@ final class Version20200219122450 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_7A2119E396901F54 ON bill (number)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_7082D49F7082D49F ON concepts (concepts)');
+        $this->addSql('ALTER TABLE rates CHANGE vehicle_name vehicle_model VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -31,7 +30,6 @@ final class Version20200219122450 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_7A2119E396901F54 ON bill');
-        $this->addSql('DROP INDEX UNIQ_7082D49F7082D49F ON concepts');
+        $this->addSql('ALTER TABLE rates CHANGE vehicle_model vehicle_name VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`');
     }
 }

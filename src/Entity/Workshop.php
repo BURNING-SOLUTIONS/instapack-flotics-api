@@ -5,17 +5,39 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use App\Controller\ExportWorkshopsController;
 
 /**
  * @ApiResource(
- *   normalizationContext={"groups"={"history_workshop"}}
+ *   normalizationContext={"groups"={"history_workshop","get_workshop"}},
+ *     collectionOperations={
+ *         "get",
+ *         "post",
+ *         "export_workshops"={
+ *              "method"="GET",
+ *              "path"="/workshops/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportWorkshopsController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
+ *         }
+ *     }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\WorkshopRepository")
  * @UniqueEntity("code")
  * @UniqueEntity("name")
+ * @ApiFilter(SearchFilter::class, properties={"id":"partial","code":"partial","name":"partial","mainPhone":"partial","mainEmail":"partial","secondPhone":"partial","secondEmail":"partial","mainContact":"partial","services":"partial","totalBilled":"partial","avgRate":"partial","active":"partial"})
+ * @ApiFilter(OrderFilter::class, properties={"id","code","name","mainPhone","mainEmail","secondPhone","secondEmail","mainContact","services","totalBilled","avgRate","active","createdAt"})
+ * @ApiFilter(RangeFilter::class, properties={"avgRate"})
  */
 class Workshop
 {
@@ -23,88 +45,121 @@ class Workshop
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"history_workshop"})
+     * @Groups({"history_workshop","get_workshop"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"get_workshop"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"history_workshop"})
+     * @Groups({"history_workshop","get_workshop"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
+     * @Assert\Regex(
+     *               pattern="/^((\+34)|(34))?[6|7|8|9][0-9]{8}$/", message="Your phone is invalid")
      */
     private $mainPhone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
+     * @Assert\Email(
+     *     message = "The email is not a valid.",
+     *     checkMX = false
+     * )
      */
     private $mainEmail;
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
      */
+    private $mainContact;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"get_workshop"})
+     */
+    private $mainDirection;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
+     * @Assert\Regex(
+     *               pattern="/^((\+34)|(34))?[6|7|8|9][0-9]{8}$/", message="Your phone is invalid")
+     */
+
     private $secondPhone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
+     * @Assert\Email(
+     *     message = "The email is not a valid.",
+     *     checkMX = true
+     * )
      */
     private $secondEmail;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $mainContact;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
      */
     private $secondContact;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $mainDirection;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_workshop"})
      */
     private $secondDirection;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
+     * @Groups({"get_workshop"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"get_workshop"})
      */
     private $active;
 
     /**
      * @ORM\Column(type="decimal", precision=2, scale=1, nullable=true)
+     * @Groups({"get_workshop"})
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 5.0,
+     * )
      */
     private $avgRate;
 
     /**
      * @ORM\Column(type="decimal", precision=12, scale=2, nullable=true)
+     * @Groups({"get_workshop"})
      */
     private $totalBilled;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\WorkshopServices", inversedBy="workshops")
+     * @ApiFilter(SearchFilter::class, properties={"services.name":"partial" })
+     * @Groups({"get_workshop"})
      */
     private $services;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\VehicleWorkshop", mappedBy="workshop")
+     * @ApiFilter(SearchFilter::class, properties={"vehicleWorkshops.vehicle":"partial" })
+     * @Groups({"get_workshop"})
      */
     private $vehicleWorkshops;
 
@@ -112,6 +167,7 @@ class Workshop
     {
         $this->services = new ArrayCollection();
         $this->vehicleWorkshops = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -263,9 +319,9 @@ class Workshop
         return $this;
     }
 
-    public function getAvgRate(): ?string
+    public function getAvgRate(): ?float
     {
-        return $this->avgRate;
+        return (float)$this->avgRate;
     }
 
     public function setAvgRate(?string $avgRate): self

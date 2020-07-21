@@ -4,27 +4,29 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Hydra\Serializer\CollectionFiltersNormalizer;
-use Dhl\Dhl_Entity\Clientes;
+use App\Service\DhlClientService;
+use Dhl\Dhl_Entity\Mensajeros;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Utils\RequestContextParser;
 use Symfony\Component\HttpFoundation\RequestStack;
-use App\Service\DhlClientService;
+use App\Service\DlMessengerService;
 
-class clientController extends AbstractController
+class MessengerController
 {
+
     private $request;
-    private $dhlClientService;
+    private $dlMessengerService;
 
     /**
      * @param RequestStack $request
      */
-    public function __construct(RequestStack $request, DhlClientService $dhlClientService)
+    public function __construct(RequestStack $request, DlMessengerService $dlMessengerService)
     {
         $this->request = $request;
-        $this->dhlClientService = $dhlClientService;
+        $this->dlMessengerService = $dlMessengerService;
     }
 
     /**
@@ -38,14 +40,14 @@ class clientController extends AbstractController
      *
      */
     public function __invoke($data): Response
-    {
+    {   //array('codMen', 'nomMen', 'empMen')
         $parser = new RequestContextParser($this->request);
-        ['nomCli' => $nomCli] = $this->request->getCurrentRequest()->query->all();
+        ['nomMen' => $nomMen] = $this->request->getCurrentRequest()->query->all();
         //personal filter
-        $parameters = array('nomCli' => $nomCli, 'codCli' => $nomCli);
-        $clients = $this->dhlClientService->getClientsByOrParams($parameters);
-        $response = array("@context" => "/api/contexts/Clientes", "@id" => "/api/clientes", "@type" => "hydra:Collection", "hydra:member" => $clients);
+        $parameters = array('nomMen' => $nomMen, 'codMen' => $nomMen);
+        $messengers = $this->dlMessengerService->getMessengersByOrParams($parameters);
+        $response = array("@context" => "/api/contexts/Mensajeros", "@id" => "/api/mensajeros", "@type" => "hydra:Collection", "hydra:member" => $messengers);
+
         return new JsonResponse($response, Response::HTTP_OK);
     }
-
 }

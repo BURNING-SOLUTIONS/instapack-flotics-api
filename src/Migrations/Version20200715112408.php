@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200224125338 extends AbstractMigration
+final class Version20200715112408 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,9 +22,7 @@ final class Version20200224125338 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_7082D49F7082D49F ON concepts');
-        $this->addSql('ALTER TABLE concepts CHANGE concepts concept VARCHAR(255) NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_7082D49FE74A6050 ON concepts (concept)');
+        $this->addSql('ALTER TABLE rates ADD vehicle_model VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +30,6 @@ final class Version20200224125338 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_7082D49FE74A6050 ON concepts');
-        $this->addSql('ALTER TABLE concepts CHANGE concept concepts VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_7082D49F7082D49F ON concepts (concepts)');
+        $this->addSql('ALTER TABLE rates DROP vehicle_model');
     }
 }
