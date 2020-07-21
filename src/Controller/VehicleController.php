@@ -44,20 +44,32 @@ class VehicleController
         $method = $this->request->getCurrentRequest()->getMethod();
         $parser = new RequestContextParser($this->request);
         $equipments = $parser->getRequestValue('equipments');
+        $authorizations = $parser->getRequestValue('authorizations');
         $equipments_array = array();
+        $authorizations_array = array();
 
         if ($equipments) {
-            $equipments_array = array_map(function ($equipment) {
-                return get_object_vars($equipment);
-            }, $equipments);
+            $equipments_array = $this->arrayMap($equipments);
+        }
+        if ($authorizations) {
+            $authorizations_array = $this->arrayMap($authorizations);
         }
 
-        if ($method == "POST") {
-            $this->vechicleService->saveVehicle($data, $equipments_array);
-            return $data;
+        switch ($method) {
+            case "POST":
+                $this->vechicleService->saveVehicle($data, $equipments_array, $authorizations_array);
+                break;
+            case "PATCH":
+                $this->vechicleService->updateVehicle($data, $equipments_array, $authorizations_array);
+                break;
         }
-
-        $this->vechicleService->updateVehicle($data, $equipments_array);
         return $data;
+    }
+
+    public function arrayMap(array $pieces): array
+    {
+        return array_map(function ($piece) {
+            return get_object_vars($piece);
+        }, $pieces);
     }
 }

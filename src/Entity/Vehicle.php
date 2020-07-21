@@ -25,7 +25,7 @@ use function GuzzleHttp\Psr7\str;
 @ORM\Index(name="global_search_vehicle", columns={"registration","frame"})
 })
  * @ApiResource(
- *     normalizationContext={"groups"={"get_vehicle","vehicle_contract","vehicle_agency"}},
+ *     normalizationContext={"groups"={"get_vehicle","vehicle_contract","vehicle_agency","vehicle_authorizations"}},
  *     collectionOperations={
  *         "get",
  *         "post"={
@@ -228,6 +228,8 @@ class Vehicle
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\VehicleAuthorization", mappedBy="vehicle")
+     * @Groups({"vehicle_authorizations"})
+     * @ApiSubresource
      */
     private $vehicleAuthorizations;
 

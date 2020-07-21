@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\EquipmentVehicle;
 use App\Entity\VehicleAuthorization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * @method VehicleAuthorization|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +18,18 @@ class VehicleAuthorizationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, VehicleAuthorization::class);
+    }
+
+    public function persistVehicleAuthorization(VehicleAuthorization $vehicleAuthorization): void
+    {
+        $this->_em->persist($vehicleAuthorization);
+        $this->_em->flush();
+    }
+
+    public function removeVehicleAuthorization(VehicleAuthorization $vehicleAuthorization): void
+    {
+        $this->_em->remove($vehicleAuthorization);
+        $this->_em->flush();
     }
 
     // /**

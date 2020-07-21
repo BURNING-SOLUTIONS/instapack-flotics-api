@@ -14,10 +14,23 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use App\Controller\ExportWorkshopsController;
 
 /**
  * @ApiResource(
- *   normalizationContext={"groups"={"history_workshop","get_workshop"}}
+ *   normalizationContext={"groups"={"history_workshop","get_workshop"}},
+ *     collectionOperations={
+ *         "get",
+ *         "post",
+ *         "export_workshops"={
+ *              "method"="GET",
+ *              "path"="/workshops/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportWorkshopsController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
+ *         }
+ *     }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\WorkshopRepository")
  * @UniqueEntity("code")
@@ -61,7 +74,7 @@ class Workshop
      * @Groups({"get_workshop"})
      * @Assert\Email(
      *     message = "The email is not a valid.",
-     *     checkMX = true
+     *     checkMX = false
      * )
      */
     private $mainEmail;
@@ -154,6 +167,7 @@ class Workshop
     {
         $this->services = new ArrayCollection();
         $this->vehicleWorkshops = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -305,9 +319,9 @@ class Workshop
         return $this;
     }
 
-    public function getAvgRate(): ?string
+    public function getAvgRate(): ?float
     {
-        return $this->avgRate;
+        return (float)$this->avgRate;
     }
 
     public function setAvgRate(?string $avgRate): self
