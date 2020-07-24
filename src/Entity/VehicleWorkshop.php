@@ -132,6 +132,7 @@ class VehicleWorkshop
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_VehicleWorkshop"})
      */
     private $invoiceCopy;
 
