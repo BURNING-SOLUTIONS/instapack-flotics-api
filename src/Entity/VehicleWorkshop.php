@@ -8,6 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
+const PAY_BUSINESS = array("id" => 0, "msg" => "La Empresa");
+const PAY_RENTAL_AGENCY = array("id" => 1, "msg" => "Renting");
+const PAY_VEHICLE_SECURE = array("id" => 2, "msg" => "Franquicia-Seguro");
+const PAY_SHARED = array("id" => 3, "msg" => "Gasto Compartido");
+
 /**
  * @ApiResource(
  *  normalizationContext={"groups"={"get_VehicleWorkshop","history_workshop"}}
@@ -96,6 +101,39 @@ class VehicleWorkshop
      * @ORM\OneToMany(targetEntity="App\Entity\VehicleHistory", mappedBy="workshop")
      */
     private $vehicleHistories;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Groups({"get_VehicleWorkshop"})
+     */
+    private $price;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_VehicleWorkshop"})
+     */
+    private $cranePayment;
+
+    /**
+     * @Groups({"get_VehicleWorkshop"})
+     */
+    private $craneMsg;
+
+    /**
+     * @Groups({"get_VehicleWorkshop"})
+     */
+    private $workshopMsg;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"get_VehicleWorkshop"})
+     */
+    private $workshopPayment;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $invoiceCopy;
 
     public function __construct()
     {
@@ -312,6 +350,96 @@ class VehicleWorkshop
                 $vehicleHistory->setWorkshop(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(string $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCranePayment(): ?int
+    {
+        return $this->cranePayment;
+    }
+
+    public function getCraneMsg(): ?string
+    {
+        $msg = "";
+        switch ($this->cranePayment) {
+            case 0:
+                $msg = PAY_BUSINESS['msg'];
+                break;
+            case 1:
+                $msg = PAY_RENTAL_AGENCY['msg'];
+                break;
+            case 2:
+                $msg = PAY_VEHICLE_SECURE['msg'];
+                break;
+            case 3:
+                $msg = PAY_SHARED['msg'];
+                break;
+        }
+
+        return $msg;
+    }
+
+    public function setCranePayment(?int $cranePayment): self
+    {
+        $this->cranePayment = $cranePayment;
+
+        return $this;
+    }
+
+    public function getWorkshopPayment(): ?int
+    {
+        return $this->workshopPayment;
+    }
+
+    public function getWorkshopMsg(): ?string
+    {
+        $msg = "";
+        switch ($this->workshopPayment) {
+            case 0:
+                $msg = PAY_BUSINESS['msg'];
+                break;
+            case 1:
+                $msg = PAY_RENTAL_AGENCY['msg'];
+                break;
+            case 2:
+                $msg = PAY_VEHICLE_SECURE['msg'];
+                break;
+            case 3:
+                $msg = PAY_SHARED['msg'];
+                break;
+        }
+
+        return $msg;
+    }
+
+    public function setWorkshopPayment(?int $workshopPayment): self
+    {
+        $this->workshopPayment = $workshopPayment;
+
+        return $this;
+    }
+
+    public function getInvoiceCopy(): ?string
+    {
+        return $this->invoiceCopy;
+    }
+
+    public function setInvoiceCopy(?string $invoiceCopy): self
+    {
+        $this->invoiceCopy = $invoiceCopy;
 
         return $this;
     }
