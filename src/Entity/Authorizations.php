@@ -9,10 +9,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     normalizationContext={"groups"={"vehicle_authorizations", "get_authorization"}}
+ * )
  * @UniqueEntity("name")
  * @UniqueEntity("code")
  * @ORM\Entity(repositoryClass="App\Repository\AuthorizationsRepository")
@@ -25,21 +28,25 @@ class Authorizations
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"vehicle_authorizations", "get_authorization"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"vehicle_authorizations", "get_authorization"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"vehicle_authorizations", "get_authorization"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @Groups({"get_authorization"})
      */
     private $price;
 

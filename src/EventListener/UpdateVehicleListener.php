@@ -58,12 +58,16 @@ class UpdateVehicleListener
     {
         $oldValue = $client[0];
         $newValue = $client[1];
-        if (!$newValue && $oldValue) {
-            return true;
+        if ($newValue && $oldValue) {
+            if (array_key_exists('nomCli', $newValue) && array_key_exists('nomCli', $oldValue)) {
+                return $newValue['nomCli'] !== $oldValue['nomCli'];
+            }
         }
-        if (array_key_exists('nomCli', $newValue) && array_key_exists('nomCli', $oldValue)) {
-            return $newValue['nomCli'] !== $oldValue['nomCli'];
+
+        if (!$newValue && !$oldValue) {
+            return false;
         }
+
         return true;
     }
 
@@ -72,12 +76,15 @@ class UpdateVehicleListener
     {
         $oldValue = $deliveryMan[0];
         $newValue = $deliveryMan[1];
-        if (!$newValue && $oldValue) {
-            return true;
+        if ($newValue && $oldValue) {
+            if (array_key_exists('nomMen', $newValue) && array_key_exists('nomMen', $oldValue)) {
+                return $newValue['nomMen'] !== $oldValue['nomMen'];
+            }
         }
-        if (array_key_exists('nomMen', $newValue) && array_key_exists('nomMen', $oldValue)) {
-            return $newValue['nomMen'] !== $oldValue['nomMen'];
+        if (!$newValue && !$oldValue) {
+            return false;
         }
+
         return true;
     }
 
