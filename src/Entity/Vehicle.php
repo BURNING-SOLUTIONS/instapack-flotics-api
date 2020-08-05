@@ -25,7 +25,7 @@ use function GuzzleHttp\Psr7\str;
 @ORM\Index(name="global_search_vehicle", columns={"registration","frame"})
 })
  * @ApiResource(
- *     normalizationContext={"groups"={"get_vehicle","vehicle_contract","vehicle_agency","vehicle_authorizations"}},
+ *     normalizationContext={"groups"={"get_vehicle","vehicle_contract","vehicle_agency","vehicle_authorizations","get_VehicleWorkshop"}},
  *     collectionOperations={
  *         "get",
  *         "post"={
@@ -65,13 +65,13 @@ class Vehicle
      * @ORM\GeneratedValue
      * @ApiProperty(identifier=true)
      * @ORM\Column(type="integer")
-     * @Groups({"get_vehicle","get_contract"})
+     * @Groups({"get_vehicle","get_contract","get_VehicleWorkshop"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_vehicle","get_contract"})
+     * @Groups({"get_vehicle","get_contract","get_VehicleWorkshop"})
      */
     private $registration;
 
@@ -89,7 +89,7 @@ class Vehicle
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_vehicle","get_contract"})
+     * @Groups({"get_vehicle","get_contract","get_VehicleWorkshop"})
      */
     private $frame;
 

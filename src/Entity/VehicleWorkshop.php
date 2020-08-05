@@ -8,6 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\VehicleWorkshopController;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 const PAY_BUSINESS = array("id" => 0, "msg" => "La Empresa");
 const PAY_RENTAL_AGENCY = array("id" => 1, "msg" => "Renting");
@@ -37,6 +43,11 @@ const PAY_SHARED = array("id" => 3, "msg" => "Gasto Compartido");
  *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\VehicleWorkshopRepository")
+ * @ApiFilter(DateFilter::class, properties={"startDate": DateFilter::EXCLUDE_NULL, "endDate": DateFilter::EXCLUDE_NULL})
+ * @ApiFilter(RangeFilter::class, properties={"price","estimationDays"})
+ * @ApiFilter(SearchFilter::class, properties={"cranePayment": "exact","workshopPayment": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"startDate","endDate","cranePayment","workshopPayment"})
+ * @ApiFilter(BooleanFilter::class, properties={"hasCrane","finalized"})
  */
 class VehicleWorkshop
 {
@@ -76,6 +87,7 @@ class VehicleWorkshop
      * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="vehicleWorkshops")
      * @Groups({"get_VehicleWorkshop"})
      * @ORM\JoinColumn(nullable=false)
+     * @ApiFilter(SearchFilter::class, properties={"vehicle.registration":"partial" })
      */
     private $vehicle;
 
@@ -83,12 +95,14 @@ class VehicleWorkshop
      * @ORM\ManyToOne(targetEntity="App\Entity\Workshop", inversedBy="vehicleWorkshops")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_VehicleWorkshop","history_workshop"})
+     * @ApiFilter(SearchFilter::class, properties={"workshop.name":"partial" })
      */
     private $workshop;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="vehicleWorkshops")
      * @Groups({"get_VehicleWorkshop"})
+     * @ApiFilter(SearchFilter::class, properties={"rentalAgency.name":"partial" })
      */
     private $rentalAgency;
 
@@ -163,6 +177,8 @@ class VehicleWorkshop
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\WorkshopServices", inversedBy="vehicleWorkshops")
+     * @Groups({"get_VehicleWorkshop"})
+     * @ApiFilter(SearchFilter::class, properties={"services.name":"exact"})
      */
     private $services;
 
