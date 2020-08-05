@@ -18,7 +18,7 @@ use App\Controller\ExportAgenciesController;
 @ORM\Index(name="global_search_agency", columns={"name","code","cif"})
 })
  * @ApiResource(
- *     normalizationContext={"groups"={"get_contract","get_agency","vehicle_agency"}},
+ *     normalizationContext={"groups"={"get_contract","get_agency","vehicle_agency", "get_VehicleWorkshop"}},
  *     collectionOperations={
  *          "get",
  *          "post",
@@ -53,13 +53,13 @@ class RentalAgency
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item","get_VehicleWorkshop"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255,unique=true)
-     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item","get_VehicleWorkshop"})
      */
     private $code;
 
@@ -72,7 +72,7 @@ class RentalAgency
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item"})
+     * @Groups({"get_contract","get_agency","vehicle_agency","get_only_item","get_VehicleWorkshop"})
      */
     private $name;
 

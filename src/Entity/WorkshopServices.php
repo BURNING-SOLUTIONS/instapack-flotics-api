@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *  normalizationContext={
- *      "groups"={"get_workshop"}
+ *      "groups"={"get_workshop","get_VehicleWorkshop"}
  *  }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\WorkshopServicesRepository")
@@ -31,14 +31,13 @@ class WorkshopServices
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_workshop"})
+     * @Groups({"get_workshop","get_VehicleWorkshop"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_workshop"})
-     * @Groups({"get_workshop"})
+     * @Groups({"get_workshop","get_VehicleWorkshop"})
      */
     private $name;
 
