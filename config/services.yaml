@@ -29,21 +29,28 @@ services:
   App\Messages\Handlers\VehicleHistoryHandler:
     tags: ['messenger.message_handler']
 
-#  App\Entity\Vehicle:
-      # redundant thanks to _defaults, but value is overridable on each service
-#      autowire: true
-#  App\Entity\Contract:
+  App\Messages\Handlers\VehicleWorkshopHistoryHandler:
+    tags: ['messenger.message_handler']
+
+    #  App\Entity\Vehicle:
     # redundant thanks to _defaults, but value is overridable on each service
-#    autowire: true
+    #      autowire: true
+    #  App\Entity\Contract:
+    # redundant thanks to _defaults, but value is overridable on each service
+  #    autowire: true
 
   App\Utils\StorageFileManager:
     arguments: ['App\Utils\AzureFileManager','%env(AZURE_CLOUD_FILES)%']
 
-#  App\EventListener\OnFlushListener:
-#    tags:
-#      - { name: doctrine.event_listener, event: onFlush , connection: default  }
+  #  App\EventListener\OnFlushListener:
+  #    tags:
+  #      - { name: doctrine.event_listener, event: onFlush , connection: default  }
 
   App\EventListener\NewVehicleListener:
+    tags:
+      - { name: doctrine.event_listener, event: postPersist }
+
+  App\EventListener\NewVehicleWorkshopListener:
     tags:
       - { name: doctrine.event_listener, event: postPersist }
 
@@ -52,6 +59,11 @@ services:
       - { name: doctrine.event_listener, event: preUpdate }
 
   App\EventSubscriber\NewVehicleSubscriber:
+    arguments: ["@service_container"]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  App\EventSubscriber\NewVehicleWorkshopSubscriber:
     arguments: ["@service_container"]
     tags:
       - { name: kernel.event_subscriber }

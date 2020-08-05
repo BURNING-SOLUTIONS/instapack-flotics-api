@@ -3,8 +3,6 @@
 
 namespace App\Messages\Handlers;
 
-
-use App\Entity\Vehicle;
 use App\Entity\VehicleHistory;
 use App\Messages\VehicleHistoryMessage;
 use Doctrine\ORM\EntityManagerInterface;

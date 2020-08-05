@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\VehicleWorkshop;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * @method VehicleWorkshop|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +17,12 @@ class VehicleWorkshopRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, VehicleWorkshop::class);
+    }
+
+    public function persistVehicleWorkshop(VehicleWorkshop $vehicleWorkshop)
+    {
+        $this->_em->persist($vehicleWorkshop);
+        $this->_em->flush();
     }
 
     // /**

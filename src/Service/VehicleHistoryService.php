@@ -76,6 +76,24 @@ class VehicleHistoryService
         }
     }
 
+    public function saveVehicleWorkshopHistory(VehicleHistory $vehicleWorkshopHistory)
+    {
+        $type = NEW_VEHICLE_WORKSHOP;
+        $location = NEW_VEHICLE_WORKSHOP_LOCATION;
+        $vehicleWorkshopHistory
+            ->setType($type)
+            ->setLocation($location);
+
+        $errors = $this->validator->validate($vehicleWorkshopHistory);
+        if (!count($errors) > 0) {
+            try {
+                $this->vehicleHistoryRepository->persistVehicleHistory($vehicleWorkshopHistory);
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage());
+            }
+        }
+    }
+
     public function saveVehicleHistoryClient(VehicleHistory $vehicleHistoryClient): void
     {
         $type = $vehicleHistoryClient->getClient() ? NEW_VEHICLE_CLIENT : DELETE_VEHICLE_CLIENT;
