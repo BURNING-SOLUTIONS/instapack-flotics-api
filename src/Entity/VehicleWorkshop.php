@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\VehicleWorkshopController;
 
 const PAY_BUSINESS = array("id" => 0, "msg" => "La Empresa");
 const PAY_RENTAL_AGENCY = array("id" => 1, "msg" => "Renting");
@@ -15,7 +16,25 @@ const PAY_SHARED = array("id" => 3, "msg" => "Gasto Compartido");
 
 /**
  * @ApiResource(
- *  normalizationContext={"groups"={"get_VehicleWorkshop","history_workshop"}}
+ *  normalizationContext={
+ *     "groups"={"get_VehicleWorkshop","history_workshop"}
+ *  },
+ *  collectionOperations={
+ *       "get",
+ *       "post"={
+ *          "method"="POST",
+ *          "controller"=VehicleWorkshopController::class
+ *         }
+ *     },
+ *     itemOperations={
+ *        "get",
+ *        "put",
+ *        "delete",
+ *        "patch"={
+ *          "method"="PATCH",
+ *          "controller"=VehicleWorkshopController::class
+ *        },
+ *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\VehicleWorkshopRepository")
  */
@@ -103,7 +122,7 @@ class VehicleWorkshop
     private $vehicleHistories;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      * @Groups({"get_VehicleWorkshop"})
      */
     private $price;
@@ -136,11 +155,28 @@ class VehicleWorkshop
      */
     private $invoiceCopy;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"get_VehicleWorkshop"})
+     */
+    private $finalized;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\WorkshopServices", inversedBy="vehicleWorkshops")
+     */
+    private $services;
+
     public function __construct()
     {
         $this->vehicleWorkshopBills = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->vehicleHistories = new ArrayCollection();
+
+        # default values for created at, hasCrane and finalized attributes
+        $this->createdAt = new \DateTime();
+        $this->finalized = false;
+        $this->hasCrane = false;
+        $this->services = new ArrayCollection();
     }
 
 
@@ -190,7 +226,7 @@ class VehicleWorkshop
         return $this->hasCrane;
     }
 
-    public function setHasCrane(bool $hasCrane): self
+    public function setHasCrane(?bool $hasCrane): self
     {
         $this->hasCrane = $hasCrane;
 
@@ -441,6 +477,44 @@ class VehicleWorkshop
     public function setInvoiceCopy(?string $invoiceCopy): self
     {
         $this->invoiceCopy = $invoiceCopy;
+
+        return $this;
+    }
+
+    public function getFinalized(): ?bool
+    {
+        return $this->finalized;
+    }
+
+    public function setFinalized(?bool $finalized): self
+    {
+        $this->finalized = $finalized;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|WorkshopServices[]
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(WorkshopServices $service): self
+    {
+        if (!$this->services->contains($service)) {
+            $this->services[] = $service;
+        }
+
+        return $this;
+    }
+
+    public function removeService(WorkshopServices $service): self
+    {
+        if ($this->services->contains($service)) {
+            $this->services->removeElement($service);
+        }
 
         return $this;
     }

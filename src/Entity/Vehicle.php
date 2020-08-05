@@ -160,7 +160,7 @@ class Vehicle
      * Many features have one product. This is the owning side.
      * @ORM\ManyToOne(targetEntity="VehicleType", inversedBy="vehicle")
      * @Groups({"get_vehicle"})
-     * @ApiFilter(SearchFilter::class, properties={"vehicleType.type":"partial" })
+     * @ApiFilter(SearchFilter::class, properties={"vehicleType.type":"exact"})
      *
      */
     private $vehicleType;
@@ -239,6 +239,8 @@ class Vehicle
      */
     private $deliveryMan = null;
 
+    //private $hasActiveWorkshop;
+
     public function __construct()
     {
         $this->equipmentVehicles = new ArrayCollection();
@@ -247,6 +249,21 @@ class Vehicle
         $this->vehicleHistories = new ArrayCollection();
         $this->vehicleAuthorizations = new ArrayCollection();
     }
+
+    /*public function getHasActiveWorkshop(): bool
+    {
+        $myWorksops = $this->getVehicleWorkshops();
+        $existActiveWorkshop = false;
+        foreach ($myWorksops as $item) {
+            if ($item instanceof VehicleWorkshop) {
+                if (!$item->getFinalized()) {
+                    $existActiveWorkshop = true;
+                }
+            }
+        }
+
+        return $existActiveWorkshop;
+    }*/
 
     public function getId(): ?int
     {

@@ -15,7 +15,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"get_workshop"}
+ *  }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\WorkshopServicesRepository")
  * @UniqueEntity("name")
  * @ApiFilter(SearchFilter::class, properties={"name": "partial", "workshops": "partial"})
@@ -27,13 +31,13 @@ class WorkshopServices
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     *
+     * @Groups({"get_workshop"})
      */
     private $id;
 
-
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"get_workshop"})
      * @Groups({"get_workshop"})
      */
     private $name;
@@ -44,9 +48,15 @@ class WorkshopServices
      */
     private $workshops;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\VehicleWorkshop", mappedBy="services")
+     */
+    private $vehicleWorkshops;
+
     public function __construct()
     {
         $this->workshops = new ArrayCollection();
+        $this->vehicleWorkshops = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,6 +100,34 @@ class WorkshopServices
         if ($this->workshops->contains($workshop)) {
             $this->workshops->removeElement($workshop);
             $workshop->removeService($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleWorkshop[]
+     */
+    public function getVehicleWorkshops(): Collection
+    {
+        return $this->vehicleWorkshops;
+    }
+
+    public function addVehicleWorkshop(VehicleWorkshop $vehicleWorkshop): self
+    {
+        if (!$this->vehicleWorkshops->contains($vehicleWorkshop)) {
+            $this->vehicleWorkshops[] = $vehicleWorkshop;
+            $vehicleWorkshop->addService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleWorkshop(VehicleWorkshop $vehicleWorkshop): self
+    {
+        if ($this->vehicleWorkshops->contains($vehicleWorkshop)) {
+            $this->vehicleWorkshops->removeElement($vehicleWorkshop);
+            $vehicleWorkshop->removeService($this);
         }
 
         return $this;
