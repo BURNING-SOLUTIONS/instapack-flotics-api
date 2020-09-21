@@ -68,7 +68,7 @@ class VehicleWorkshopService
             $this->dbManager->beginTransaction();
             try {
                 // do stuff
-                if ($invoiceCopy_base64) {
+                if ($invoiceCopy_base64 && $this->isBase64($invoiceCopy_base64)) {
                     $invoiceFinalRoute = $file_manager->uploadBase64File($invoiceCopy_base64, $VEHICLE_WORKSHOP_INVOICE_AZURE_FILE_PATH, "workshop_invoice_", $vehicleWorkshop->getId());
                     $vehicleWorkshop->setInvoiceCopy($AZURE_READ_FILES_PATH . $VEHICLE_WORKSHOP_INVOICE_AZURE_FILE_PATH . '/' . $invoiceFinalRoute);
                 }

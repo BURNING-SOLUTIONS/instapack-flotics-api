@@ -13,9 +13,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
- *  @ApiResource()
+ * @ApiResource(normalizationContext={"groups"={"get_concepts","get_rates"}})
  * @ORM\Entity(repositoryClass="App\Repository\ConceptsRepository")
  * @UniqueEntity("concept")
+ * @UniqueEntity("code")
  * @ApiFilter(SearchFilter::class, properties={"concept": "partial"})
  * @ApiFilter(OrderFilter::class, properties={"id", "concept"})
  */
@@ -25,30 +26,32 @@ class Concepts
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_concepts"})
+     * @Groups({"get_concepts","get_rates"})
      */
     private $id;
 
-
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"get_concepts"})
+     * @Groups({"get_concepts","get_rates"})
      */
     private $concept;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="concept")
-     *
+     * @ORM\Column(type="string", length=10)
+     * @Groups({"get_concepts","get_rates"})
      */
-    private $clauses;
+    private $code;
 
-
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"get_concepts","get_rates"})
+     */
+    private $allowRangeDays;
 
     public function __construct()
     {
-        $this->clauses = new ArrayCollection();
+        $this->allowRangeDays = false;
     }
-
 
     public function getId(): ?int
     {
@@ -71,39 +74,29 @@ class Concepts
         $this->concept = $concept;
     }
 
-
-
-    /**
-     * @return Collection|Clauses[]
-     */
-    public function getClauses(): Collection
+    public function getCode(): ?string
     {
-        return $this->clauses;
+        return $this->code;
     }
 
-    public function addClause(Clauses $clause): self
+    public function setCode(string $code): self
     {
-        if (!$this->clauses->contains($clause)) {
-            $this->clauses[] = $clause;
-            $clause->setConcept($this);
-        }
+        $this->code = $code;
 
         return $this;
     }
 
-    public function removeClause(Clauses $clause): self
+    public function getAllowRangeDays(): ?bool
     {
-        if ($this->clauses->contains($clause)) {
-            $this->clauses->removeElement($clause);
-            // set the owning side to null (unless already changed)
-            if ($clause->getConcept() === $this) {
-                $clause->setConcept(null);
-            }
-        }
+        return $this->allowRangeDays;
+    }
+
+    public function setAllowRangeDays(bool $allowRangeDays): self
+    {
+        $this->allowRangeDays = $allowRangeDays;
 
         return $this;
     }
-
 
 
 }

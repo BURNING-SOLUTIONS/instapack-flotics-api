@@ -34,7 +34,7 @@ class NewVehicleWorkshopListener
 
         $entityManager = $args->getObjectManager();
         // ... do something with the VehicleWorkshop
-        $newVehicleHistoryEvent = new NewVehicleWorkshopHistoryEvent('Alta vehículo', $entity, $this->bus);
+        $newVehicleHistoryEvent = new NewVehicleWorkshopHistoryEvent('Visita al Taller', $entity, $this->bus);
         $this->dispatcher->dispatch($newVehicleHistoryEvent, NewVehicleWorkshopHistoryEvent::NAME);
     }
 

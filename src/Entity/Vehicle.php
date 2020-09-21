@@ -239,6 +239,11 @@ class Vehicle
      */
     private $deliveryMan = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rates", mappedBy="vehicle")
+     */
+    private $rates;
+
     //private $hasActiveWorkshop;
 
     public function __construct()
@@ -248,6 +253,7 @@ class Vehicle
         $this->vehicleIncidents = new ArrayCollection();
         $this->vehicleHistories = new ArrayCollection();
         $this->vehicleAuthorizations = new ArrayCollection();
+        $this->rates = new ArrayCollection();
     }
 
     /*public function getHasActiveWorkshop(): bool
@@ -740,6 +746,37 @@ class Vehicle
             $this->deliveryMan = null;
         } else {
             $this->deliveryMan = $deliveryMan;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Rates[]
+     */
+    public function getRates(): Collection
+    {
+        return $this->rates;
+    }
+
+    public function addRate(Rates $rate): self
+    {
+        if (!$this->rates->contains($rate)) {
+            $this->rates[] = $rate;
+            $rate->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRate(Rates $rate): self
+    {
+        if ($this->rates->contains($rate)) {
+            $this->rates->removeElement($rate);
+            // set the owning side to null (unless already changed)
+            if ($rate->getVehicle() === $this) {
+                $rate->setVehicle(null);
+            }
         }
 
         return $this;

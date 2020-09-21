@@ -20,7 +20,7 @@ use App\Controller\ExportContractsController;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"get_contract","get_bill","get_clauses","vehicle_contract","get_vehicle","get_rates"},"enable_max_depth"=true},
+ *     normalizationContext={"groups"={"get_contract","get_bill","vehicle_contract","get_vehicle","get_rates"},"enable_max_depth"=true},
  *     collectionOperations={
  *         "get",
  *         "post"={
@@ -59,21 +59,21 @@ class Contract
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_bill","get_clauses","vehicle_contract","get_contract","get_vehicle","get_rates"})
+     * @Groups({"get_bill","vehicle_contract","get_contract","get_vehicle","get_rates"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", length=255, unique=true)
-     * @Groups({"get_bill","get_clauses","vehicle_contract","get_contract","get_vehicle","get_rates"})
+     * @Groups({"get_bill","vehicle_contract","get_contract","get_vehicle","get_rates"})
      */
     private $number;
 
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get_bill","get_clauses","vehicle_contract","get_contract","get_vehicle","get_rates"})
+     * @Groups({"get_bill","vehicle_contract","get_contract","get_vehicle","get_rates"})
      */
     private $startDate;
 
@@ -123,14 +123,6 @@ class Contract
      * @Groups({"get_bill"})
      */
     private $exitKm;
-
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Clauses", mappedBy="contract", cascade={"remove"})
-     * @Groups({"get_bill"})
-     */
-    private $clauses;
-
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\InstapackGroup", inversedBy="contracts")
@@ -193,7 +185,6 @@ class Contract
 
     public function __construct()
     {
-        $this->clauses = new ArrayCollection();
         $this->bills = new ArrayCollection();
         $this->contractAccessories = new ArrayCollection();
         $this->rates = new ArrayCollection();
@@ -309,37 +300,6 @@ class Contract
     public function setInitialDeposit(?float $initialDeposit): self
     {
         $this->initialDeposit = $initialDeposit;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Clauses[]
-     */
-    public function getClauses(): Collection
-    {
-        return $this->clauses;
-    }
-
-    public function addClause(Clauses $clause): self
-    {
-        if (!$this->clauses->contains($clause)) {
-            $this->clauses[] = $clause;
-            $clause->setContract($this);
-        }
-
-        return $this;
-    }
-
-    public function removeClause(Clauses $clause): self
-    {
-        if ($this->clauses->contains($clause)) {
-            $this->clauses->removeElement($clause);
-            // set the owning side to null (unless already changed)
-            if ($clause->getContract() === $this) {
-                $clause->setContract(null);
-            }
-        }
 
         return $this;
     }

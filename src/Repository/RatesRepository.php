@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Rates;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * @method Rates|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,6 +18,19 @@ class RatesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Rates::class);
     }
+
+    public function persistRate(Rates $rate): void
+    {
+        $this->_em->persist($rate);
+        $this->_em->flush();
+    }
+
+    public function removeRate(Rates $rate): void
+    {
+        $this->_em->remove($rate);
+        $this->_em->flush();
+    }
+
 
     // /**
     //  * @return Rates[] Returns an array of Rates objects

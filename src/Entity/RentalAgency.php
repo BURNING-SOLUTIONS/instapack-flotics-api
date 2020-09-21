@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,6 +14,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Controller\ExportAgenciesController;
+use App\Controller\RentalAgencyController;
+use App\Entity\Rates;
+
 /**
  * @ORM\Table(indexes={
 @ORM\Index(name="global_search_agency", columns={"name","code","cif"})
@@ -21,7 +25,10 @@ use App\Controller\ExportAgenciesController;
  *     normalizationContext={"groups"={"get_contract","get_agency","vehicle_agency", "get_VehicleWorkshop"}},
  *     collectionOperations={
  *          "get",
- *          "post",
+ *          "post"={
+ *             "method"="POST",
+ *             "controller"=RentalAgencyController::class
+ *         },
  *          "export_agencies"={
  *              "method"="GET",
  *              "path"="/rental_agencies/export/{format}",
@@ -32,7 +39,10 @@ use App\Controller\ExportAgenciesController;
  *         }
  *     },
  *     itemOperations={
- *         "patch",
+ *         "patch"={
+ *             "method"="PATCH",
+ *             "controller"=RentalAgencyController::class
+ *          },
  *         "put",
  *         "delete",
  *         "get"={
@@ -157,11 +167,18 @@ class RentalAgency
      */
     private $vehicleWorkshops;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rates", mappedBy="agency", cascade={"remove"})
+     * @ApiSubresource
+     */
+    private $rates;
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
         $this->vehicles = new ArrayCollection();
         $this->vehicleWorkshops = new ArrayCollection();
+        $this->rates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -429,6 +446,37 @@ class RentalAgency
             // set the owning side to null (unless already changed)
             if ($vehicleWorkshop->getRentalAgency() === $this) {
                 $vehicleWorkshop->setRentalAgency(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleWorkshop[]
+     */
+    public function getRates(): Collection
+    {
+        return $this->rates;
+    }
+
+    public function addRate(Rates $rate): self
+    {
+        if (!$this->rates->contains($rate)) {
+            $this->rates[] = $rate;
+            $rate->setAgency($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRate(Rates $rate): self
+    {
+        if ($this->rates->contains($rate)) {
+            $this->rates->removeElement($rate);
+            // set the owning side to null (unless already changed)
+            if ($rate->getAgency() === $this) {
+                $rate->setAgency(null);
             }
         }
 
