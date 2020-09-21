@@ -51,6 +51,18 @@ class RentalAgencyRepository extends ServiceEntityRepository
         ))*/
     }
 
+    public function persistRentalAgency(RentalAgency $rentalAgency): void
+    {
+        $this->_em->persist($rentalAgency);
+        $this->_em->flush();
+    }
+
+    public function removeRentalAgency(RentalAgency $rentalAgency): void
+    {
+        $this->_em->remove($rentalAgency);
+        $this->_em->flush();
+    }
+
     // /**
     //  * @return RentalAgency[] Returns an array of RentalAgency objects
     //  */

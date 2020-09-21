@@ -14,6 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use App\Controller\ExportVehiclesWorkshopsController;
 
 const PAY_BUSINESS = array("id" => 0, "msg" => "La Empresa");
 const PAY_RENTAL_AGENCY = array("id" => 1, "msg" => "Renting");
@@ -30,6 +31,14 @@ const PAY_SHARED = array("id" => 3, "msg" => "Gasto Compartido");
  *       "post"={
  *          "method"="POST",
  *          "controller"=VehicleWorkshopController::class
+ *         },
+ *         "export_vehicles_workshops"={
+ *              "method"="GET",
+ *              "path"="/vehicle_workshops/export/{format}",
+ *              "requirements"={"format"="excel|pdf"},
+ *              "controller"=ExportVehiclesWorkshopsController::class,
+ *              "pagination_enabled"=false,
+ *              "pagination_items_per_page"=5000,
  *         }
  *     },
  *     itemOperations={
@@ -193,8 +202,13 @@ class VehicleWorkshop
         $this->finalized = false;
         $this->hasCrane = false;
         $this->services = new ArrayCollection();
-    }
 
+        if ($this->cranePayment && (int)$this->cranePayment >= 0) {
+            $this->hasCrane = true;
+        } else {
+            $this->hasCrane = false;
+        }
+    }
 
     public function getId(): ?int
     {
@@ -427,6 +441,9 @@ class VehicleWorkshop
     public function getCraneMsg(): ?string
     {
         $msg = "";
+        if (is_null($this->cranePayment)) {
+            return "";
+        }
         switch ($this->cranePayment) {
             case 0:
                 $msg = PAY_BUSINESS['msg'];
@@ -460,6 +477,10 @@ class VehicleWorkshop
     public function getWorkshopMsg(): ?string
     {
         $msg = "";
+        if (is_null($this->workshopPayment)) {
+            return "";
+        }
+
         switch ($this->workshopPayment) {
             case 0:
                 $msg = PAY_BUSINESS['msg'];
@@ -515,6 +536,22 @@ class VehicleWorkshop
     public function getServices(): Collection
     {
         return $this->services;
+    }
+
+    public function getStrServices(): string
+    {
+        $services = $this->getServices();
+        $servicesLength = count($services);
+        $strServicesName = "";
+
+        foreach ($services as $index => $service) {
+            $strServicesName .= $service->getName();
+            if ($index < $servicesLength - 1) {
+                $strServicesName .= ', ';
+            }
+        }
+
+        return $strServicesName;
     }
 
     public function addService(WorkshopServices $service): self

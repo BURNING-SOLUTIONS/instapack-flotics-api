@@ -58,6 +58,10 @@ services:
     tags:
       - { name: doctrine.event_listener, event: preUpdate }
 
+  App\EventListener\UpdateVehicleWorkshopListener:
+    tags:
+      - { name: doctrine.event_listener, event: preUpdate }
+
   App\EventSubscriber\NewVehicleSubscriber:
     arguments: ["@service_container"]
     tags:

@@ -16,9 +16,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
-
 /**
- * @ApiResource(normalizationContext={"groups"={"get_rates","get_agency","get_concepts"}})
+ * @ApiResource(normalizationContext={"groups"={"get_rates"}})
  * @ORM\Entity(repositoryClass="App\Repository\RatesRepository")
  * @ApiFilter(SearchFilter::class, properties={"value":"partial","startDay":"partial","endDay":"partial","after_km":"partial","vehicleModel":"partial"})
  * @ApiFilter(OrderFilter::class, properties={"id","startDay", "endDay","after_km","value","agency","concept","vehicle","$vehicleModel"})
@@ -31,37 +30,38 @@ class Rates
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @Groups({"get_rates"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @Groups({"get_rates"})
      */
     private $startDay;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @Groups({"get_rates"})
      */
     private $endDay;
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @Groups({"get_rates"})
      *
      */
     private $after_km;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Groups({"get_rates"})
      */
     private $value;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\RentalAgency", inversedBy="rates")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @Groups({"get_rates"})
      * @ApiFilter(SearchFilter::class, properties={"agency.name":"partial" })
      */
     private $agency;
@@ -69,41 +69,41 @@ class Rates
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Concepts", inversedBy="rates")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @Groups({"get_rates"})
      * @ApiFilter(SearchFilter::class, properties={"concept.concept":"partial" })
      */
     private $concept;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\VehicleType")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups({"get_rates"})
      * @ApiFilter(SearchFilter::class, properties={"vehicleType.type":"partial" })
      */
     private $vehicleType;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"get_rates","get_agency","get_concepts"})
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"get_rates"})
      */
     private $vehicleModel;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"get_rates"})
+     */
+    private $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Vehicle", inversedBy="rates")
+     */
+    private $vehicle;
 
-    public function __construct()
-    {
-        $this->vehicle = new ArrayCollection();
-        $this->agency = new ArrayCollection();
-        $this->concept = new ArrayCollection();
-        $this->vehicleType = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-
-
 
     public function getAfterKm(): ?int
     {
@@ -117,19 +117,17 @@ class Rates
         return $this;
     }
 
-    public function getValue(): ?int
+    public function getValue(): ?string
     {
         return $this->value;
     }
 
-    public function setValue(int $value): self
+    public function setValue(?string $value): self
     {
         $this->value = $value;
 
         return $this;
     }
-
-
 
     public function getAgency(): ?RentalAgency
     {
@@ -203,13 +201,29 @@ class Rates
         return $this;
     }
 
-  
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
+        return $this;
+    }
 
+    public function getVehicle(): ?Vehicle
+    {
+        return $this->vehicle;
+    }
 
+    public function setVehicle(?Vehicle $vehicle): self
+    {
+        $this->vehicle = $vehicle;
 
-
+        return $this;
+    }
 
 
 }
